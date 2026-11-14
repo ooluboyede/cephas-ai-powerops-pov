@@ -27,6 +27,7 @@ Standalone proof-of-value application for CEPHAS PowerOps, targeting IBEDC first
 ## Gate history
 - Gate 0.5.1 adds the first interactive Network Operations workspace. All readings are synthetic and advisory-only.
 - Gate 0.5.2 adds a reusable feature-engineering pipeline, exploratory kNN novelty scoring, explainable synthetic network alerts, a small synthetic benchmark and session-only human triage. Model performance is not field-validated.
+- Gate 0.5.3 adds dataset/model SHA-256 manifests, feature-schema binding, evaluation metrics, PSI drift calculation and a fail-closed model promotion policy. The current four-case synthetic model remains blocked from promotion.
 
 ## Validation status
 Unit tests can be run locally with `npm test`. Successful hosted CI, browser end-to-end, accessibility, independent security review and deployment are pending until evidenced.
