@@ -15,7 +15,7 @@ Standalone proof-of-value application for CEPHAS PowerOps, targeting IBEDC first
 | Module | Status | Current boundary |
 |---|---|---|
 | PowerOps command centre | Implemented foundation; validation pending | Synthetic cross-utility overview, module register, operational attention queue and feeder snapshot |
-| Network operations | Planned | Feeder, transformer and network performance intelligence |
+| Network operations | Implemented foundation; validation pending | Synthetic feeder/transformer fixtures, loading, availability, review queue and evidence inspection |
 | Outage & fault intelligence | Planned | Outage visibility, fault clustering and restoration support; no switching commands |
 | Asset health & maintenance | Planned | Asset registry, condition indicators and maintenance prioritisation |
 | Metering & energy intelligence | Planned | Meter data quality, consumption patterns and energy balance |
@@ -23,6 +23,9 @@ Standalone proof-of-value application for CEPHAS PowerOps, targeting IBEDC first
 | Field workforce | Planned | Work orders, crew coordination and field evidence |
 | Revenue Assurance | Initial module slice implemented; validation pending | Synthetic findings, investigation workspace and deterministic payment reconciliation |
 | Forecasting & planning | Planned | Load forecasting, demand scenarios and operational planning |
+
+## Gate history
+- Gate 0.5.1 adds the first interactive Network Operations workspace. All readings are synthetic and advisory-only.
 
 ## Validation status
 Unit tests can be run locally with `npm test`. Successful hosted CI, browser end-to-end, accessibility, independent security review and deployment are pending until evidenced.
