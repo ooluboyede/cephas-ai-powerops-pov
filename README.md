@@ -13,9 +13,9 @@ The PoV should evolve as a coherent PowerOps experience with modular capabilitie
 
 ## Current implementation
 
-The browser application now opens on the PowerOps command centre, with synthetic cross-utility KPIs, an operational attention queue, feeder snapshot and a module register. Revenue Assurance remains the initial functional module slice, with findings, investigation, reconciliation, reports, data quality and governance views. Gate 0.4.2 adds deterministic synthetic reconciliation; Gate 0.5.0 establishes the wider PowerOps command-centre foundation.
+The browser application opens on the PowerOps command centre, with synthetic cross-utility KPIs, an operational attention queue, feeder snapshot and a module register. Gate 0.5.1 adds a dedicated Network Operations workspace with synthetic feeder and transformer performance indicators, evidence inspection and human-review recommendations. Revenue Assurance remains a separate initial functional module slice, with its own findings, investigation, reconciliation, reports, data quality and governance views.
 
-This is an honest implementation boundary: the repository is the PowerOps PoV, while Revenue Assurance is currently the functional module implemented here. Other PowerOps capabilities must be recorded as planned until implemented and validated.
+This is an honest implementation boundary: the repository is the PowerOps PoV, while Network Operations and Revenue Assurance are the currently implemented functional module slices at different levels of completeness. Other PowerOps capabilities must be recorded as planned until implemented and validated.
 
 ## Run locally
 
@@ -46,4 +46,4 @@ This repository is independently built and tested. It must not import enterprise
 
 ## Gate status
 
-Gate 0.4.1 establishes repository separation and an independent baseline CI pipeline. Gate 0.4.2 implements deterministic synthetic reconciliation for the initial Revenue Assurance module. Gate 0.5.0 adds the overall PowerOps command-centre foundation and module register. The other listed utility modules remain planned, not implemented. No gate certifies the complete PowerOps PoV as production-ready. See `docs/POWEROPS_POV_SCOPE.md` and the gate records.
+Gate 0.4.1 establishes repository separation and an independent baseline CI pipeline. Gate 0.4.2 implements deterministic synthetic reconciliation for the Revenue Assurance module. Gate 0.5.0 adds the overall PowerOps command-centre foundation and module register. Gate 0.5.1 adds the Network Operations workspace and synthetic feeder/transformer intelligence. Other listed utility modules remain planned, not implemented. No gate certifies the complete PowerOps PoV as production-ready. See `docs/POWEROPS_POV_SCOPE.md` and the gate records.
