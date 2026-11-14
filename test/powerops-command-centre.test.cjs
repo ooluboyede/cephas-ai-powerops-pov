@@ -6,7 +6,7 @@ const {getSnapshot}=require('../src/powerops-command-centre.js');
 const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
 test('PowerOps is the product landing page and not Revenue Assurance',()=>{
- assert.match(html,/<title>CEPHAS PowerOps \| Revenue Assurance PoV<\/title>/);
+ assert.match(html,/<title>CEPHAS PowerOps \| Utility Operations PoV<\/title>/);
  assert.match(html,/id="page-powerops"/);
  assert.match(html,/data-page="powerops"/);
  assert.match(html,/UTILITY OPERATIONS INTELLIGENCE/);
