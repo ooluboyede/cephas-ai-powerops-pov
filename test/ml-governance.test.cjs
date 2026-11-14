@@ -39,6 +39,8 @@ test("release gate fails closed for tiny synthetic benchmark and passes only con
  const {manifest}=fixture();
  const blocked=gov.assessPromotion({manifest,evaluation:{cases:4,precision:1,recall:1},driftPsi:0.01});
  assert.equal(blocked.eligible,false);assert.match(blocked.reasons.join(" "),/minimum case count/);
+ const missingMetrics=gov.assessPromotion({manifest,evaluation:{cases:120},driftPsi:0.01});
+ assert.equal(missingMetrics.eligible,false);assert.match(missingMetrics.reasons.join(" "),/Precision is missing/);
  const accepted=gov.assessPromotion({manifest,evaluation:{cases:120,precision:0.95,recall:0.92},driftPsi:0.08});
  assert.equal(accepted.eligible,true);
  assert.throws(()=>gov.createRegistryRecord({...manifest,artifactSha256:"0".repeat(64)},accepted),/invalid model manifest/);
