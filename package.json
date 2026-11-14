@@ -1,0 +1,12 @@
+{
+  "name": "cephas-powerops-revenue-assurance-pov",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone synthetic-data PoV for CEPHAS PowerOps Revenue Assurance",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
