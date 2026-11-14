@@ -43,7 +43,7 @@ test("release gate fails closed for tiny synthetic benchmark and passes only con
  assert.equal(missingMetrics.eligible,false);assert.match(missingMetrics.reasons.join(" "),/Precision is missing/);
  const accepted=gov.assessPromotion({manifest,evaluation:{cases:120,precision:0.95,recall:0.92},driftPsi:0.08});
  assert.equal(accepted.eligible,true);
- assert.throws(()=>gov.createRegistryRecord({...manifest,artifactSha256:"0".repeat(64)},accepted),/invalid model manifest/);
+ assert.throws(()=>gov.createRegistryRecord({...manifest,manifestSha256:"0".repeat(64)},accepted),/invalid model manifest/);
  const entry=gov.createRegistryRecord(manifest,blocked);
  assert.equal(entry.decision,"blocked");assert.match(entry.recordSha256,/^[a-f0-9]{64}$/);
 });
