@@ -16,7 +16,8 @@ test('command centre exposes broad utility modules with honest planned status',(
  const names=data.modules.map(x=>x.name);
  for(const name of ['Network operations','Outage & fault intelligence','Asset health & maintenance','Metering & energy intelligence','Customer operations','Field workforce','Revenue Assurance','Forecasting & planning']) assert.ok(names.includes(name),name);
  assert.equal(data.modules.find(x=>x.name==='Revenue Assurance').status,'Initial module slice');
- assert.ok(data.modules.filter(x=>x.name!=='Revenue Assurance').every(x=>x.status==='Planned'));
+ assert.equal(data.modules.find(x=>x.name==='Network operations').status,'Implemented foundation');
+ assert.ok(data.modules.filter(x=>!['Revenue Assurance','Network operations'].includes(x.name)).every(x=>x.status==='Planned'));
 });
 test('all command-centre records are clearly synthetic and advisory-only',()=>{
  const data=getSnapshot();
