@@ -2,6 +2,7 @@
   "schema_version": "1.0",
   "model_version": "0.5.2-knn-novelty-1",
   "status": "research-demo-blocked-from-promotion",
+  "manifest_integrity": "SHA-256 covers canonical manifest metadata; no executable model binary is stored or hashed by this PoV",
   "feature_version": "0.5.2-feature-pipeline",
   "feature_schema": [
     "availability_pct",
