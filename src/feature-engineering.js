@@ -6,7 +6,7 @@ function extract(feeder){
  const samples=Array.from({length:8},(_,i)=>({
   load:round(Math.max(0,Math.min(100,feeder.peakLoad+((i%4)-1.5)*((feeder.peakLoad>80)?2.4:1.1))),2),
   voltage:round(Math.max(0,feeder.voltageDeviation+((i%3)-1)*0.18),3),
-  available:round(Math.max(0,Math.min(100,feeder.availability+((i%2)?0.15:-0.15)),2)
+  available:round(Math.max(0,Math.min(100,feeder.availability+((i%2)?0.15:-0.15))),2)
  }));
  const loads=samples.map(x=>x.load), volts=samples.map(x=>x.voltage);
  const mean=a=>a.reduce((s,v)=>s+v,0)/a.length;
