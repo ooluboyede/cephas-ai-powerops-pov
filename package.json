@@ -1,8 +1,8 @@
 {
-  "name": "cephas-powerops-revenue-assurance-pov",
+  "name": "cephas-powerops-pov",
   "version": "0.1.0",
   "private": true,
-  "description": "Standalone synthetic-data PoV for CEPHAS PowerOps Revenue Assurance",
+  "description": "Standalone CEPHAS PowerOps proof-of-value application; Revenue Assurance is the initial implemented module.",
   "scripts": {
     "test": "node --test"
   },
