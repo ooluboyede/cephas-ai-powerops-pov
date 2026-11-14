@@ -45,7 +45,7 @@
 <section class="page" id="page-network">
  <div class="heading"><div><div class="eyebrow">Network operations intelligence</div><div class="h1">Feeder & transformer performance</div><div class="desc">Explore synthetic feeder loading, availability and transformer condition indicators. Signals are prioritisation aids, not operating instructions.</div></div><div class="actions"><span class="pill">IBEDC PoV · SYNTHETIC</span><button class="btn" onclick="window.PowerOpsNetwork.render()">↻ Refresh view</button></div></div>
  <div class="notice"><strong>Advisory-only:</strong> This module uses synthetic telemetry. It is not connected to SCADA, ADMS or DMS and cannot operate breakers, change taps, switch feeders, dispatch crews or issue control commands. All proposed follow-up requires authorised utility personnel.</div>
- <div class="grid kpis" id="network-kpis"></div>
+ <div class="card" style="margin:15px 0"><div class="sectionhead"><h2>CEPHAS ML Network Alert Intelligence</h2><small>Feature pipeline · novelty scoring · explainable triage</small></div><div class="notice"><strong>Model boundary:</strong> Exploratory k-nearest-neighbour novelty scoring against a small synthetic reference baseline. Scores are relative anomaly indicators, not calibrated fault probabilities or validated operational predictions. Triage actions are simulated in this browser session only.</div><div class="grid kpis" id="network-ml-kpis"></div><div class="grid twocol"><div class="card"><div class="sectionhead"><h2>Model-generated network alerts</h2><small>Evidence and human review</small></div><div id="network-ml-alerts"></div></div><div class="card"><div class="sectionhead"><h2>Synthetic benchmark evaluation</h2><small>Illustrative test fixture only</small></div><div id="network-ml-evaluation" class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:9px"></div></div></div></div> <div class="grid kpis" id="network-kpis"></div>
  <div class="grid twocol">
   <div class="card"><div class="sectionhead"><h2>Feeder loading profile</h2><small>Illustrative load percentage</small></div><div id="network-load-profile"></div></div>
   <div class="card"><div class="sectionhead"><h2>Network attention queue</h2><small>Human review required</small></div><div id="network-alerts"></div></div>
@@ -121,6 +121,10 @@
 <script src="./src/reconciliation.js"></script>
 <script src="./src/powerops-command-centre.js"></script>
 <script src="./src/network-operations.js"></script>
+<script src="./src/feature-engineering.js"></script>
+<script src="./src/ml-intelligence.js"></script>
+<script src="./src/alert-triage.js"></script>
+<script src="./src/network-alert-intelligence.js"></script>
 <script>
 const seed = [
 {id:"F-RA-1042",account:"AC-100284",area:"Ibadan North",type:"Billing gap",amount:4200000,confidence:91,status:"New",reason:"Valid meter reads exist for the period, but the billing extract contains no corresponding bill.",evidence:["Meter read batch MR-2025-10-IBN-004","Billing extract BL-2025-10: no matching account-period bill","Account tariff: R2 effective 2025-07-01"],recommend:"Verify account-to-meter mapping and billing-cycle exception before any bill correction.",team:"Revenue Assurance",age:"2 days"},
@@ -141,7 +145,7 @@ const fmt=n=>"₦"+(n/1000000).toFixed(2)+"m";
 const statusClass=s=>s==="Recovered"||s==="Approved"?"closed":s==="Rejected"?"high":"review";
 function log(msg){audit.unshift({time:new Date().toLocaleTimeString(),msg});renderAudit()}
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
-function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="powerops"&&window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(page==="network"&&window.PowerOpsNetwork)window.PowerOpsNetwork.render();if(page==="controls")renderAudit()}
+function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="powerops"&&window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(page==="network"&&window.PowerOpsNetwork){window.PowerOpsNetwork.render();if(window.PowerOpsNetworkAlerts)window.PowerOpsNetworkAlerts.render();}if(page==="controls")renderAudit()}
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));
 function caseId(f){return "CASE-"+f.id.slice(-4)}
 function row(f){return `<tr><td><span class="caseid">${f.id}</span><br><span class="muted">${caseId(f)}</span></td><td><strong>${f.account}</strong><br><span class="muted">${f.area}</span></td><td>${f.type}</td><td class="amount">${fmt(f.amount)}</td><td>${f.confidence}%</td><td><span class="tag ${statusClass(f.status)}">${f.status}</span></td><td><button class="linkbtn" onclick="openFinding('${f.id}')">Inspect →</button></td></tr>`}
@@ -174,7 +178,7 @@ function runReconciliation(){
  log("Synthetic payment reconciliation run completed: "+result.summary.matchedBills+" matched billing records, "+result.summary.exceptionCount+" exceptions");
  toast("Synthetic reconciliation completed");
 }
-function renderInitial(){renderAll();if(window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render()}
+function renderInitial(){renderAll();if(window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(window.PowerOpsNetworkAlerts)window.PowerOpsNetworkAlerts.render()}
 renderInitial();
 </script>
 </body></html>
