@@ -10,7 +10,7 @@ const snapshot = Object.freeze({
     {label:"Open service requests",value:"184",note:"Synthetic customer-service queue"}
   ],
   modules:[
-    {id:"network",name:"Network operations",status:"Planned",detail:"Feeder, transformer and network performance intelligence"},
+    {id:"network",name:"Network operations",status:"Implemented foundation",detail:"Synthetic feeder and transformer intelligence, loading, availability and review queue",page:"network"},
     {id:"outage",name:"Outage & fault intelligence",status:"Planned",detail:"Outage visibility, fault clustering and restoration support"},
     {id:"assets",name:"Asset health & maintenance",status:"Planned",detail:"Asset registry, condition indicators and maintenance prioritisation"},
     {id:"metering",name:"Metering & energy intelligence",status:"Planned",detail:"Meter data quality, consumption patterns and energy balance"},
