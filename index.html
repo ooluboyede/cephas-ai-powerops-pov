@@ -12,9 +12,12 @@
 <body>
 <div class="shell">
 <aside class="side">
- <div class="brand">CEPHAS <span>AI</span></div><div class="subbrand">POWEROPS REVENUE INTELLIGENCE</div>
- <div class="navlabel">Workspace</div><nav class="nav">
- <button class="active" data-page="overview">◫ &nbsp; Overview</button>
+ <div class="brand">CEPHAS <span>AI</span></div><div class="subbrand">UTILITY OPERATIONS INTELLIGENCE</div>
+ <div class="navlabel">PowerOps platform</div><nav class="nav">
+ <button class="active" data-page="powerops">◫ &nbsp; Command centre</button>
+ </nav>
+ <div class="navlabel">Revenue Assurance module</div><nav class="nav">
+ <button data-page="overview">◫ &nbsp; Revenue overview</button>
  <button data-page="findings">⌕ &nbsp; Revenue findings</button>
  <button data-page="cases">▤ &nbsp; Investigation cases</button>
  <button data-page="reconciliation">⇄ &nbsp; Reconciliation</button>
@@ -27,9 +30,18 @@
  <div class="sidefoot">PoV build · Synthetic environment<br>© CEPHAS AI Solutions</div>
 </aside>
 <main class="main">
-<header class="top"><div class="crumb">PowerOps / <strong id="crumb">Overview</strong></div><div class="topright"><span class="pill">SYNTHETIC DATA · DEMO</span><div class="avatar">RA</div></div></header>
+<header class="top"><div class="crumb">PowerOps / <strong id="crumb">Overview</strong></div><div class="topright"><span class="pill">SYNTHETIC DATA · DEMO</span><div class="avatar">PO</div></div></header>
 <div class="content">
-<section class="page active" id="page-overview">
+<section class="page active" id="page-powerops">
+ <div class="heading"><div><div class="eyebrow">CEPHAS PowerOps · utility operations</div><div class="h1">PowerOps command centre</div><div class="desc">A unified operational intelligence view across network performance, service continuity, asset health, metering, customer operations and revenue. All values are synthetic demonstration data.</div></div><div class="actions"><span class="pill">IBEDC PoV · SYNTHETIC</span></div></div>
+ <div class="notice"><strong>Advisory-only demonstration:</strong> This command centre is not connected to utility control systems. It does not issue switching, dispatch, SCADA, ADMS, DMS, meter or disconnection commands. Operational decisions remain with authorised utility personnel.</div>
+ <div class="grid kpis" id="powerops-kpis"></div>
+ <div class="grid twocol"><div class="card"><div class="sectionhead"><h2>Utility operations workspaces</h2><small>Module roadmap</small></div><div id="powerops-modules" class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div></div>
+ <div class="card"><div class="sectionhead"><h2>Operational attention queue</h2><small>Synthetic signals · human review</small></div><div id="powerops-alerts"></div></div></div>
+ <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Feeder performance snapshot</h2><small>Illustrative synthetic telemetry</small></div><div class="tablewrap"><table><thead><tr><th>Feeder</th><th>Service area</th><th>Availability</th><th>Load</th><th>Attention</th></tr></thead><tbody id="powerops-feeders"></tbody></table></div></div>
+ <div class="footer">CEPHAS PowerOps · Overall utility operations PoV · Synthetic demonstration only</div>
+</section>
+<section class="page" id="page-overview">
  <div class="heading"><div><div class="eyebrow">Revenue assurance command centre</div><div class="h1">Revenue intelligence overview</div><div class="desc">Identify revenue gaps, investigate evidence and track approved recovery. All figures below are illustrative synthetic data.</div></div><div class="actions"><button class="btn" onclick="resetDemo()">↻ Reset demo</button><button class="btn primary" onclick="navigate('findings')">Review findings →</button></div></div>
  <div class="notice"><strong>Demonstration boundary:</strong> This PoV uses synthetic records. Findings are investigation leads, not proof of theft or customer liability. No live utility systems are connected.</div>
  <div class="grid kpis">
@@ -85,10 +97,11 @@
  <div class="notice" style="margin-top:15px">Prototype limitation: this static PoV has no backend authentication, database, tenant isolation or cryptographic licensing. These are mandatory engineering gates before handling real customer data.</div>
  <div class="card"><h2 style="font-size:15px">Recent demo audit events</h2><div id="audit-list"></div></div>
 </section>
-<div class="footer">CEPHAS AI Solutions · PowerOps Revenue Assurance PoV · Synthetic demonstration build · Not for production use</div>
+<div class="footer">CEPHAS AI Solutions · PowerOps PoV · Synthetic demonstration build · Not for production use</div>
 </div></main></div>
 <div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
 <script src="./src/reconciliation.js"></script>
+<script src="./src/powerops-command-centre.js"></script>
 <script>
 const seed = [
 {id:"F-RA-1042",account:"AC-100284",area:"Ibadan North",type:"Billing gap",amount:4200000,confidence:91,status:"New",reason:"Valid meter reads exist for the period, but the billing extract contains no corresponding bill.",evidence:["Meter read batch MR-2025-10-IBN-004","Billing extract BL-2025-10: no matching account-period bill","Account tariff: R2 effective 2025-07-01"],recommend:"Verify account-to-meter mapping and billing-cycle exception before any bill correction.",team:"Revenue Assurance",age:"2 days"},
@@ -109,7 +122,7 @@ const fmt=n=>"₦"+(n/1000000).toFixed(2)+"m";
 const statusClass=s=>s==="Recovered"||s==="Approved"?"closed":s==="Rejected"?"high":"review";
 function log(msg){audit.unshift({time:new Date().toLocaleTimeString(),msg});renderAudit()}
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
-function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="controls")renderAudit()}
+function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="powerops"&&window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(page==="controls")renderAudit()}
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));
 function caseId(f){return "CASE-"+f.id.slice(-4)}
 function row(f){return `<tr><td><span class="caseid">${f.id}</span><br><span class="muted">${caseId(f)}</span></td><td><strong>${f.account}</strong><br><span class="muted">${f.area}</span></td><td>${f.type}</td><td class="amount">${fmt(f.amount)}</td><td>${f.confidence}%</td><td><span class="tag ${statusClass(f.status)}">${f.status}</span></td><td><button class="linkbtn" onclick="openFinding('${f.id}')">Inspect →</button></td></tr>`}
@@ -142,7 +155,7 @@ function runReconciliation(){
  log("Synthetic payment reconciliation run completed: "+result.summary.matchedBills+" matched billing records, "+result.summary.exceptionCount+" exceptions");
  toast("Synthetic reconciliation completed");
 }
-function renderInitial(){renderAll()}
+function renderInitial(){renderAll();if(window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render()}
 renderInitial();
 </script>
 </body></html>
