@@ -26,12 +26,12 @@ function createModelManifest(input){
  if(!input.datasetManifest||!/^[a-f0-9]{64}$/.test(input.datasetManifest.contentSha256||""))throw new Error("Valid dataset manifest is required");
  if(!Array.isArray(input.featureSchema)||input.featureSchema.length===0)throw new Error("Feature schema is required");
  const descriptor={schemaVersion:"1.0",modelVersion:input.modelVersion,algorithm:input.algorithm||"knn-novelty",featureVersion:input.featureVersion,featureSchema:input.featureSchema.slice(),datasetSha256:input.datasetManifest.contentSha256,datasetId:input.datasetManifest.datasetId,hyperparameters:input.hyperparameters||{},trainingCodeRevision:input.trainingCodeRevision||"unrecorded",createdAt:input.createdAt||"UNSPECIFIED"};
- return Object.freeze({...descriptor,artifactSha256:sha256(descriptor)});
+ return Object.freeze({...descriptor,manifestSha256:sha256(descriptor)});
 }
 function verifyModelManifest(manifest){
- if(!manifest||!/^[a-f0-9]{64}$/.test(manifest.artifactSha256||""))return {valid:false,reason:"Missing or malformed artifact SHA-256"};
- const {artifactSha256,...descriptor}=manifest;
- const valid=sha256(descriptor)===artifactSha256;
+ if(!manifest||!/^[a-f0-9]{64}$/.test(manifest.manifestSha256||""))return {valid:false,reason:"Missing or malformed artifact SHA-256"};
+ const {manifestSha256,...descriptor}=manifest;
+ const valid=sha256(descriptor)===manifestSha256;
  return {valid,reason:valid?"Manifest integrity verified":"Manifest integrity mismatch"};
 }
 function confusionMetrics(actual,predicted){
@@ -59,6 +59,6 @@ function assessPromotion({manifest,evaluation,driftPsi,policy=POLICY}){
 }
 function createRegistryRecord(manifest,decision){
  if(!verifyModelManifest(manifest).valid)throw new Error("Cannot register an invalid model manifest");
- return Object.freeze({registrySchema:"1.0",modelVersion:manifest.modelVersion,artifactSha256:manifest.artifactSha256,decision:decision.eligible?"eligible-for-independent-review":"blocked",reasons:decision.reasons.slice(),recordSha256:sha256({modelVersion:manifest.modelVersion,artifactSha256:manifest.artifactSha256,decision:decision.eligible,reasons:decision.reasons})});
+ return Object.freeze({registrySchema:"1.0",modelVersion:manifest.modelVersion,manifestSha256:manifest.manifestSha256,decision:decision.eligible?"eligible-for-independent-review":"blocked",reasons:decision.reasons.slice(),recordSha256:sha256({modelVersion:manifest.modelVersion,manifestSha256:manifest.manifestSha256,decision:decision.eligible,reasons:decision.reasons})});
 }
 module.exports={FEATURE_SCHEMA,POLICY,canonical,sha256,createDatasetManifest,createModelManifest,verifyModelManifest,confusionMetrics,populationStabilityIndex,assessPromotion,createRegistryRecord};
