@@ -52,8 +52,8 @@ function assessPromotion({manifest,evaluation,driftPsi,policy=POLICY}){
  if(!integrity.valid)reasons.push("Model manifest integrity check failed");
  if(!manifest||manifest.featureSchema?.join("|")!==FEATURE_SCHEMA.join("|"))reasons.push("Feature schema does not match the approved schema");
  if(!evaluation||evaluation.cases<policy.minimumEvaluationCases)reasons.push("Evaluation sample is below the minimum case count");
- if(!evaluation||evaluation.precision<policy.minimumPrecision)reasons.push("Precision is below the release threshold");
- if(!evaluation||evaluation.recall<policy.minimumRecall)reasons.push("Recall is below the release threshold");
+ if(!evaluation||!Number.isFinite(evaluation.precision)||evaluation.precision<policy.minimumPrecision)reasons.push("Precision is missing or below the release threshold");
+ if(!evaluation||!Number.isFinite(evaluation.recall)||evaluation.recall<policy.minimumRecall)reasons.push("Recall is missing or below the release threshold");
  if(!Number.isFinite(driftPsi)||driftPsi>policy.maximumPsi)reasons.push("Feature drift is missing or exceeds the release threshold");
  return {eligible:reasons.length===0,status:reasons.length===0?"Eligible for independent release review":"Blocked",reasons,policy:{...policy},note:"Eligibility is not automatic deployment approval; independent review, security approval and customer validation remain separate controls."};
 }
