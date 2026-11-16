@@ -58,7 +58,8 @@ test("missing signatures, wrong publisher keys and wrong key types fail closed",
 test("dataset schema, labels, thresholds and lineage requirements reject invalid training input",()=>{
  const rows=dataset(),manifest=gov.createDatasetManifest(rows,{datasetId:"SYN",sourceType:"synthetic"});
  assert.throws(()=>pipeline.trainModel(rows,{datasetSha256:"bad"}),/SHA-256/);
- assert.throws(()=>pipeline.trainModel(rows,{datasetSha256:manifest.contentSha256,threshold:2,epochs:0}),/epoch count/);
+ assert.throws(()=>pipeline.trainModel(rows,{datasetSha256:manifest.contentSha256,epochs:0}),/epoch count/);
+ assert.throws(()=>pipeline.trainModel(rows,{datasetSha256:manifest.contentSha256,threshold:2}),/classification threshold/);
  const invalid=rows.slice();invalid[0]={...invalid[0],features:{...invalid[0].features,mean_load_pct:NaN}};
  assert.throws(()=>pipeline.splitDataset(invalid),/Missing numeric feature/);
 });
