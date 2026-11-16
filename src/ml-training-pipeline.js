@@ -55,7 +55,7 @@ function serializeModelArtifact(model){
 function signModelArtifact(bytes,privateKey){
  assert(Buffer.isBuffer(bytes),"Artifact bytes must be a Buffer");
  assert(privateKey,"Ed25519 private key is required");
- const key=crypto.createPrivateKey(privateKey);
+ const key=privateKey&&privateKey.type==="private"?privateKey:crypto.createPrivateKey(privateKey);
  assert(key.asymmetricKeyType==="ed25519","Signing key must be Ed25519");
  return crypto.sign(null,bytes,key).toString("base64");
 }
@@ -66,7 +66,7 @@ function verifyArtifactBeforeLoad({bytes,expectedSha256,signature,publicKey,dese
  if(!/^[a-f0-9]{64}$/.test(expectedSha256||"")||actual!==expectedSha256)throw new Error("Artifact SHA-256 mismatch; refusing to load");
  if(typeof signature!=="string"||!signature)throw new Error("Artifact signature is missing; refusing to load");
  assert(publicKey,"Trusted publisher public key is required");
- const key=crypto.createPublicKey(publicKey);
+ const key=publicKey&&publicKey.type==="public"?publicKey:crypto.createPublicKey(publicKey);
  if(key.asymmetricKeyType!=="ed25519")throw new Error("Trusted publisher key must be Ed25519");
  let valid=false;
  try{valid=crypto.verify(null,bytes,key,Buffer.from(signature,"base64"));}catch(_){valid=false;}
