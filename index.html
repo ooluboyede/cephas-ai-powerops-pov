@@ -15,6 +15,7 @@
  <div class="brand">CEPHAS <span>AI</span></div><div class="subbrand">UTILITY OPERATIONS INTELLIGENCE</div>
  <div class="navlabel">PowerOps platform</div><nav class="nav">
  <button class="active" data-page="powerops">◫ &nbsp; Command centre</button>
+ <button data-page="network">⌁ &nbsp; Network operations</button>
  </nav>
  <div class="navlabel">Revenue Assurance module</div><nav class="nav">
  <button data-page="overview">◫ &nbsp; Revenue overview</button>
@@ -40,6 +41,23 @@
  <div class="card"><div class="sectionhead"><h2>Operational attention queue</h2><small>Synthetic signals · human review</small></div><div id="powerops-alerts"></div></div></div>
  <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Feeder performance snapshot</h2><small>Illustrative synthetic telemetry</small></div><div class="tablewrap"><table><thead><tr><th>Feeder</th><th>Service area</th><th>Availability</th><th>Load</th><th>Attention</th></tr></thead><tbody id="powerops-feeders"></tbody></table></div></div>
  <div class="footer">CEPHAS PowerOps · Overall utility operations PoV · Synthetic demonstration only</div>
+</section>
+<section class="page" id="page-network">
+ <div class="heading"><div><div class="eyebrow">Network operations intelligence</div><div class="h1">Feeder & transformer performance</div><div class="desc">Explore synthetic feeder loading, availability and transformer condition indicators. Signals are prioritisation aids, not operating instructions.</div></div><div class="actions"><span class="pill">IBEDC PoV · SYNTHETIC</span><button class="btn" onclick="window.PowerOpsNetwork.render()">↻ Refresh view</button></div></div>
+ <div class="notice"><strong>Advisory-only:</strong> This module uses synthetic telemetry. It is not connected to SCADA, ADMS or DMS and cannot operate breakers, change taps, switch feeders, dispatch crews or issue control commands. All proposed follow-up requires authorised utility personnel.</div>
+ <div class="grid kpis" id="network-kpis"></div>
+ <div class="grid twocol">
+  <div class="card"><div class="sectionhead"><h2>Feeder loading profile</h2><small>Illustrative load percentage</small></div><div id="network-load-profile"></div></div>
+  <div class="card"><div class="sectionhead"><h2>Network attention queue</h2><small>Human review required</small></div><div id="network-alerts"></div></div>
+ </div>
+ <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Feeder register</h2><small>Filter by service area and attention status</small></div>
+ <div class="filters"><input id="network-search" placeholder="Search feeder or service area…" oninput="window.PowerOpsNetwork.renderTable()"><select id="network-status" onchange="window.PowerOpsNetwork.renderTable()"><option value="">All attention states</option><option>Normal</option><option>Monitor</option><option>Operator review</option></select></div>
+ <div class="tablewrap"><table><thead><tr><th>Feeder</th><th>Service area</th><th>Availability</th><th>Peak load</th><th>Voltage deviation</th><th>Attention</th><th></th></tr></thead><tbody id="network-feeders"></tbody></table></div></div>
+ <div class="grid twocol" style="margin-top:15px">
+  <div class="card"><div class="sectionhead"><h2>Transformer condition snapshot</h2><small>Synthetic asset indicators</small></div><div class="tablewrap"><table><thead><tr><th>Asset</th><th>Area</th><th>Load</th><th>Condition index</th><th>Review</th></tr></thead><tbody id="network-transformers"></tbody></table></div></div>
+  <div class="card"><div class="sectionhead"><h2>Selected network asset</h2><small>Evidence and suggested review</small></div><div id="network-detail" class="muted">Select a feeder or transformer to inspect its synthetic evidence and recommended human follow-up.</div></div>
+ </div>
+ <div class="footer">CEPHAS PowerOps · Network Operations Intelligence · Synthetic demonstration only</div>
 </section>
 <section class="page" id="page-overview">
  <div class="heading"><div><div class="eyebrow">Revenue assurance command centre</div><div class="h1">Revenue intelligence overview</div><div class="desc">Identify revenue gaps, investigate evidence and track approved recovery. All figures below are illustrative synthetic data.</div></div><div class="actions"><button class="btn" onclick="resetDemo()">↻ Reset demo</button><button class="btn primary" onclick="navigate('findings')">Review findings →</button></div></div>
@@ -102,6 +120,7 @@
 <div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
 <script src="./src/reconciliation.js"></script>
 <script src="./src/powerops-command-centre.js"></script>
+<script src="./src/network-operations.js"></script>
 <script>
 const seed = [
 {id:"F-RA-1042",account:"AC-100284",area:"Ibadan North",type:"Billing gap",amount:4200000,confidence:91,status:"New",reason:"Valid meter reads exist for the period, but the billing extract contains no corresponding bill.",evidence:["Meter read batch MR-2025-10-IBN-004","Billing extract BL-2025-10: no matching account-period bill","Account tariff: R2 effective 2025-07-01"],recommend:"Verify account-to-meter mapping and billing-cycle exception before any bill correction.",team:"Revenue Assurance",age:"2 days"},
@@ -122,7 +141,7 @@ const fmt=n=>"₦"+(n/1000000).toFixed(2)+"m";
 const statusClass=s=>s==="Recovered"||s==="Approved"?"closed":s==="Rejected"?"high":"review";
 function log(msg){audit.unshift({time:new Date().toLocaleTimeString(),msg});renderAudit()}
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
-function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="powerops"&&window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(page==="controls")renderAudit()}
+function navigate(page){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+page).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("crumb").textContent=page[0].toUpperCase()+page.slice(1);if(page==="findings")renderFindings();if(page==="cases")renderCases();if(page==="overview")renderOverview();if(page==="powerops"&&window.PowerOpsCommandCentre)window.PowerOpsCommandCentre.render();if(page==="network"&&window.PowerOpsNetwork)window.PowerOpsNetwork.render();if(page==="controls")renderAudit()}
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));
 function caseId(f){return "CASE-"+f.id.slice(-4)}
 function row(f){return `<tr><td><span class="caseid">${f.id}</span><br><span class="muted">${caseId(f)}</span></td><td><strong>${f.account}</strong><br><span class="muted">${f.area}</span></td><td>${f.type}</td><td class="amount">${fmt(f.amount)}</td><td>${f.confidence}%</td><td><span class="tag ${statusClass(f.status)}">${f.status}</span></td><td><button class="linkbtn" onclick="openFinding('${f.id}')">Inspect →</button></td></tr>`}
