@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "registry_mode": "in-memory-reference-only",
+  "promotion_requirements": {
+    "gate_0_5_3_eligibility": true,
+    "gate_0_5_4_artifact_verification_receipt": true,
+    "independent_approvals": ["model-risk", "security", "operations-owner"],
+    "creator_may_approve": false,
+    "distinct_approver_identity_per_role": true,
+    "explicit_rejection_blocks_release": true
+  },
+  "rollback": {
+    "target_must_be_previously_released": true,
+    "requires_reason": true,
+    "requires_post_rollback_review": true,
+    "performs_live_deployment": false
+  },
+  "audit": {
+    "event_hash": "SHA-256",
+    "hash_chain": true,
+    "persistent_worm_storage": false
+  },
+  "limitations": [
+    "Synthetic proof-of-value only",
+    "In-memory state is lost on process restart",
+    "Caller-supplied identities are not authenticated",
+    "Artifact verification receipts must originate from the trusted verifier integration",
+    "No production deployment or utility control"
+  ]
+}
