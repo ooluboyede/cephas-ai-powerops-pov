@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "model_version": "0.5.2-knn-novelty-1",
+  "status": "research-demo-blocked-from-promotion",
+  "manifest_integrity": "SHA-256 covers canonical manifest metadata; no executable model binary is stored or hashed by this PoV",
+  "feature_version": "0.5.2-feature-pipeline",
+  "feature_schema": [
+    "availability_pct",
+    "mean_load_pct",
+    "load_stddev_pct",
+    "mean_voltage_deviation_pct",
+    "voltage_load_interaction",
+    "high_load_interval_ratio"
+  ],
+  "training_dataset": {
+    "dataset_id": "POWEROPS-SYNTHETIC-REFERENCE-PROFILES-V1",
+    "source_type": "synthetic",
+    "record_count": 6,
+    "customer_data": false
+  },
+  "evaluation": {
+    "labelled_cases": 4,
+    "precision": "see deterministic fixture evaluation",
+    "recall": "see deterministic fixture evaluation",
+    "promotion_eligible": false,
+    "reason": "Below the minimum 100 labelled evaluation cases; synthetic-only benchmark"
+  },
+  "governance_policy": {
+    "minimum_evaluation_cases": 100,
+    "minimum_precision": 0.9,
+    "minimum_recall": 0.9,
+    "maximum_psi": 0.2
+  },
+  "limitations": [
+    "Synthetic reference profiles only",
+    "Novelty score is not a calibrated fault probability",
+    "Not field validated or approved for production deployment"
+  ]
+}
