@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
 test('PoV shell and all primary workspaces are present', () => {
   for (const id of ['overview', 'findings', 'cases', 'reconciliation', 'reports', 'data', 'controls']) {
