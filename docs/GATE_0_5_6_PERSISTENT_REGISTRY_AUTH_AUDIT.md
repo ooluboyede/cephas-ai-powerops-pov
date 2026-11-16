@@ -41,8 +41,9 @@ The audit chain is tamper-evident and the database trigger rejects row updates a
 
 ## Integration contract / limitations
 - The artifact verifier is injected by the trusted server and must verify the Gate 0.5.4 artifact's exact bytes, SHA-256, Ed25519 signature and trusted publisher key before returning a verification receipt. The promotion assessor is injected by the trusted server and must resolve the evaluation reference from trusted, tenant-scoped evaluation records and apply the Gate 0.5.3 promotion policy. Do not wire browser/client-provided receipts or eligibility decisions directly to these functions.
-- This repository supplies a PostgreSQL-compatible adapter and migration; it does not yet include a production HTTP server, upstream identity-provider integration, secret-manager integration, a provisioned PostgreSQL instance or live customer deployment.
-- Unit/contract tests use a fake PostgreSQL pool. A real PostgreSQL migration/RLS integration run, restart/recovery test against a provisioned database, backup/restore drill, independent security review and customer-hosted deployment validation remain acceptance items.
+- This repository supplies a PostgreSQL-compatible adapter and migration; it does not yet include a production HTTP server, upstream identity-provider integration, secret-manager integration, a provisioned production PostgreSQL instance or live customer deployment.
+- PostgreSQL 16 CI acceptance has passed for migration/RLS isolation, concurrency (three distinct approval roles and competing release activations with exactly one active release), audit-chain verification, append-only enforcement, application-pool reconnect, actual PostgreSQL service-container restart, and custom-format backup/restore into a separate database. The recovery test confirmed matching candidate/release/audit counts (`1:1:4`) before restart, after restart and after restore, and confirmed forced RLS on all three tables plus the audit trigger in the restored database. CI run: [#43907691715](https://github.com/ooluboyede/cephas-ai-powerops-pov/actions/runs/43907691715), commit `339e6bedce6b02f4ad9f7995c74e55a653726e8c`.
+- The CI recovery drill is a controlled test, not a production disaster-recovery certification. Production still requires restore validation with the actual deployment topology, backup encryption/retention, recovery-point and recovery-time objectives, operational runbooks, monitoring and restore-chain verification.
 - The Gate 0.5.5 in-memory registry remains as a prior reference/test implementation; the new PostgreSQL adapter is the persistence path introduced by this gate.
 - Synthetic data only. No IBEDC telemetry or customer data. No automatic deployment to live models and no SCADA/ADMS/DMS, switching, dispatch, meter, billing or financial commands.
 
@@ -57,5 +58,10 @@ The audit chain is tamper-evident and the database trigger rejects row updates a
 - [x] Unit/contract tests authored.
 - [x] GitHub Actions unit + real PostgreSQL integration result for this revision (PostgreSQL 16; 56 tests total, 56 passed).
 - [x] Real PostgreSQL migration and RLS integration test passed in CI against PostgreSQL 16 using a non-owner, non-superuser, non-BYPASSRLS runtime role.
-- [ ] Restart, backup/restore and concurrency test against PostgreSQL.
+- [x] Concurrent approvals and competing release activations verified; exactly one release activation succeeded and one active release remained.
+- [x] Application-pool reconnect verified with PostgreSQL persistence intact.
+- [x] Actual PostgreSQL service-container restart verified with registry row counts preserved.
+- [x] Custom-format PostgreSQL backup and restore verified; restored row counts, forced RLS and audit trigger confirmed.
 - [ ] Independent security review and production key custody review.
+- [ ] Production identity-provider integration, service wiring and customer-hosted deployment validation.
+- [ ] Production disaster-recovery plan, backup encryption/retention, RPO/RTO and operational restore drill.
