@@ -56,13 +56,15 @@ test("blocked model eligibility prevents release despite complete approvals",()=
  assert.throws(()=>registry.promoteCandidate({candidateId:"blocked",releaseId:"blocked-release",actorId:"release-service"}),/eligibility is blocked/);
 });
 test("rollback only selects an existing prior release and emits review-required event",()=>{
- const {registry,candidateId}=setup();approveAll(registry,candidateId);
+ const {registry,candidateId,manifest}=setup();approveAll(registry,candidateId);
  registry.promoteCandidate({candidateId,releaseId:"release-1",actorId:"release-service"});
- const second=setup();approveAll(second.registry,second.candidateId);
- second.registry.promoteCandidate({candidateId:second.candidateId,releaseId:"release-2",actorId:"release-service"});
- const result=second.registry.rollback({targetReleaseId:"release-1",actorId:"operator-1",reason:"Post-release monitoring detected unacceptable drift"});
+ const secondManifest=gov.createModelManifest({modelVersion:"0.5.5-test-model-2",featureVersion:"0.5.2-feature-pipeline",featureSchema:gov.FEATURE_SCHEMA,datasetManifest:gov.createDatasetManifest([{id:"x",value:1}],{datasetId:"SECOND",sourceType:"synthetic"})});
+ registry.registerCandidate({candidateId:"candidate-002",manifest:secondManifest,artifactSha256:"c".repeat(64),createdBy:"trainer-2",eligibility:{eligible:true,reasons:[]},artifactVerification:{verified:true,artifactSha256:"c".repeat(64),publisherKeyId:"publisher-test-key",verifierVersion:"0.5.4-test-verifier"}});
+ approveAll(registry,"candidate-002");
+ registry.promoteCandidate({candidateId:"candidate-002",releaseId:"release-2",actorId:"release-service"});
+ const result=registry.rollback({targetReleaseId:"release-1",actorId:"operator-1",reason:"Post-release monitoring detected unacceptable drift"});
  assert.deepEqual(result,{activeReleaseId:"release-1",rolledBackFrom:"release-2",rolledBackTo:"release-1",requiresPostRollbackReview:true});
- assert.throws(()=>second.registry.rollback({targetReleaseId:"unknown",actorId:"operator-1",reason:"x"}),/previously approved release/);
+ assert.throws(()=>registry.rollback({targetReleaseId:"unknown",actorId:"operator-1",reason:"x"}),/previously approved release/);
 });
 test("append-only event hash chain verifies and detects tampering",()=>{
  const {registry,candidateId}=setup();
