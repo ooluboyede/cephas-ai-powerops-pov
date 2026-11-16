@@ -66,6 +66,6 @@ jobs:
           test "$before" = "$restored"
           forced_rls="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_class WHERE relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_audit_events') AND relrowsecurity AND relforcerowsecurity")"
           test "$forced_rls" = "3"
-          audit_trigger="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_trigger WHERE tgname='powerops_ml_audit_append_only' AND NOT tgisinternal")"
+          audit_trigger="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_trigger WHERE tgname='powerops_ml_audit_no_update' AND NOT tgisinternal")"
           test "$audit_trigger" = "1"
           echo "PostgreSQL restart and backup/restore checks passed."
