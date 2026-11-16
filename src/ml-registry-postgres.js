@@ -7,7 +7,7 @@ function digest(value) { return crypto.createHash("sha256").update(canonical(val
 function requiredText(value, name) { if (typeof value !== "string" || !value.trim()) throw new Error(name + " is required"); }
 function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promotionAssessor }) {
   if (!pool || typeof pool.connect !== "function") throw new Error("A PostgreSQL-compatible pool is required");
-  if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function") throw new Error("A server token authority is required");
+  if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function" || typeof tokenAuthority.authorize !== "function") throw new Error("A server token authority with authenticate/authorize methods is required");
   if (artifactVerifier !== undefined && typeof artifactVerifier !== "function") throw new Error("artifactVerifier must be a trusted server-side verification function");
   if (promotionAssessor !== undefined && typeof promotionAssessor !== "function") throw new Error("promotionAssessor must be a trusted server-side evaluation resolver");
 
