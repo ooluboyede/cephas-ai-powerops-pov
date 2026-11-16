@@ -20,7 +20,7 @@ test("real PostgreSQL migration enforces tenant + business-unit RLS and append-o
     await admin.query("DO $role$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'powerops_app') THEN CREATE ROLE powerops_app LOGIN PASSWORD 'powerops_app_test_password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS; END IF; END $role$;");
     await admin.query("ALTER ROLE powerops_app WITH LOGIN PASSWORD 'powerops_app_test_password' NOSUPERUSER NOBYPASSRLS");
     await admin.query("GRANT USAGE ON SCHEMA public TO powerops_app");
-    await admin.query("GRANT SELECT, INSERT, UPDATE ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app");
+    await admin.query("GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app");
     const roleCheck = await admin.query("SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname='powerops_app'");
     assert.equal(roleCheck.rows[0].rolsuper, false);
     assert.equal(roleCheck.rows[0].rolbypassrls, false);
@@ -83,9 +83,13 @@ test("real PostgreSQL migration enforces tenant + business-unit RLS and append-o
     try {
       await audit.query("BEGIN");
       await audit.query("SELECT set_config('app.tenant_id',$1,true), set_config('app.business_unit_id',$2,true)", ["tenant-a", "unit-1"]);
+      await audit.query("SAVEPOINT before_update");
       await assert.rejects(() => audit.query("UPDATE powerops_ml_audit_events SET event_type='tampered' WHERE sequence=1"), /append-only/i);
+      await audit.query("ROLLBACK TO SAVEPOINT before_update");
+      await audit.query("SAVEPOINT before_delete");
       await assert.rejects(() => audit.query("DELETE FROM powerops_ml_audit_events WHERE sequence=1"), /append-only/i);
-      await audit.query("ROLLBACK");
+      await audit.query("ROLLBACK TO SAVEPOINT before_delete");
+      await audit.query("COMMIT");
     } finally {
       audit.release();
     }
