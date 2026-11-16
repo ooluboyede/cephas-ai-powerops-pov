@@ -26,6 +26,12 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
     }
   }
 
+  async function lockScope(client, identity) {
+    // Serialize all mutations in one tenant/business-unit scope, including the first audit event.
+    const scopeKey = identity.tenantId + ":" + identity.businessUnitId;
+    await client.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [scopeKey]);
+  }
+
   async function appendAudit(client, identity, eventType, payload, actorId) {
     const latest = await client.query(
       "SELECT sequence, event_hash FROM powerops_ml_audit_events WHERE tenant_id = $1 AND business_unit_id = $2 ORDER BY sequence DESC LIMIT 1 FOR UPDATE",
@@ -49,6 +55,7 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
     if (!/^[a-f0-9]{64}$/.test(input.artifactSha256 || "")) throw new Error("Artifact SHA-256 is required");
     if (input.artifactVerification?.verified !== true || input.artifactVerification.artifactSha256 !== input.artifactSha256) throw new Error("Verified artifact receipt is required");
     return transact(token, "candidate:register", async (client, identity) => {
+      await lockScope(client, identity);
       const candidate = {
         candidateId: input.candidateId, modelVersion: input.manifest.modelVersion,
         manifestSha256: input.manifest.manifestSha256, artifactSha256: input.artifactSha256,
@@ -56,10 +63,18 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
         artifactVerification: { verified: true, publisherKeyId: input.artifactVerification.publisherKeyId, verifierVersion: input.artifactVerification.verifierVersion },
         createdBy: identity.subject, status: "candidate", approvals: []
       };
-      await client.query(
-        "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8)",
+      const inserted = await client.query(
+        "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8) ON CONFLICT (tenant_id,business_unit_id,candidate_id) DO NOTHING RETURNING candidate_id",
         [identity.tenantId, identity.businessUnitId, candidate.candidateId, candidate.modelVersion, candidate.manifestSha256, candidate.artifactSha256, JSON.stringify(candidate), identity.subject]
       );
+      if (!inserted.rows.length) {
+        const existing = await client.query(
+          "SELECT candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
+          [identity.tenantId, identity.businessUnitId, candidate.candidateId]
+        );
+        if (existing.rows[0]?.candidate_data && digest(existing.rows[0].candidate_data) === digest(candidate)) return existing.rows[0].candidate_data;
+        throw new Error("Candidate ID already exists with different content");
+      }
       await appendAudit(client, identity, "candidate-registered", { candidateId: candidate.candidateId, manifestSha256: candidate.manifestSha256, artifactSha256: candidate.artifactSha256 }, identity.subject);
       return candidate;
     });
@@ -70,6 +85,7 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
     if (!REQUIRED_APPROVALS.includes(role)) throw new Error("Approval role is not part of the release policy");
     if (!["approve", "reject"].includes(decision)) throw new Error("Invalid approval decision");
     return transact(token, "approval:" + role, async (client, identity) => {
+      await lockScope(client, identity);
       const found = await client.query(
         "SELECT candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
         [identity.tenantId, identity.businessUnitId, candidateId]
@@ -78,6 +94,11 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
       const candidate = found.rows[0].candidate_data;
       if (candidate.status !== "candidate") throw new Error("Candidate is not open for approval");
       if (candidate.createdBy === identity.subject) throw new Error("Model creator cannot approve their own candidate");
+      const priorId = candidate.approvals.find(a => a.approvalId === approvalId);
+      if (priorId) {
+        if (priorId.approverId === identity.subject && priorId.role === role && priorId.decision === decision && priorId.reason === reason) return candidate;
+        throw new Error("Approval ID already exists with different content");
+      }
       if (candidate.approvals.some(a => a.approverId === identity.subject)) throw new Error("Approvers must be distinct");
       if (candidate.approvals.some(a => a.role === role)) throw new Error("An approval decision already exists for this role");
       const approval = { approvalId, approverId: identity.subject, role, decision, reason, recordedAt: new Date().toISOString() };
@@ -95,6 +116,16 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
   async function activateRelease(token, { candidateId, releaseId }) {
     requiredText(candidateId, "candidateId"); requiredText(releaseId, "releaseId");
     return transact(token, "release:activate", async (client, identity) => {
+      await lockScope(client, identity);
+      const existingRelease = await client.query(
+        "SELECT release_data, is_active FROM powerops_ml_model_releases WHERE tenant_id=$1 AND business_unit_id=$2 AND release_id=$3 FOR UPDATE",
+        [identity.tenantId, identity.businessUnitId, releaseId]
+      );
+      if (existingRelease.rows.length) {
+        const prior = existingRelease.rows[0].release_data;
+        if (prior.candidateId === candidateId && existingRelease.rows[0].is_active === true) return prior;
+        throw new Error("Release ID already exists with different content or is no longer active");
+      }
       const found = await client.query(
         "SELECT candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
         [identity.tenantId, identity.businessUnitId, candidateId]
@@ -127,6 +158,7 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
   async function rollback(token, { targetReleaseId, reason }) {
     requiredText(targetReleaseId, "targetReleaseId"); requiredText(reason, "reason");
     return transact(token, "release:rollback", async (client, identity) => {
+      await lockScope(client, identity);
       const target = await client.query(
         "SELECT release_id, release_data FROM powerops_ml_model_releases WHERE tenant_id=$1 AND business_unit_id=$2 AND release_id=$3 FOR UPDATE",
         [identity.tenantId, identity.businessUnitId, targetReleaseId]
