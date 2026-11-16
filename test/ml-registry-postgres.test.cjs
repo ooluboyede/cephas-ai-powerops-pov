@@ -89,8 +89,11 @@ test("candidate registration trusts only the injected server-side artifact verif
 test("registration fails closed if no trusted artifact verifier is configured", async () => {
   const { registry, authority, pool } = setup();
   const token = authority.issueToken("trainer");
+  const { createDatasetManifest, createModelManifest, FEATURE_SCHEMA } = require("../src/ml-governance.js");
+  const dataset = createDatasetManifest([{ id: "synthetic-1" }], { datasetId: "no-verifier", sourceType: "synthetic" });
+  const manifest = createModelManifest({ modelVersion: "no-verifier", featureVersion: "v1", featureSchema: FEATURE_SCHEMA, datasetManifest: dataset });
   await assert.rejects(() => registry.registerCandidate(token, {
-    candidateId: "candidate-a", manifest: { manifestSha256: "a".repeat(64) },
+    candidateId: "candidate-a", manifest,
     artifactSha256: "b".repeat(64), artifactReceipt: { signature: "caller-claimed" }
   }), /verifier is not configured/);
   assert.equal(pool.calls.length, 0);
