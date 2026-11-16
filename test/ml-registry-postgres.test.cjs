@@ -69,16 +69,18 @@ test("candidate registration trusts only the injected server-side artifact verif
     artifactVerifier: async (receipt, context) => {
       verifierContext = { receipt, context };
       return { verified: true, artifactSha256: context.artifactSha256, publisherKeyId: "trusted-key-01", verifierVersion: "gate-0.5.4-verifier" };
-    }
+    },
+    promotionAssessor: async context => ({ eligible: false, reasons: ["Evaluation has not met the Gate 0.5.3 threshold"], evaluatedForTenant: context.tenantId })
   });
   const artifactSha256 = "a".repeat(64);
   const result = await registry.registerCandidate(authority.issueToken("trainer"), {
     candidateId: "candidate-a", createdBy: "untrusted-client-value", manifest,
     artifactSha256, artifactReceipt: { signature: "opaque-signed-receipt" },
-    eligibility: { eligible: false, reasons: ["not yet evaluated"] }
+    eligibility: { eligible: true, reasons: [] }
   });
   assert.equal(result.createdBy, "trainer");
   assert.equal(result.artifactVerification.publisherKeyId, "trusted-key-01");
+  assert.equal(result.eligibility.eligible, false, "client eligibility claim must be ignored");
   assert.equal(verifierContext.context.tenantId, "tenant-x");
   assert.equal(verifierContext.receipt.signature, "opaque-signed-receipt");
   assert.ok(pool.calls.some(x => x.sql.includes("pg_advisory_xact_lock")));
