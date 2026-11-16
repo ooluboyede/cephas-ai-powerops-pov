@@ -56,6 +56,6 @@ The audit chain is tamper-evident and the database trigger rejects row updates a
 - [x] Audit update/delete trigger and chain verifier.
 - [x] Unit/contract tests authored.
 - [ ] GitHub Actions result for this gate.
-- [ ] Real PostgreSQL migration and RLS integration test.
+- [x] Real PostgreSQL migration and RLS integration test added to CI (pending first successful run on this revision).
 - [ ] Restart, backup/restore and concurrency test against PostgreSQL.
 - [ ] Independent security review and production key custody review.
