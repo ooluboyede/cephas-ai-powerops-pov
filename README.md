@@ -6,44 +6,29 @@
 **Deployment boundary:** Separate application and repository from the CEPHAS PowerOps enterprise platform
 
 ## Product identity and scope
-
-This repository is the standalone **PowerOps PoV**, not a Revenue Assurance-only product. It is the demonstration environment for the broader PowerOps platform. Revenue Assurance is the first implemented functional workstream in this repository and is one module within PowerOps.
-
-The PoV should evolve as a coherent PowerOps experience with modular capabilities. New modules must be added under the PowerOps product identity, with their own scope, evidence, synthetic fixtures, tests and acceptance gates. Do not rename the overall product or repository to Revenue Assurance.
+This repository is the overall **PowerOps PoV**, not a Revenue Assurance-only product. Revenue Assurance is one module/workstream within PowerOps and remains distinct from the separate Revenue Assurance PoV product/repository. New utility modules must preserve the overall PowerOps identity and their own evidence, synthetic fixtures, tests and acceptance gates.
 
 ## Current implementation
+The browser application opens on the PowerOps command centre. Network Operations has synthetic feeder/transformer intelligence, feature engineering, exploratory ML alerts and human-review triage. Gate 0.5.3 adds dataset/model governance, SHA-256 lineage, drift checks and fail-closed promotion eligibility. Gate 0.5.4 adds deterministic train/validation/test splits, train-only standardisation, a reproducible logistic-regression baseline, held-out evaluation, model binary SHA-256 and Ed25519 publisher verification before deserialization. Revenue Assurance remains a separate initial functional module slice with deterministic synthetic reconciliation.
 
-The browser application opens on the PowerOps command centre, with synthetic cross-utility KPIs, an operational attention queue, feeder snapshot and a module register. Gate 0.5.1 adds a dedicated Network Operations workspace with synthetic feeder and transformer performance indicators, evidence inspection and human-review recommendations. Gate 0.5.2 adds a versioned feature-engineering pipeline, exploratory k-nearest-neighbour novelty scoring, explainable network alerts, a small synthetic benchmark and simulated human triage. Gate 0.5.3 adds dataset/model SHA-256 manifests, feature-schema lineage, evaluation metrics, PSI drift monitoring and fail-closed release eligibility checks. The current model remains research/demo only and blocked from promotion because its synthetic benchmark has only four labelled cases. These ML results are not calibrated probabilities or field-validated performance. Revenue Assurance remains a separate initial functional module slice, with its own findings, investigation, reconciliation, reports, data quality and governance views.
-
-This is an honest implementation boundary: the repository is the PowerOps PoV, while Network Operations and Revenue Assurance are the currently implemented functional module slices at different levels of completeness. Other PowerOps capabilities must be recorded as planned until implemented and validated.
+All model outputs remain research/demo only, not field-validated performance or calibrated probabilities. Other PowerOps capabilities remain planned until implemented and validated.
 
 ## Run locally
+Open `index.html` in a modern browser. Alternatively run `python -m http.server 4173` and open `http://localhost:4173`.
 
-Open `index.html` in a modern browser. No backend, customer credentials, database, licence authority, or live utility connector is required.
-
-For a local static server:
-
+## Test
+Node.js 20+ is required. Run:
 ```bash
-python -m http.server 4173
+npm test
 ```
 
-Then open `http://localhost:4173`.
-
-## Data and operational safety boundary
-
-- All seeded records and displayed outcomes are synthetic.
-- No IBEDC data, customer records, production secrets, or customer credentials are included.
-- Findings are investigation leads, not proof of theft, fraud, or customer liability.
-- Exposure, approved recovery, and cash received are separate measures.
-- The current browser interactions are demonstrations, not authenticated production controls.
-- The activity list is a simulated demo log, not a tamper-evident audit service.
-- No SCADA/ADMS/DMS commands, switching, dispatch, meter commands, billing adjustments, refunds, or journal postings are performed.
-- Do not connect this PoV to the enterprise PowerOps database or backend as a shortcut.
-
-## Repository separation
-
-This repository is independently built and tested. It must not import enterprise application code, credentials, licence signing keys, database migrations, or runtime services. Any future customer-data evaluation requires written customer approval, a separately isolated data store, a documented retention/deletion plan, and security review.
+## Safety and data boundary
+- Synthetic records only; no IBEDC telemetry or customer data.
+- Customer data requires written approval, isolated storage and a retention/deletion plan.
+- Findings are advisory investigation leads, not proof of theft, fraud or customer liability.
+- No SCADA/ADMS/DMS commands, switching, dispatch, meter commands, billing adjustments, refunds or journal postings.
+- No private signing keys or customer credentials belong in this repository.
+- Ed25519 authenticity does not prove model quality or operational safety.
 
 ## Gate status
-
-Gate 0.4.1 establishes repository separation and an independent baseline CI pipeline. Gate 0.4.2 implements deterministic synthetic reconciliation for the Revenue Assurance module. Gate 0.5.0 adds the overall PowerOps command-centre foundation and module register. Gate 0.5.1 adds the Network Operations workspace and synthetic feeder/transformer intelligence. Gate 0.5.2 adds the Network Alert Intelligence, Feature Engineering and ML Foundation. Gate 0.5.3 adds CEPHAS ML model governance and intelligence reliability controls. Other listed utility modules remain planned, not implemented. No gate certifies the complete PowerOps PoV as production-ready. See `docs/POWEROPS_POV_SCOPE.md` and the gate records.
+Gate 0.4.1 establishes the independent repository. Gate 0.4.2 implements deterministic synthetic Revenue Assurance reconciliation. Gate 0.5.0 establishes the PowerOps command centre. Gate 0.5.1 adds Network Operations. Gate 0.5.2 adds network alert intelligence, feature engineering and exploratory ML. Gate 0.5.3 adds model governance and reliability controls. Gate 0.5.4 adds reproducible training and model-artifact security. No gate certifies the overall PoV as production-ready.
