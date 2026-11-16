@@ -24,7 +24,7 @@ test('no enterprise connection configuration is embedded', () => {
 
 test('human decision and financial-action guardrails are visible', () => {
   assert.match(html, /No autonomous disconnection/);
-  assert.match(html, /No automatic bill adjustment/);
+  assert.match(html, /No autonomous bill adjustment/);
   assert.match(html, /Maker-checker/);
 });
 
