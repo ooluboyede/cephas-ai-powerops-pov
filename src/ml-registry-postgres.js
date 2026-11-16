@@ -1,6 +1,6 @@
 "use strict";
 const crypto = require("node:crypto");
-const { canonical } = require("./ml-governance.js");
+const { canonical, verifyModelManifest } = require("./ml-governance.js");
 
 const REQUIRED_APPROVALS = Object.freeze(["model-risk", "security", "operations-owner"]);
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
@@ -51,7 +51,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
 
   async function registerCandidate(token, input) {
     requiredText(input?.candidateId, "candidateId");
-    if (!input.manifest || !/^[a-f0-9]{64}$/.test(input.manifest.manifestSha256 || "")) throw new Error("A verified model manifest is required");
+    if (!input.manifest || !verifyModelManifest(input.manifest).valid) throw new Error("A cryptographically valid model manifest is required");
     if (!/^[a-f0-9]{64}$/.test(input.artifactSha256 || "")) throw new Error("Artifact SHA-256 is required");
     if (!input.artifactReceipt) throw new Error("Signed artifact receipt is required");
     if (typeof artifactVerifier !== "function") throw new Error("Trusted server-side artifact verifier is not configured");
