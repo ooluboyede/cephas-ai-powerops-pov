@@ -40,3 +40,32 @@ jobs:
         run: npm install --no-save --package-lock=false pg@8.16.3
       - name: Run PoV boundary, unit and PostgreSQL integration tests
         run: npm test
+      - name: Verify PostgreSQL server restart and backup/restore
+        env:
+          PG_ADMIN_URL: ${{ env.POWEROPS_PG_ADMIN_URL }}
+          POSTGRES_CONTAINER_ID: ${{ job.services.postgres.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(psql "$PG_ADMIN_URL" -At -c "SELECT (SELECT count(*) FROM powerops_ml_model_candidates)||':'||(SELECT count(*) FROM powerops_ml_model_releases)||':'||(SELECT count(*) FROM powerops_ml_audit_events)")"
+          echo "Registry counts before restart: $before"
+          docker restart "$POSTGRES_CONTAINER_ID"
+          for attempt in $(seq 1 30); do
+            if pg_isready -h localhost -p 5432 -U postgres -d powerops_test; then break; fi
+            sleep 2
+          done
+          pg_isready -h localhost -p 5432 -U postgres -d powerops_test
+          after="$(psql "$PG_ADMIN_URL" -At -c "SELECT (SELECT count(*) FROM powerops_ml_model_candidates)||':'||(SELECT count(*) FROM powerops_ml_model_releases)||':'||(SELECT count(*) FROM powerops_ml_audit_events)")"
+          echo "Registry counts after restart: $after"
+          test "$before" = "$after"
+          docker exec "$POSTGRES_CONTAINER_ID" pg_dump -U postgres -d powerops_test -Fc > /tmp/powerops-registry.dump
+          docker exec "$POSTGRES_CONTAINER_ID" createdb -U postgres powerops_restore_test
+          docker exec -i "$POSTGRES_CONTAINER_ID" pg_restore -U postgres -d powerops_restore_test --no-owner --no-privileges < /tmp/powerops-registry.dump
+          restored="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT (SELECT count(*) FROM powerops_ml_model_candidates)||':'||(SELECT count(*) FROM powerops_ml_model_releases)||':'||(SELECT count(*) FROM powerops_ml_audit_events)")"
+          echo "Restored registry counts: $restored"
+          test "$before" = "$restored"
+          forced_rls="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_class WHERE relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_audit_events') AND relrowsecurity AND relforcerowsecurity")"
+          test "$forced_rls" = "3"
+          audit_trigger="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_trigger WHERE tgname='powerops_ml_audit_append_only' AND NOT tgisinternal")"
+          test "$audit_trigger" = "1"
+          echo "PostgreSQL restart and backup/restore checks passed."
