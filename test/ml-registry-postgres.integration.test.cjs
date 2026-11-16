@@ -93,7 +93,7 @@ test("PostgreSQL RLS, concurrent approvals/releases, audit integrity and reconne
     ]);
     assert.equal(releaseAttempts.filter(x => x.status === "fulfilled").length, 1, "only one concurrent release activation may succeed");
     assert.equal(releaseAttempts.filter(x => x.status === "rejected").length, 1, "competing activation must fail closed");
-    const active = await app.query("SELECT release_id FROM powerops_ml_model_releases WHERE tenant_id='tenant-a' AND business_unit_id='unit-1' AND is_active=true");
+    const active = await admin.query("SELECT release_id FROM powerops_ml_model_releases WHERE tenant_id='tenant-a' AND business_unit_id='unit-1' AND is_active=true");
     assert.equal(active.rowCount, 1, "database must retain exactly one active release");
     const chainBeforeRestart = await registry.verifyAuditChain(authority.issueToken("readerA1"));
     assert.equal(chainBeforeRestart.valid, true);
@@ -121,7 +121,7 @@ test("PostgreSQL RLS, concurrent approvals/releases, audit integrity and reconne
     assert.equal(recovered[0].status, "released");
     const chainAfterRestart = await registry.verifyAuditChain(authority.issueToken("readerA1"));
     assert.deepEqual(chainAfterRestart, chainBeforeRestart, "audit chain must remain identical after reconnect/recovery");
-    const activeAfterRestart = await app.query("SELECT release_id FROM powerops_ml_model_releases WHERE tenant_id='tenant-a' AND business_unit_id='unit-1' AND is_active=true");
+    const activeAfterRestart = await admin.query("SELECT release_id FROM powerops_ml_model_releases WHERE tenant_id='tenant-a' AND business_unit_id='unit-1' AND is_active=true");
     assert.equal(activeAfterRestart.rowCount, 1);
     assert.equal(activeAfterRestart.rows[0].release_id, active.rows[0].release_id);
   } finally {
