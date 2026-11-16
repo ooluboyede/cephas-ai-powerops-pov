@@ -173,7 +173,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promot
         "INSERT INTO powerops_ml_model_releases (tenant_id,business_unit_id,release_id,candidate_id,is_active,release_data) VALUES ($1,$2,$3,$4,true,$5::jsonb)",
         [identity.tenantId, identity.businessUnitId, releaseId, candidateId, JSON.stringify(release)]
       );
-      await client.query("UPDATE powerops_ml_model_candidates SET status='released',candidate_data=jsonb_set(candidate_data, '{status}', '"released"'::jsonb),updated_at=now() WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3", [identity.tenantId, identity.businessUnitId, candidateId]);
+      await client.query("UPDATE powerops_ml_model_candidates SET status='released',candidate_data=jsonb_set(candidate_data, '{status}', to_jsonb('released'::text)),updated_at=now() WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3", [identity.tenantId, identity.businessUnitId, candidateId]);
       await appendAudit(client, identity, "model-release-activated", release, identity.subject);
       return release;
     });
