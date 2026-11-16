@@ -64,11 +64,11 @@ CREATE POLICY powerops_ml_audit_scope ON powerops_ml_audit_events
 
 -- Audit rows are append-only for every runtime role; corrections are new events.
 CREATE OR REPLACE FUNCTION powerops_ml_reject_audit_mutation()
-RETURNS trigger LANGUAGE plpgsql AS $
+RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
   RAISE EXCEPTION 'PowerOps ML audit events are append-only';
 END;
-$;
+$$;
 DROP TRIGGER IF EXISTS powerops_ml_audit_no_update ON powerops_ml_audit_events;
 CREATE TRIGGER powerops_ml_audit_no_update
   BEFORE UPDATE OR DELETE ON powerops_ml_audit_events
