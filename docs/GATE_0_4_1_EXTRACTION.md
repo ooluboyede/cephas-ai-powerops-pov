@@ -1,16 +1,16 @@
-# Gate 0.4.1 — Independent PoV extraction
+# Gate 0.4.1 — Independent PowerOps PoV extraction
 
 ## Objective
 
-Create a separately deployable PoV application, isolated from the enterprise PowerOps runtime and repository.
+Establish a standalone, independently deployable **CEPHAS PowerOps PoV** application, isolated from the enterprise PowerOps runtime and repository. Revenue Assurance is the first extracted functional module; it does not define the full product scope.
 
 ## Extraction source
 
-The initial dashboard was copied from `demo/revenue-assurance/index.html` on branch `revenue-assurance/phase-0-foundation` in `ooluboyede/cephas-ai-powerops`. This is an extraction of the demonstration artifact only; no enterprise backend or database is copied.
+The initial Revenue Assurance module was copied from `demo/revenue-assurance/index.html` on branch `revenue-assurance/phase-0-foundation` in `ooluboyede/cephas-ai-powerops`. This is an extraction of the demonstration artifact only; no enterprise backend or database is copied.
 
-## Included
+## Included in the initial module slice
 
-- Responsive Revenue Assurance dashboard
+- Responsive Revenue Assurance dashboard within the PowerOps PoV
 - Twelve synthetic findings and demo-only interactions
 - Overview, findings, investigation, reconciliation, reports, data quality and governance views
 - Synthetic demo reset and export affordances already present in the source artifact
@@ -26,8 +26,8 @@ The initial dashboard was copied from `demo/revenue-assurance/index.html` on bra
 
 ## Gate 0.4.1 acceptance
 
-- [x] Dedicated private repository exists.
-- [x] PoV UI extracted without changing the enterprise PR #20 source.
+- [x] Dedicated private PowerOps PoV repository exists.
+- [x] Initial Revenue Assurance module UI extracted without changing enterprise PR #20 source.
 - [x] Independent package metadata and test command.
 - [x] Independent CI workflow.
 - [x] Separation boundary documented.
@@ -37,8 +37,8 @@ The initial dashboard was copied from `demo/revenue-assurance/index.html` on bra
 
 ## Known inherited limitations
 
-The extracted HTML is functionally a static demo. Reviewer/approver separation is simulated, reconciliation values and fixture data need to become a true deterministic calculation workflow, evidence strings need source-record drilldown, scope/period selection is absent, CSV export needs spreadsheet-formula neutralisation, and dynamic HTML rendering needs hardening before untrusted imported text is ever introduced.
+The extracted Revenue Assurance HTML is functionally a static demo. Reviewer/approver separation is simulated, reconciliation values and fixture data needed to become a deterministic calculation workflow, evidence strings need source-record drilldown, scope/period selection is absent, CSV export needs spreadsheet-formula neutralisation, and dynamic HTML rendering needs hardening before untrusted imported text is ever introduced.
 
 ## Gate decision
 
-**Repository extraction implemented; Gate 0.4.1 validation remains pending.** Do not call the PoV production-ready. Do not merge the enterprise PR or connect this repository to the enterprise database as a shortcut.
+**Independent PowerOps PoV repository established; initial Revenue Assurance module extraction implemented; Gate 0.4.1 validation remains pending.** This does not represent completion of the broader PowerOps PoV or production readiness. Do not merge the enterprise PR or connect this repository to the enterprise database as a shortcut.

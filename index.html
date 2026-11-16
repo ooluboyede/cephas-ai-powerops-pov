@@ -68,8 +68,8 @@
 </section>
 <section class="page" id="page-reconciliation">
  <div class="heading"><div><div class="eyebrow">Deterministic checks</div><div class="h1">Reconciliation workspace</div><div class="desc">Run a repeatable synthetic reconciliation and inspect matched and unmatched records.</div></div><div class="actions"><button class="btn primary" onclick="runReconciliation()">Run reconciliation</button></div></div>
- <div class="grid kpis"><div class="card"><div class="klabel">Billing records</div><div class="kvalue">1,240</div><div class="kmeta">Synthetic period: October</div></div><div class="card"><div class="klabel">Payment records</div><div class="kvalue">1,186</div><div class="kmeta">Synthetic settlement file</div></div><div class="card"><div class="klabel">Matched transactions</div><div class="kvalue" id="matched">1,142</div><div class="kmeta">Deterministic reference matching</div></div><div class="card"><div class="klabel">Exceptions</div><div class="kvalue" id="exceptions">44</div><div class="kmeta">Requires data/finance review</div></div></div>
- <div class="card"><div class="sectionhead"><h2>Reconciliation controls</h2><span class="tag low">Repeatable synthetic run</span></div><div class="detailgrid"><div class="field"><label>Matching keys</label><strong>Payment reference · Account · Amount · Value date</strong></div><div class="field"><label>Exception classes</label><strong>Unmatched · Duplicate candidate · Reversal · Partial</strong></div><div class="field"><label>Idempotency</label><strong>Input snapshot + versioned matching rules</strong></div><div class="field"><label>Financial treatment</label><strong>No automatic ledger posting</strong></div></div><p class="muted" id="recon-result">No new run executed in this session.</p></div>
+ <div class="grid kpis"><div class="card"><div class="klabel">Billing records</div><div class="kvalue" id="billing-records">6</div><div class="kmeta">Synthetic period: October</div></div><div class="card"><div class="klabel">Payment records</div><div class="kvalue" id="payment-records">9</div><div class="kmeta">Synthetic settlement file</div></div><div class="card"><div class="klabel">Matched transactions</div><div class="kvalue" id="matched">1,142</div><div class="kmeta">Deterministic reference matching</div></div><div class="card"><div class="klabel">Exceptions</div><div class="kvalue" id="exceptions">44</div><div class="kmeta">Requires data/finance review</div></div></div>
+ <div class="card"><div class="sectionhead"><h2>Reconciliation controls</h2><span class="tag low">Repeatable synthetic run</span></div><div class="detailgrid"><div class="field"><label>Matching keys</label><strong>Payment reference · Account · Amount · Value date</strong></div><div class="field"><label>Exception classes</label><strong>Unmatched · Duplicate candidate · Reversal · Partial</strong></div><div class="field"><label>Idempotency</label><strong>Input snapshot + versioned matching rules</strong></div><div class="field"><label>Financial treatment</label><strong>No automatic ledger posting</strong></div></div><p class="muted" id="recon-result">No new run executed in this session. Counts are loaded from the synthetic fixture when you run reconciliation.</p><div id="recon-details" class="tablewrap" aria-live="polite"></div></div>
 </section>
 <section class="page" id="page-reports">
  <div class="heading"><div><div class="eyebrow">Management intelligence</div><div class="h1">Executive reports</div><div class="desc">Separate estimated exposure, approved recovery and cash received.</div></div><div class="actions"><button class="btn" onclick="downloadReport()">Download report JSON</button></div></div>
@@ -88,6 +88,7 @@
 <div class="footer">CEPHAS AI Solutions · PowerOps Revenue Assurance PoV · Synthetic demonstration build · Not for production use</div>
 </div></main></div>
 <div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div><div class="toast" id="toast"></div>
+<script src="./src/reconciliation.js"></script>
 <script>
 const seed = [
 {id:"F-RA-1042",account:"AC-100284",area:"Ibadan North",type:"Billing gap",amount:4200000,confidence:91,status:"New",reason:"Valid meter reads exist for the period, but the billing extract contains no corresponding bill.",evidence:["Meter read batch MR-2025-10-IBN-004","Billing extract BL-2025-10: no matching account-period bill","Account tariff: R2 effective 2025-07-01"],recommend:"Verify account-to-meter mapping and billing-cycle exception before any bill correction.",team:"Revenue Assurance",age:"2 days"},
@@ -125,7 +126,22 @@ function resetDemo(){findings=structuredClone(seed);audit=[];log("Demo reset to 
 function exportCSV(){const cols=["id","account","area","type","amount","confidence","status","reason"];const csv=[cols.join(","),...findings.map(f=>cols.map(k=>'"'+String(f[k]).replaceAll('"','""')+'"').join(","))].join("\n");download("powerops-synthetic-findings.csv",csv,"text/csv")}
 function downloadReport(){const report={label:"SYNTHETIC DEMO DATA — NOT CUSTOMER RESULTS",generated_at:new Date().toISOString(),currency:"NGN",findings:findings.map(f=>({...f})),metrics:{estimated_exposure:findings.reduce((s,f)=>s+f.amount,0),approved_recovery:findings.filter(f=>["Approved","Recovered"].includes(f.status)).reduce((s,f)=>s+f.amount,0),cash_recovered:findings.filter(f=>f.status==="Recovered").reduce((s,f)=>s+f.amount,0)},audit};download("powerops-synthetic-executive-report.json",JSON.stringify(report,null,2),"application/json")}
 function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
-function runReconciliation(){const matched=1142,exceptions=44;document.getElementById("matched").textContent=matched.toLocaleString();document.getElementById("exceptions").textContent=exceptions;document.getElementById("recon-result").textContent="Completed "+new Date().toLocaleString()+": 1,142 matched; 44 exceptions quarantined for review. Deterministic synthetic fixture run; no ledger postings made.";log("Synthetic payment reconciliation run completed: 1,142 matched, 44 exceptions");toast("Synthetic reconciliation completed")}
+function runReconciliation(){
+ const result=window.PowerOpsReconciliation.runSynthetic();
+ document.getElementById("billing-records").textContent=result.summary.billingRecords.toLocaleString();
+ document.getElementById("payment-records").textContent=result.summary.paymentRecords.toLocaleString();
+ document.getElementById("matched").textContent=result.summary.matchedBills.toLocaleString();
+ document.getElementById("exceptions").textContent=result.summary.exceptionCount.toLocaleString();
+ document.getElementById("recon-result").textContent="Completed "+new Date().toLocaleString()+": "+result.summary.matchedBills+" billing records matched; "+result.summary.exceptionCount+" exceptions classified. Rule "+result.ruleVersion+" · snapshot "+result.inputSnapshot+". No ledger postings made.";
+ const host=document.getElementById("recon-details");host.replaceChildren();
+ const table=document.createElement("table");const head=document.createElement("thead"),hr=document.createElement("tr");
+ ["Class","Reference","Amount","Explanation"].forEach(label=>{const th=document.createElement("th");th.textContent=label;hr.appendChild(th)});
+ head.appendChild(hr);table.appendChild(head);const body=document.createElement("tbody");
+ result.exceptions.forEach(item=>{const tr=document.createElement("tr");[item.type,item.reference,"₦"+item.amount.toLocaleString("en-NG"),item.explanation].forEach(value=>{const td=document.createElement("td");td.textContent=String(value);tr.appendChild(td)});body.appendChild(tr)});
+ table.appendChild(body);host.appendChild(table);
+ log("Synthetic payment reconciliation run completed: "+result.summary.matchedBills+" matched billing records, "+result.summary.exceptionCount+" exceptions");
+ toast("Synthetic reconciliation completed");
+}
 function renderInitial(){renderAll()}
 renderInitial();
 </script>
