@@ -103,7 +103,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promot
   }
 
   async function recordApproval(token, { candidateId, approvalId, role, decision = "approve", reason }) {
-    authorizeToken(token, "approval:");
+    authorizeToken(token, "approval:" + role);
     requiredText(candidateId, "candidateId"); requiredText(approvalId, "approvalId"); requiredText(reason, "reason");
     if (!REQUIRED_APPROVALS.includes(role)) throw new Error("Approval role is not part of the release policy");
     if (!["approve", "reject"].includes(decision)) throw new Error("Invalid approval decision");
