@@ -5,13 +5,18 @@ const { canonical, verifyModelManifest } = require("./ml-governance.js");
 const REQUIRED_APPROVALS = Object.freeze(["model-risk", "security", "operations-owner"]);
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
 function requiredText(value, name) { if (typeof value !== "string" || !value.trim()) throw new Error(name + " is required"); }
-function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
+function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promotionAssessor }) {
   if (!pool || typeof pool.connect !== "function") throw new Error("A PostgreSQL-compatible pool is required");
   if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function") throw new Error("A server token authority is required");
   if (artifactVerifier !== undefined && typeof artifactVerifier !== "function") throw new Error("artifactVerifier must be a trusted server-side verification function");
+  if (promotionAssessor !== undefined && typeof promotionAssessor !== "function") throw new Error("promotionAssessor must be a trusted server-side evaluation resolver");
+
+  function authorizeToken(token, permission) {
+    return tokenAuthority.authorize(tokenAuthority.authenticate(token), permission);
+  }
 
   async function transact(token, permission, operation) {
-    const identity = tokenAuthority.authorize(tokenAuthority.authenticate(token), permission);
+    const identity = authorizeToken(token, permission);
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
@@ -50,13 +55,20 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function registerCandidate(token, input) {
+    authorizeToken(token, "candidate:register");
     requiredText(input?.candidateId, "candidateId");
     if (!input.manifest || !verifyModelManifest(input.manifest).valid) throw new Error("A cryptographically valid model manifest is required");
     if (!/^[a-f0-9]{64}$/.test(input.artifactSha256 || "")) throw new Error("Artifact SHA-256 is required");
     if (!input.artifactReceipt) throw new Error("Signed artifact receipt is required");
     if (typeof artifactVerifier !== "function") throw new Error("Trusted server-side artifact verifier is not configured");
+    if (typeof promotionAssessor !== "function") throw new Error("Trusted server-side promotion assessor is not configured");
     return transact(token, "candidate:register", async (client, identity) => {
       await lockScope(client, identity);
+      const eligibility = await promotionAssessor({
+        evaluationReference: input.evaluationReference, manifest: input.manifest,
+        tenantId: identity.tenantId, businessUnitId: identity.businessUnitId, subject: identity.subject
+      });
+      if (!eligibility || typeof eligibility.eligible !== "boolean" || !Array.isArray(eligibility.reasons)) throw new Error("Trusted promotion assessment is invalid");
       const verifiedReceipt = await artifactVerifier(input.artifactReceipt, {
         artifactSha256: input.artifactSha256, tenantId: identity.tenantId,
         businessUnitId: identity.businessUnitId, subject: identity.subject
@@ -67,7 +79,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
       const candidate = {
         candidateId: input.candidateId, modelVersion: input.manifest.modelVersion,
         manifestSha256: input.manifest.manifestSha256, artifactSha256: input.artifactSha256,
-        eligibility: input.eligibility || { eligible: false, reasons: ["No promotion eligibility decision supplied"] },
+        eligibility: { eligible: eligibility.eligible, reasons: eligibility.reasons.slice() },
         artifactVerification: { verified: true, publisherKeyId: verifiedReceipt.publisherKeyId, verifierVersion: verifiedReceipt.verifierVersion },
         createdBy: identity.subject, status: "candidate", approvals: []
       };
@@ -91,6 +103,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function recordApproval(token, { candidateId, approvalId, role, decision = "approve", reason }) {
+    authorizeToken(token, "approval:");
     requiredText(candidateId, "candidateId"); requiredText(approvalId, "approvalId"); requiredText(reason, "reason");
     if (!REQUIRED_APPROVALS.includes(role)) throw new Error("Approval role is not part of the release policy");
     if (!["approve", "reject"].includes(decision)) throw new Error("Invalid approval decision");
@@ -124,6 +137,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function activateRelease(token, { candidateId, releaseId }) {
+    authorizeToken(token, "release:activate");
     requiredText(candidateId, "candidateId"); requiredText(releaseId, "releaseId");
     return transact(token, "release:activate", async (client, identity) => {
       await lockScope(client, identity);
@@ -166,6 +180,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function rollback(token, { targetReleaseId, reason }) {
+    authorizeToken(token, "release:rollback");
     requiredText(targetReleaseId, "targetReleaseId"); requiredText(reason, "reason");
     return transact(token, "release:rollback", async (client, identity) => {
       await lockScope(client, identity);
@@ -189,6 +204,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function listCandidates(token) {
+    authorizeToken(token, "registry:read");
     return transact(token, "registry:read", async (client, identity) => {
       const result = await client.query(
         "SELECT candidate_id, candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 ORDER BY created_at DESC",
@@ -199,6 +215,7 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   }
 
   async function verifyAuditChain(token) {
+    authorizeToken(token, "audit:read");
     return transact(token, "audit:read", async (client, identity) => {
       const result = await client.query(
         "SELECT sequence, event_type, payload, actor_id, previous_hash, event_hash, tenant_id, business_unit_id FROM powerops_ml_audit_events WHERE tenant_id=$1 AND business_unit_id=$2 ORDER BY sequence",
