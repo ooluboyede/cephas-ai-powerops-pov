@@ -5,7 +5,7 @@ const path = require("node:path");
 const { createPostgresRegistry } = require("../src/ml-registry-postgres.js");
 const { createTokenAuthority } = require("../src/ml-registry-security.js");
 
-function fakePool() {
+function fakePool(handler = () => ({ rows: [] })) {
   const calls = [];
   return {
     calls,
@@ -13,9 +13,7 @@ function fakePool() {
       return {
         async query(sql, params = []) {
           calls.push({ sql, params });
-          if (sql.includes("SELECT candidate_id, candidate_data")) return { rows: [] };
-          if (sql.includes("SELECT sequence, event_type")) return { rows: [] };
-          return { rows: [] };
+          return handler(sql, params);
         },
         release() { calls.push({ sql: "RELEASE" }); }
       };
@@ -49,6 +47,50 @@ test("unauthorized role is rejected before acquiring a database connection", asy
   const { pool, registry, authority } = setup();
   const token = authority.issueToken("reader");
   await assert.rejects(() => registry.registerCandidate(token, {}), /Forbidden/);
+  assert.equal(pool.calls.length, 0);
+});
+
+
+test("candidate registration trusts only the injected server-side artifact verifier", async () => {
+  const { createDatasetManifest, createModelManifest, FEATURE_SCHEMA } = require("../src/ml-governance.js");
+  const dataset = createDatasetManifest([{ id: "synthetic-1" }], { datasetId: "gate-056", sourceType: "synthetic" });
+  const manifest = createModelManifest({ modelVersion: "0.5.6-test", featureVersion: "v1", featureSchema: FEATURE_SCHEMA, datasetManifest: dataset });
+  const pool = fakePool(sql => {
+    if (sql.includes("INSERT INTO powerops_ml_model_candidates")) return { rows: [{ candidate_id: "candidate-a" }] };
+    return { rows: [] };
+  });
+  const authority = createTokenAuthority({
+    secret: "unit-test-secret-at-least-thirty-two-bytes-long",
+    principals: { trainer: { tenantId: "tenant-x", businessUnitId: "bu-y", roles: ["model-trainer"] } }
+  });
+  let verifierContext;
+  const registry = createPostgresRegistry({
+    pool, tokenAuthority: authority,
+    artifactVerifier: async (receipt, context) => {
+      verifierContext = { receipt, context };
+      return { verified: true, artifactSha256: context.artifactSha256, publisherKeyId: "trusted-key-01", verifierVersion: "gate-0.5.4-verifier" };
+    }
+  });
+  const artifactSha256 = "a".repeat(64);
+  const result = await registry.registerCandidate(authority.issueToken("trainer"), {
+    candidateId: "candidate-a", createdBy: "untrusted-client-value", manifest,
+    artifactSha256, artifactReceipt: { signature: "opaque-signed-receipt" },
+    eligibility: { eligible: false, reasons: ["not yet evaluated"] }
+  });
+  assert.equal(result.createdBy, "trainer");
+  assert.equal(result.artifactVerification.publisherKeyId, "trusted-key-01");
+  assert.equal(verifierContext.context.tenantId, "tenant-x");
+  assert.equal(verifierContext.receipt.signature, "opaque-signed-receipt");
+  assert.ok(pool.calls.some(x => x.sql.includes("pg_advisory_xact_lock")));
+});
+
+test("registration fails closed if no trusted artifact verifier is configured", async () => {
+  const { registry, authority, pool } = setup();
+  const token = authority.issueToken("trainer");
+  await assert.rejects(() => registry.registerCandidate(token, {
+    candidateId: "candidate-a", manifest: { manifestSha256: "a".repeat(64) },
+    artifactSha256: "b".repeat(64), artifactReceipt: { signature: "caller-claimed" }
+  }), /verifier is not configured/);
   assert.equal(pool.calls.length, 0);
 });
 
