@@ -31,6 +31,7 @@ function trainModel(records,{seed=20261116,learningRate=0.08,epochs=600,threshol
  assert(Array.isArray(records)&&records.length>=10,"Training dataset is too small");
  assert(Number.isFinite(learningRate)&&learningRate>0&&learningRate<=1,"Invalid learning rate");
  assert(Number.isInteger(epochs)&&epochs>=1&&epochs<=10000,"Invalid epoch count");
+ assert(Number.isFinite(threshold)&&threshold>0&&threshold<1,"Invalid classification threshold");
  assert(/^[a-f0-9]{64}$/.test(datasetSha256||""),"A verified dataset SHA-256 is required");
  const splits=splitDataset(records,{seed});
  const standardizer=fitStandardizer(splits.train);
