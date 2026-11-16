@@ -5,9 +5,10 @@ const { canonical } = require("./ml-governance.js");
 const REQUIRED_APPROVALS = Object.freeze(["model-risk", "security", "operations-owner"]);
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
 function requiredText(value, name) { if (typeof value !== "string" || !value.trim()) throw new Error(name + " is required"); }
-function createPostgresRegistry({ pool, tokenAuthority }) {
+function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier }) {
   if (!pool || typeof pool.connect !== "function") throw new Error("A PostgreSQL-compatible pool is required");
   if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function") throw new Error("A server token authority is required");
+  if (artifactVerifier !== undefined && typeof artifactVerifier !== "function") throw new Error("artifactVerifier must be a trusted server-side verification function");
 
   async function transact(token, permission, operation) {
     const identity = tokenAuthority.authorize(tokenAuthority.authenticate(token), permission);
@@ -50,17 +51,24 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
 
   async function registerCandidate(token, input) {
     requiredText(input?.candidateId, "candidateId");
-    requiredText(input?.createdBy, "createdBy");
     if (!input.manifest || !/^[a-f0-9]{64}$/.test(input.manifest.manifestSha256 || "")) throw new Error("A verified model manifest is required");
     if (!/^[a-f0-9]{64}$/.test(input.artifactSha256 || "")) throw new Error("Artifact SHA-256 is required");
-    if (input.artifactVerification?.verified !== true || input.artifactVerification.artifactSha256 !== input.artifactSha256) throw new Error("Verified artifact receipt is required");
+    if (!input.artifactReceipt) throw new Error("Signed artifact receipt is required");
+    if (typeof artifactVerifier !== "function") throw new Error("Trusted server-side artifact verifier is not configured");
     return transact(token, "candidate:register", async (client, identity) => {
       await lockScope(client, identity);
+      const verifiedReceipt = await artifactVerifier(input.artifactReceipt, {
+        artifactSha256: input.artifactSha256, tenantId: identity.tenantId,
+        businessUnitId: identity.businessUnitId, subject: identity.subject
+      });
+      if (!verifiedReceipt || verifiedReceipt.verified !== true || verifiedReceipt.artifactSha256 !== input.artifactSha256) throw new Error("Trusted artifact verification failed");
+      requiredText(verifiedReceipt.publisherKeyId, "verified publisherKeyId");
+      requiredText(verifiedReceipt.verifierVersion, "verified verifierVersion");
       const candidate = {
         candidateId: input.candidateId, modelVersion: input.manifest.modelVersion,
         manifestSha256: input.manifest.manifestSha256, artifactSha256: input.artifactSha256,
         eligibility: input.eligibility || { eligible: false, reasons: ["No promotion eligibility decision supplied"] },
-        artifactVerification: { verified: true, publisherKeyId: input.artifactVerification.publisherKeyId, verifierVersion: input.artifactVerification.verifierVersion },
+        artifactVerification: { verified: true, publisherKeyId: verifiedReceipt.publisherKeyId, verifierVersion: verifiedReceipt.verifierVersion },
         createdBy: identity.subject, status: "candidate", approvals: []
       };
       const inserted = await client.query(
@@ -72,7 +80,9 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
           "SELECT candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
           [identity.tenantId, identity.businessUnitId, candidate.candidateId]
         );
-        if (existing.rows[0]?.candidate_data && digest(existing.rows[0].candidate_data) === digest(candidate)) return existing.rows[0].candidate_data;
+        const prior = existing.rows[0]?.candidate_data;
+        if (prior && prior.createdBy === candidate.createdBy && prior.modelVersion === candidate.modelVersion &&
+            prior.manifestSha256 === candidate.manifestSha256 && prior.artifactSha256 === candidate.artifactSha256) return prior;
         throw new Error("Candidate ID already exists with different content");
       }
       await appendAudit(client, identity, "candidate-registered", { candidateId: candidate.candidateId, manifestSha256: candidate.manifestSha256, artifactSha256: candidate.artifactSha256 }, identity.subject);
@@ -92,13 +102,13 @@ function createPostgresRegistry({ pool, tokenAuthority }) {
       );
       if (!found.rows.length) throw new Error("Unknown model candidate in this tenant and business unit");
       const candidate = found.rows[0].candidate_data;
-      if (candidate.status !== "candidate") throw new Error("Candidate is not open for approval");
-      if (candidate.createdBy === identity.subject) throw new Error("Model creator cannot approve their own candidate");
       const priorId = candidate.approvals.find(a => a.approvalId === approvalId);
       if (priorId) {
         if (priorId.approverId === identity.subject && priorId.role === role && priorId.decision === decision && priorId.reason === reason) return candidate;
         throw new Error("Approval ID already exists with different content");
       }
+      if (candidate.status !== "candidate") throw new Error("Candidate is not open for approval");
+      if (candidate.createdBy === identity.subject) throw new Error("Model creator cannot approve their own candidate");
       if (candidate.approvals.some(a => a.approverId === identity.subject)) throw new Error("Approvers must be distinct");
       if (candidate.approvals.some(a => a.role === role)) throw new Error("An approval decision already exists for this role");
       const approval = { approvalId, approverId: identity.subject, role, decision, reason, recordedAt: new Date().toISOString() };
