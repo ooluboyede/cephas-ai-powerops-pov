@@ -54,7 +54,7 @@ function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTR
   assert(!c.approvals.some(a=>a.role===role),"An approval decision already exists for this role");
   const approval={approvalId,approverId,role,decision,reason,recordedAt:null};
   c.approvals.push(approval);
-  append("release-approval-recorded",{candidateId,approvalId,approverId,role,decision,reason},"approval-service");
+  append("release-approval-recorded",{candidateId,approvalId,approverId,role,decision,reason},approverId);
   if(decision==="reject")c.status="rejected";
   return snapshotCandidate(c);
  }
@@ -72,7 +72,7 @@ function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTR
   assert(!state.releases.some(r=>r.releaseId===releaseId),"Release ID already exists");
   const release={releaseId,candidateId,modelVersion:c.modelVersion,manifestSha256:c.manifestSha256,artifactSha256:c.artifactSha256,approvedRoles:Array.from(approvedRoles).sort(),releasedBy:actorId,previousReleaseId:state.activeReleaseId,status:"released"};
   state.releases.push(release);state.activeReleaseId=releaseId;c.status="released";
-  append("model-release-activated",{...release},"release-service");
+  append("model-release-activated",{...release},actorId);
   return JSON.parse(JSON.stringify(release));
  }
  function rollback({targetReleaseId,actorId,reason}){
@@ -82,7 +82,7 @@ function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTR
   assert(state.activeReleaseId&&state.activeReleaseId!==targetReleaseId,"Rollback target must differ from the active release");
   const previous=state.activeReleaseId;
   state.activeReleaseId=targetReleaseId;
-  append("model-release-rolled-back",{fromReleaseId:previous,toReleaseId:targetReleaseId,reason,requiresPostRollbackReview:true},"rollback-service");
+  append("model-release-rolled-back",{fromReleaseId:previous,toReleaseId:targetReleaseId,actorId,reason,requiresPostRollbackReview:true},actorId);
   return {activeReleaseId:state.activeReleaseId,rolledBackFrom:previous,rolledBackTo:targetReleaseId,requiresPostRollbackReview:true};
  }
  function verifyEventChain(){
