@@ -161,14 +161,18 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
 
     // Scoped login roles may inherit only the runtime capability group.
     const memberships = await admin.query(`
-      SELECT member_role.rolname AS member, granted_role.rolname AS granted
+      SELECT member_role.rolname AS member, granted_role.rolname AS granted,
+             m.inherit_option AS inherit_option, m.set_option AS set_option, m.admin_option AS admin_option
       FROM pg_auth_members m
       JOIN pg_roles member_role ON member_role.oid=m.member
       JOIN pg_roles granted_role ON granted_role.oid=m.roleid
       WHERE member_role.rolname = ANY($1::text[])
       ORDER BY member_role.rolname, granted_role.rolname
     `, [roleMap.map(x => x.role)]);
-    assert.deepEqual(memberships.rows, roleMap.map(x => ({ member: x.role, granted: "powerops_runtime" })).sort((a,b)=>a.member.localeCompare(b.member)));
+    assert.deepEqual(memberships.rows, roleMap.map(x => ({ member: x.role, granted: "powerops_runtime", inherit_option: true, set_option: true, admin_option: false })).sort((a,b)=>a.member.localeCompare(b.member)));
+    for (const item of roleMap) {
+      assert.equal(await admin.query("SELECT pg_has_role($1,'powerops_runtime','USAGE') AS inherits_runtime", [item.role]).then(x=>x.rows[0].inherits_runtime), true);
+    }
     const roleFlagsAfterUpgrade = await admin.query(
       "SELECT rolname, rolsuper, rolcreatedb, rolcreaterole, rolreplication, rolbypassrls, rolinherit FROM pg_roles WHERE rolname = ANY($1::text[])",
       [roleMap.map(x=>x.role)]
