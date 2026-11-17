@@ -100,3 +100,25 @@ jobs:
           fi
           echo "Restored ownership, membership, privilege and tenant-isolation checks passed."
           echo "PostgreSQL restart and backup/restore checks passed."
+
+      - name: Verify fresh-cluster role reconstruction after logical restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name powerops-fresh-cluster -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=powerops_fresh -p 5433:5432 postgres:16
+          cleanup() { docker rm -f powerops-fresh-cluster >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          for attempt in $(seq 1 40); do
+            if pg_isready -h localhost -p 5433 -U postgres -d powerops_fresh; then break; fi
+            sleep 2
+          done
+          pg_isready -h localhost -p 5433 -U postgres -d powerops_fresh
+          docker exec -i powerops-fresh-cluster pg_restore -U postgres -d powerops_fresh --no-owner --no-privileges < /tmp/powerops-registry.dump
+          fresh_roles_before="$(docker exec powerops-fresh-cluster psql -U postgres -d powerops_fresh -At -c "SELECT count(*) FROM pg_roles WHERE rolname LIKE 'powerops_app_%'")"
+          echo "Scoped login roles present on fresh cluster before provisioning: $fresh_roles_before"
+          test "$fresh_roles_before" = "0"
+          POWEROPS_FRESH_CLUSTER_PG_ADMIN_URL=postgres://postgres:postgres@localhost:5433/powerops_fresh node scripts/fresh-cluster-recovery-smoke.cjs
+          fresh_roles_after="$(docker exec powerops-fresh-cluster psql -U postgres -d powerops_fresh -At -c "SELECT count(*) FROM pg_roles WHERE rolname LIKE 'powerops_app_%'")"
+          echo "Scoped login roles reconstructed on fresh cluster: $fresh_roles_after"
+          test "$fresh_roles_after" = "3"
+          echo "Fresh PostgreSQL 16 cluster role reconstruction and authentication acceptance passed."
