@@ -26,6 +26,9 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     return new Pool({ connectionString: url.toString(), max: 4 });
   };
   try {
+    const initialMigration = fs.readFileSync(path.join(__dirname, "..", "migrations", "0001_powerops_ml_registry_rls.sql"), "utf8");
+    await admin.query(initialMigration);
+
     // Simulate a legacy upgrade: scoped logins already exist with excessive
     // role attributes, direct table privileges and unwanted role memberships.
     await admin.query("CREATE ROLE powerops_legacy_privileged NOLOGIN");
@@ -121,12 +124,112 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       await assert.rejects(() => attacker.query("SET ROLE powerops_app_b1"), /permission denied|cannot set role/i);
     } finally { attacker.release(); }
 
-    const privilegeCheck = await admin.query(
-      "SELECT has_table_privilege('powerops_app_a1','powerops_ml_model_candidates','DELETE') AS candidate_delete, has_table_privilege('powerops_app_a1','powerops_ml_audit_events','UPDATE') AS audit_update, has_table_privilege('powerops_app_a1','powerops_ml_audit_events','DELETE') AS audit_delete, has_table_privilege('powerops_app_a1','powerops_ml_audit_events','TRUNCATE') AS audit_truncate, has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','SELECT') AS scope_read"
+    // Catalog-level ownership assertions cover tables, scope schema/map and functions.
+    const owners = await admin.query(`
+      SELECT c.relname, r.rolname AS owner
+      FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      JOIN pg_roles r ON r.oid = c.relowner
+      WHERE (n.nspname = 'public' AND c.relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_audit_events'))
+         OR (n.nspname = 'powerops_security' AND c.relname = 'db_principal_scopes')
+      ORDER BY c.relname
+    `);
+    assert.deepEqual(owners.rows, [
+      { relname: "db_principal_scopes", owner: "powerops_scope_owner" },
+      { relname: "powerops_ml_audit_events", owner: "powerops_registry_owner" },
+      { relname: "powerops_ml_model_candidates", owner: "powerops_registry_owner" },
+      { relname: "powerops_ml_model_releases", owner: "powerops_registry_owner" }
+    ]);
+    const functionOwners = await admin.query(`
+      SELECT p.proname, r.rolname AS owner
+      FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+      JOIN pg_roles r ON r.oid=p.proowner
+      WHERE (n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id'))
+         OR (n.nspname='public' AND p.proname='powerops_ml_reject_audit_mutation')
+      ORDER BY p.proname
+    `);
+    assert.deepEqual(functionOwners.rows, [
+      { proname: "current_business_unit_id", owner: "powerops_scope_owner" },
+      { proname: "current_tenant_id", owner: "powerops_scope_owner" },
+      { proname: "powerops_ml_reject_audit_mutation", owner: "powerops_registry_owner" }
+    ]);
+    const schemaOwner = await admin.query(`
+      SELECT r.rolname AS owner FROM pg_namespace n JOIN pg_roles r ON r.oid=n.nspowner
+      WHERE n.nspname='powerops_security'
+    `);
+    assert.equal(schemaOwner.rows[0].owner, "powerops_scope_owner");
+
+    // Scoped login roles may inherit only the runtime capability group.
+    const memberships = await admin.query(`
+      SELECT member_role.rolname AS member, granted_role.rolname AS granted
+      FROM pg_auth_members m
+      JOIN pg_roles member_role ON member_role.oid=m.member
+      JOIN pg_roles granted_role ON granted_role.oid=m.roleid
+      WHERE member_role.rolname = ANY($1::text[])
+      ORDER BY member_role.rolname, granted_role.rolname
+    `, [roleMap.map(x => x.role)]);
+    assert.deepEqual(memberships.rows, roleMap.map(x => ({ member: x.role, granted: "powerops_runtime" })).sort((a,b)=>a.member.localeCompare(b.member)));
+    const roleFlagsAfterUpgrade = await admin.query(
+      "SELECT rolname, rolsuper, rolcreatedb, rolcreaterole, rolreplication, rolbypassrls, rolinherit FROM pg_roles WHERE rolname = ANY($1::text[])",
+      [roleMap.map(x=>x.role)]
     );
-    assert.deepEqual(privilegeCheck.rows[0], {
-      candidate_delete: false, audit_update: false, audit_delete: false, audit_truncate: false, scope_read: false
-    });
+    for (const role of roleFlagsAfterUpgrade.rows) {
+      assert.equal(role.rolsuper, false);
+      assert.equal(role.rolcreatedb, false);
+      assert.equal(role.rolcreaterole, false);
+      assert.equal(role.rolreplication, false);
+      assert.equal(role.rolbypassrls, false);
+      assert.equal(role.rolinherit, true);
+    }
+    const runtimeMemberships = await admin.query(`
+      SELECT granted_role.rolname
+      FROM pg_auth_members m JOIN pg_roles member_role ON member_role.oid=m.member
+      JOIN pg_roles granted_role ON granted_role.oid=m.roleid
+      WHERE member_role.rolname='powerops_runtime'
+    `);
+    assert.deepEqual(runtimeMemberships.rows, []);
+
+    const protectedObjects = [
+      "powerops_ml_model_candidates",
+      "powerops_ml_model_releases",
+      "powerops_ml_audit_events",
+      "powerops_security.db_principal_scopes"
+    ];
+    for (const objectName of protectedObjects) {
+      const matrix = await admin.query(
+        "SELECT has_table_privilege('powerops_app_a1',$1,'SELECT') AS can_select, has_table_privilege('powerops_app_a1',$1,'INSERT') AS can_insert, has_table_privilege('powerops_app_a1',$1,'UPDATE') AS can_update, has_table_privilege('powerops_app_a1',$1,'DELETE') AS can_delete, has_table_privilege('powerops_app_a1',$1,'TRUNCATE') AS can_truncate",
+        [objectName]
+      );
+      const expected = objectName === "powerops_ml_audit_events"
+        ? { can_select: true, can_insert: true, can_update: false, can_delete: false, can_truncate: false }
+        : objectName === "powerops_security.db_principal_scopes"
+          ? { can_select: false, can_insert: false, can_update: false, can_delete: false, can_truncate: false }
+          : { can_select: true, can_insert: true, can_update: true, can_delete: false, can_truncate: false };
+      assert.deepEqual(matrix.rows[0], expected, `unexpected effective privileges for ${objectName}`);
+    }
+
+    // Exercise the full denied DELETE/TRUNCATE matrix with the real scoped login.
+    const deniedObjects = [
+      "powerops_ml_model_candidates",
+      "powerops_ml_model_releases",
+      "powerops_ml_audit_events",
+      "powerops_security.db_principal_scopes"
+    ];
+    const privilegeClient = await pools.get("powerops_app_a1").connect();
+    try {
+      for (const objectName of deniedObjects) {
+        await assert.rejects(
+          () => privilegeClient.query(`DELETE FROM ${objectName} WHERE false`),
+          /permission denied/i,
+          `DELETE must be denied for ${objectName}`
+        );
+        await assert.rejects(
+          () => privilegeClient.query(`TRUNCATE TABLE ${objectName}`),
+          /permission denied/i,
+          `TRUNCATE must be denied for ${objectName}`
+        );
+      }
+    } finally { privilegeClient.release(); }
 
     // Reconnect/pool recreation must preserve the authenticated database scope.
     await pools.get("powerops_app_a1").end();
