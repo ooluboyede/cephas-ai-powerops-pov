@@ -73,4 +73,30 @@ jobs:
           test "$scope_functions" = "2"
           echo "Restored database scope mappings: $scope_map_rows"
           echo "Restored database identity functions: $scope_functions"
+
+          # Reapply object ownership and then deliberately contaminate a restored
+          # scoped login to prove the upgrade migration repairs role/grant state.
+          cat migrations/0002_powerops_session_identity_rls.sql migrations/0003_powerops_privilege_hardening.sql | docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1
+          docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 -c "REVOKE powerops_runtime FROM powerops_app_a1; GRANT powerops_registry_owner TO powerops_app_a1; GRANT ALL PRIVILEGES ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app_a1; GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_security.db_principal_scopes TO powerops_app_a1"
+          docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 < migrations/0003_powerops_privilege_hardening.sql
+
+          restored_owner_failures="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_roles r ON r.oid=c.relowner WHERE (n.nspname='public' AND c.relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_audit_events') AND r.rolname <> 'powerops_registry_owner') OR (n.nspname='powerops_security' AND c.relname='db_principal_scopes' AND r.rolname <> 'powerops_scope_owner')")"
+          test "$restored_owner_failures" = "0"
+          restored_membership_failures="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_auth_members m JOIN pg_roles member_role ON member_role.oid=m.member JOIN pg_roles granted_role ON granted_role.oid=m.roleid WHERE member_role.rolname LIKE 'powerops_app_%' AND granted_role.rolname <> 'powerops_runtime'")"
+          test "$restored_membership_failures" = "0"
+          restored_scope_privilege="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','SELECT') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','INSERT') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','UPDATE') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','DELETE') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','TRUNCATE')")"
+          test "$restored_scope_privilege" = "f"
+          restored_runtime_access="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT pg_has_role('powerops_app_a1','powerops_runtime','USAGE') AND has_table_privilege('powerops_app_a1','powerops_ml_model_candidates','SELECT')")"
+          test "$restored_runtime_access" = "t"
+
+          spoofed_read="$(docker exec -e PGPASSWORD=powerops_gate058_test_password "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -At -F '|' -c "WITH spoof AS MATERIALIZED (SELECT set_config('app.tenant_id','tenant-b',false) AS setting) SELECT SESSION_USER, powerops_security.current_tenant_id(), spoof.setting, (SELECT count(*) FROM powerops_ml_model_candidates WHERE tenant_id='tenant-b') FROM spoof")"
+          echo "Restored scoped login identity and spoof-test output: $spoofed_read"
+          test "$spoofed_read" = "powerops_app_a1|tenant-a|tenant-b|0"
+          if docker exec -e PGPASSWORD=powerops_gate058_test_password "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -v ON_ERROR_STOP=1 -c "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ('tenant-b','unit-1','restore-spoof','restore-test','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','candidate','{}','restore-test')"; then
+            echo "Cross-tenant insert unexpectedly succeeded after restore."
+            exit 1
+          else
+            echo "Restored scoped login correctly denied cross-tenant insert."
+          fi
+          echo "Restored ownership, membership, privilege and tenant-isolation checks passed."
           echo "PostgreSQL restart and backup/restore checks passed."
