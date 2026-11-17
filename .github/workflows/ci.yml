@@ -86,6 +86,8 @@ jobs:
           test "$restored_membership_failures" = "0"
           restored_scope_privilege="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','SELECT') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','INSERT') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','UPDATE') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','DELETE') OR has_table_privilege('powerops_app_a1','powerops_security.db_principal_scopes','TRUNCATE')")"
           test "$restored_scope_privilege" = "f"
+          restored_runtime_access="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT pg_has_role('powerops_app_a1','powerops_runtime','USAGE') AND has_table_privilege('powerops_app_a1','powerops_ml_model_candidates','SELECT')")"
+          test "$restored_runtime_access" = "t"
 
           spoofed_read="$(docker exec -e PGPASSWORD=powerops_gate058_test_password "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -At -c "SELECT set_config('app.tenant_id','tenant-b',false); SELECT count(*) FROM powerops_ml_model_candidates WHERE tenant_id='tenant-b'")"
           test "$(printf '%s\\n' "$spoofed_read" | tail -n 1)" = "0"
