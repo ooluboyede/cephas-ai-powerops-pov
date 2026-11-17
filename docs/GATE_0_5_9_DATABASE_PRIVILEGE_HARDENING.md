@@ -9,7 +9,7 @@ This gate implements the independent review's remaining F-04 acceptance matrix. 
 - Adds migration 0003_powerops_privilege_hardening.sql.
 - Uses powerops_security.db_principal_scopes as the authoritative inventory of scoped LOGIN roles.
 - Normalizes each scoped role to LOGIN + INHERIT, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOREPLICATION and NOBYPASSRLS.
-- Removes all scoped-role memberships except powerops_runtime, stripping legacy membership in other scoped logins, scope-owner, registry-owner and arbitrary legacy roles.
+- Removes all scoped-role memberships except powerops_runtime, explicitly sets INHERIT TRUE and SET TRUE with no ADMIN OPTION, and strips legacy membership in other scoped logins, scope-owner, registry-owner and arbitrary legacy roles.
 - Removes direct grants on registry tables and the protected scope map, and removes direct schema privileges that could bypass the runtime capability group.
 - Re-grants only powerops_runtime and reasserts protected object ownership and the exact candidate/release/audit grants.
 - Ensures powerops_runtime itself does not inherit another role's privileges.
