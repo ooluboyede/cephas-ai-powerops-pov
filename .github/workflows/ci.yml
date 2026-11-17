@@ -28,7 +28,6 @@ jobs:
           --health-retries 10
     env:
       POWEROPS_PG_ADMIN_URL: postgres://postgres:postgres@localhost:5432/powerops_test
-      POWEROPS_PG_APP_URL: postgres://powerops_app:powerops_app_test_password@localhost:5432/powerops_test
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -68,4 +67,10 @@ jobs:
           test "$forced_rls" = "3"
           audit_trigger="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_trigger WHERE tgname='powerops_ml_audit_no_update' AND NOT tgisinternal")"
           test "$audit_trigger" = "1"
+          scope_map_rows="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM powerops_security.db_principal_scopes")"
+          test "$scope_map_rows" -ge "3"
+          scope_functions="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id')")"
+          test "$scope_functions" = "2"
+          echo "Restored database scope mappings: $scope_map_rows"
+          echo "Restored database identity functions: $scope_functions"
           echo "PostgreSQL restart and backup/restore checks passed."

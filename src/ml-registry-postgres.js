@@ -5,8 +5,8 @@ const { canonical, verifyModelManifest } = require("./ml-governance.js");
 const REQUIRED_APPROVALS = Object.freeze(["model-risk", "security", "operations-owner"]);
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
 function requiredText(value, name) { if (typeof value !== "string" || !value.trim()) throw new Error(name + " is required"); }
-function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promotionAssessor }) {
-  if (!pool || typeof pool.connect !== "function") throw new Error("A PostgreSQL-compatible pool is required");
+function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerifier, promotionAssessor }) {
+  if (typeof poolForIdentity !== "function") throw new Error("A trusted poolForIdentity resolver is required; shared cross-scope database pools are not accepted");
   if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function" || typeof tokenAuthority.authorize !== "function") throw new Error("A server token authority with authenticate/authorize methods is required");
   if (artifactVerifier !== undefined && typeof artifactVerifier !== "function") throw new Error("artifactVerifier must be a trusted server-side verification function");
   if (promotionAssessor !== undefined && typeof promotionAssessor !== "function") throw new Error("promotionAssessor must be a trusted server-side evaluation resolver");
@@ -17,10 +17,20 @@ function createPostgresRegistry({ pool, tokenAuthority, artifactVerifier, promot
 
   async function transact(token, permission, operation) {
     const identity = authorizeToken(token, permission);
-    const client = await pool.connect();
+    const scopedPool = poolForIdentity(identity);
+    if (!scopedPool || typeof scopedPool.connect !== "function") throw new Error("No database pool is configured for the authenticated tenant and business unit");
+    const client = await scopedPool.connect();
     try {
       await client.query("BEGIN");
-      await client.query("SELECT set_config('app.tenant_id', $1, true), set_config('app.business_unit_id', $2, true)", [identity.tenantId, identity.businessUnitId]);
+      const scope = await client.query(
+        "SELECT SESSION_USER AS db_role, powerops_security.current_tenant_id() AS tenant_id, powerops_security.current_business_unit_id() AS business_unit_id"
+      );
+      const databaseIdentity = scope.rows[0];
+      if (!databaseIdentity ||
+          databaseIdentity.tenant_id !== identity.tenantId ||
+          databaseIdentity.business_unit_id !== identity.businessUnitId) {
+        throw new Error("Authenticated application scope does not match the database login identity");
+      }
       const result = await operation(client, identity);
       await client.query("COMMIT");
       return result;
