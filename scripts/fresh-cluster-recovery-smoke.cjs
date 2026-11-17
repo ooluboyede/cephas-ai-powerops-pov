@@ -23,6 +23,7 @@ function runtimeUrl(base, role, password) {
   const pools = [];
   try {
     const migrations = path.join(__dirname, "..", "migrations");
+    await admin.query(fs.readFileSync(path.join(migrations, "0001_powerops_ml_registry_rls.sql"), "utf8"));
     await admin.query(fs.readFileSync(path.join(migrations, "0002_powerops_session_identity_rls.sql"), "utf8"));
     const credentials = new Map();
     const provisioned = await provisionScopedDatabaseRoles({
