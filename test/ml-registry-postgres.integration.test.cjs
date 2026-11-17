@@ -188,6 +188,25 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       WHERE member_role.rolname='powerops_runtime'
     `);
     assert.deepEqual(runtimeMemberships.rows, []);
+    const ownerRoleFlags = await admin.query(
+      "SELECT rolname, rolcanlogin, rolsuper, rolcreatedb, rolcreaterole, rolbypassrls FROM pg_roles WHERE rolname IN ('powerops_runtime','powerops_scope_owner','powerops_registry_owner') ORDER BY rolname"
+    );
+    assert.deepEqual(ownerRoleFlags.rows, [
+      { rolname: "powerops_registry_owner", rolcanlogin: false, rolsuper: false, rolcreatedb: false, rolcreaterole: false, rolbypassrls: false },
+      { rolname: "powerops_runtime", rolcanlogin: false, rolsuper: false, rolcreatedb: false, rolcreaterole: false, rolbypassrls: false },
+      { rolname: "powerops_scope_owner", rolcanlogin: false, rolsuper: false, rolcreatedb: false, rolcreaterole: false, rolbypassrls: false }
+    ]);
+    const ownerMemberships = await admin.query(`
+      SELECT member_role.rolname
+      FROM pg_auth_members m JOIN pg_roles member_role ON member_role.oid=m.member
+      WHERE member_role.rolname IN ('powerops_scope_owner','powerops_registry_owner')
+    `);
+    assert.deepEqual(ownerMemberships.rows, []);
+
+    const schemaPrivileges = await admin.query(
+      "SELECT has_schema_privilege('powerops_app_a1','powerops_security','CREATE') AS security_create, has_schema_privilege('powerops_app_a1','public','CREATE') AS public_create"
+    );
+    assert.deepEqual(schemaPrivileges.rows[0], { security_create: false, public_create: false });
 
     const protectedObjects = [
       "powerops_ml_model_candidates",
