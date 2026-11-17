@@ -26,30 +26,38 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     return new Pool({ connectionString: url.toString(), max: 4 });
   };
   try {
+    // Simulate a legacy upgrade: scoped logins already exist with excessive
+    // role attributes, direct table privileges and unwanted role memberships.
+    await admin.query("CREATE ROLE powerops_legacy_privileged NOLOGIN");
+    for (const item of roleMap) {
+      await admin.query(
+        `CREATE ROLE ${item.role} LOGIN INHERIT PASSWORD '${password}' CREATEDB CREATEROLE NOSUPERUSER NOBYPASSRLS`
+      );
+    }
+    await admin.query("GRANT powerops_legacy_privileged TO powerops_app_a1");
+    await admin.query("GRANT powerops_app_a2 TO powerops_app_a1");
+    await admin.query("GRANT ALL PRIVILEGES ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app_a1");
+    await admin.query("GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_security.db_principal_scopes TO powerops_app_a1");
+
     for (const migrationFile of [
-      "0001_powerops_ml_registry_rls.sql",
       "0002_powerops_session_identity_rls.sql"
     ]) {
       const migration = fs.readFileSync(path.join(__dirname, "..", "migrations", migrationFile), "utf8");
       await admin.query(migration);
     }
 
+    // Add additional unwanted owner memberships after 0002 creates the owner roles.
+    await admin.query("GRANT powerops_scope_owner TO powerops_app_a1");
+    await admin.query("GRANT powerops_registry_owner TO powerops_app_a1");
     for (const item of roleMap) {
-      await admin.query(
-        `DO $role$ BEGIN
-          IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${item.role}') THEN
-            CREATE ROLE ${item.role} LOGIN INHERIT PASSWORD '${password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;
-          END IF;
-        END $role$;`
-      );
-      await admin.query(`ALTER ROLE ${item.role} WITH LOGIN INHERIT PASSWORD '${password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS`);
-      await admin.query(`GRANT powerops_runtime TO ${item.role}`);
       await admin.query(
         "INSERT INTO powerops_security.db_principal_scopes (db_role,tenant_id,business_unit_id,enabled) VALUES ($1,$2,$3,true) ON CONFLICT (db_role) DO UPDATE SET tenant_id=EXCLUDED.tenant_id,business_unit_id=EXCLUDED.business_unit_id,enabled=true",
         [item.role, item.tenant, item.bu]
       );
-      pools.set(item.role, makePool(item.role));
     }
+    const hardening = fs.readFileSync(path.join(__dirname, "..", "migrations", "0003_powerops_privilege_hardening.sql"), "utf8");
+    await admin.query(hardening);
+    for (const item of roleMap) pools.set(item.role, makePool(item.role));
 
     const roleFlags = await admin.query(
       "SELECT rolname, rolsuper, rolcreatedb, rolcreaterole, rolbypassrls FROM pg_roles WHERE rolname = ANY($1::text[])",
