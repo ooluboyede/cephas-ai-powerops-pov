@@ -46,7 +46,7 @@ It verifies:
 - runtime has no candidate DELETE, audit UPDATE/DELETE/TRUNCATE privileges;
 - scope remains correct after application pool recreation.
 
-The integration test requires POWEROPS_PG_ADMIN_URL for a disposable PostgreSQL test database. GitHub Actions supplies PostgreSQL 16.
+The integration test requires POWEROPS_PG_ADMIN_URL for a disposable PostgreSQL test database. GitHub Actions supplies PostgreSQL 16. The CI backup/restore stage also verifies that scope-map rows and both scope-resolution functions survive the logical restore. Its test restore uses --no-owner/--no-privileges, so it does not prove production role ownership or grants are restored; production recovery must separately provision/restore cluster roles, memberships, ownership and grants before runtime traffic is enabled.
 
 ## Security boundaries and limitations
 
