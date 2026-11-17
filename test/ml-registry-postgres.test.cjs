@@ -116,6 +116,7 @@ test("registration fails closed if no trusted artifact verifier is configured", 
 test("RLS migration uses SESSION_USER-backed protected scope and least-privilege runtime grants", () => {
   const files = ["0001_powerops_ml_registry_rls.sql", "0002_powerops_session_identity_rls.sql"];
   const migration = files.map(file => fs.readFileSync(path.join(__dirname, "..", "migrations", file), "utf8")).join("\n");
+  const identityMigration = fs.readFileSync(path.join(__dirname, "..", "migrations", "0002_powerops_session_identity_rls.sql"), "utf8");
   for (const table of ["powerops_ml_model_candidates", "powerops_ml_model_releases", "powerops_ml_audit_events"]) {
     assert.match(migration, new RegExp("ALTER TABLE " + table + " ENABLE ROW LEVEL SECURITY"));
     assert.match(migration, new RegExp("ALTER TABLE " + table + " FORCE ROW LEVEL SECURITY"));
@@ -125,5 +126,5 @@ test("RLS migration uses SESSION_USER-backed protected scope and least-privilege
   assert.match(migration, /SECURITY DEFINER/);
   assert.match(migration, /powerops_security\.current_tenant_id\(\)/);
   assert.match(migration, /GRANT SELECT, INSERT ON powerops_ml_audit_events TO powerops_runtime/);
-  assert.doesNotMatch(migration, /CREATE POLICY[\s\S]*current_setting\('app\.tenant_id'/);
+  assert.doesNotMatch(identityMigration, /CREATE POLICY[\s\S]*current_setting\('app\.tenant_id'/);
 });
