@@ -37,7 +37,7 @@ BEGIN
     );
     EXECUTE format('REVOKE ALL PRIVILEGES ON SCHEMA powerops_security FROM %I', scoped.db_role);
     EXECUTE format('REVOKE CREATE ON SCHEMA public FROM %I', scoped.db_role);
-    EXECUTE format('GRANT powerops_runtime TO %I', scoped.db_role);
+    EXECUTE format('GRANT powerops_runtime TO %I WITH INHERIT TRUE, SET TRUE', scoped.db_role);
   END LOOP;
 
   -- The runtime capability role itself must not inherit another role's powers.
