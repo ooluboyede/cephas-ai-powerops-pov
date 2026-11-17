@@ -40,7 +40,6 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     await admin.query("GRANT powerops_legacy_privileged TO powerops_app_a1");
     await admin.query("GRANT powerops_app_a2 TO powerops_app_a1");
     await admin.query("GRANT ALL PRIVILEGES ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app_a1");
-    await admin.query("GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_security.db_principal_scopes TO powerops_app_a1");
 
     for (const migrationFile of [
       "0002_powerops_session_identity_rls.sql"
@@ -52,6 +51,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     // Add additional unwanted owner memberships after 0002 creates the owner roles.
     await admin.query("GRANT powerops_scope_owner TO powerops_app_a1");
     await admin.query("GRANT powerops_registry_owner TO powerops_app_a1");
+    await admin.query("GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_security.db_principal_scopes TO powerops_app_a1");
     for (const item of roleMap) {
       await admin.query(
         "INSERT INTO powerops_security.db_principal_scopes (db_role,tenant_id,business_unit_id,enabled) VALUES ($1,$2,$3,true) ON CONFLICT (db_role) DO UPDATE SET tenant_id=EXCLUDED.tenant_id,business_unit_id=EXCLUDED.business_unit_id,enabled=true",
