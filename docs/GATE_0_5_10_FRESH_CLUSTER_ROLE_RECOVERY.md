@@ -9,9 +9,9 @@ Close the specific F-04 evidence gap identified in the independent Gate 0.5.9 re
 1. Create a separate PostgreSQL 16 container, independent of the original CI service container.
 2. Confirm that no `powerops_app_%` scoped login roles exist in the fresh cluster.
 3. Restore the database-only custom-format backup with `--no-owner --no-privileges`. PostgreSQL cluster roles are therefore not supplied by the database dump.
-4. Reapply `0002_powerops_session_identity_rls.sql` to reconstruct protected owner/runtime roles, schema, identity functions, RLS policies and ownership.
+4. Reapply migrations `0001`, `0002` and `0003` in order. Migration 0001 is idempotently reapplied against the restored schema; 0002 reconstructs protected owner/runtime roles, schema, identity functions, RLS policies and ownership.
 5. Read the restored `powerops_security.db_principal_scopes` inventory and recreate each enabled scoped LOGIN using a unique ephemeral credential.
-6. Grant only the `powerops_runtime` capability group, then apply `0003_powerops_privilege_hardening.sql`.
+6. Grant only the `powerops_runtime` capability group, then complete migration 0003 hardening.
 7. Authenticate separately as every recreated scoped login and verify its SESSION_USER, tenant and business-unit mapping.
 8. Verify role attributes, membership restrictions, protected object ownership and effective runtime privileges.
 9. Change the legacy tenant GUC and confirm the authenticated database identity remains authoritative. Attempt a cross-tenant write and require RLS rejection.
