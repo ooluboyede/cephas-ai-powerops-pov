@@ -270,7 +270,8 @@ BEGIN
     AND a.approval_id = p_approval_id;
 
   IF FOUND THEN
-    IF v_existing.principal_id = v_principal_id
+    IF v_existing.candidate_id = p_candidate_id
+       AND v_existing.principal_id = v_principal_id
        AND v_existing.role_name = p_role_name
        AND v_existing.decision = p_decision
        AND v_existing.reason = p_reason THEN
