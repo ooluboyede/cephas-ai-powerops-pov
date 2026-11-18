@@ -34,7 +34,7 @@ test("registry refuses to start without a trusted verifier when artifact verific
  assert.throws(()=>createRegistry(),/Trusted artifact verifier must be injected/);
 });
 test("candidate registration verifies raw signed bytes inside the registry and stores its own receipt",()=>{
- const {registry,keyPair,candidateId,result,artifactBytes}=setup();
+ const {registry,keyPair,candidateId,result,artifactBytes,manifest}=setup();
  assert.equal(result.artifactVerification.verified,true);
  assert.equal(result.artifactVerification.artifactSha256,crypto.createHash("sha256").update(artifactBytes).digest("hex"));
  assert.equal(result.artifactVerification.publisherKeyId,"publisher-test-key");
