@@ -279,7 +279,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       FROM pg_class c
       JOIN pg_namespace n ON n.oid = c.relnamespace
       JOIN pg_roles r ON r.oid = c.relowner
-      WHERE (n.nspname = 'public' AND c.relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_audit_events'))
+      WHERE (n.nspname = 'public' AND c.relname IN ('powerops_ml_model_candidates','powerops_ml_model_releases','powerops_ml_model_approvals','powerops_ml_audit_events'))
          OR (n.nspname = 'powerops_security' AND c.relname = 'db_principal_scopes')
       ORDER BY c.relname
     `);
