@@ -69,7 +69,7 @@ GRANT SELECT,INSERT ON powerops_ml_model_approvals TO powerops_runtime;
 CREATE OR REPLACE FUNCTION powerops_ml_require_active_approval_assignment()
 RETURNS trigger LANGUAGE plpgsql
 SET search_path=pg_catalog
-AS $
+AS $body$
 BEGIN
  IF NOT EXISTS (
    SELECT 1 FROM public.powerops_ml_principal_role_assignments a
@@ -84,7 +84,7 @@ BEGIN
  END IF;
  RETURN NEW;
 END;
-$;
+$body$;
 ALTER FUNCTION powerops_ml_require_active_approval_assignment() OWNER TO powerops_registry_owner;
 REVOKE ALL ON FUNCTION powerops_ml_require_active_approval_assignment() FROM PUBLIC;
 DROP TRIGGER IF EXISTS powerops_ml_approval_requires_active_assignment ON powerops_ml_model_approvals;
