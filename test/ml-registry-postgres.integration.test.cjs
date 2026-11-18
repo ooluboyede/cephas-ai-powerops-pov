@@ -118,6 +118,23 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
         () => scopedApprovalClient.query("DELETE FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",["tenant-a","unit-1",candidateA]),
         /permission denied|append-only|immutable/i
       );
+      const revokedCandidate = "revoked-approval-" + crypto.randomUUID();
+      const revokedData = data(revokedCandidate,"tenant-a");
+      await admin.query(
+        "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8)",
+        ["tenant-a","unit-1",revokedCandidate,revokedData.modelVersion,revokedData.manifestSha256,revokedData.artifactSha256,JSON.stringify(revokedData),"tenant-a"]
+      );
+      await admin.query(
+        "UPDATE powerops_ml_principal_role_assignments SET revoked_at=clock_timestamp() WHERE tenant_id=$1 AND business_unit_id=$2 AND principal_id=$3 AND role_name=$4",
+        ["tenant-a","unit-1","risk-reviewer-a","model-risk"]
+      );
+      await assert.rejects(
+        () => scopedApprovalClient.query(
+          "INSERT INTO powerops_ml_model_approvals (tenant_id,business_unit_id,candidate_id,approval_id,principal_id,role_name,decision,reason) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+          ["tenant-a","unit-1",revokedCandidate,"revoked-"+crypto.randomUUID(),"risk-reviewer-a","model-risk","approve","Must be rejected after revocation"]
+        ),
+        /active scoped role assignment/i
+      );
       const hiddenAssignment = await scopedApprovalClient.query(
         "SELECT principal_id FROM powerops_ml_principal_role_assignments WHERE tenant_id='tenant-b'"
       );
