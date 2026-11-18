@@ -83,7 +83,7 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
 
   async function appendAudit(client, identity, eventType, payload, actorId) {
     const latest = await client.query(
-      "SELECT sequence, event_hash FROM powerops_ml_audit_events WHERE tenant_id = $1 AND business_unit_id = $2 ORDER BY sequence DESC LIMIT 1 FOR UPDATE",
+      "SELECT sequence, event_hash FROM powerops_ml_audit_events WHERE tenant_id = $1 AND business_unit_id = $2 ORDER BY sequence DESC LIMIT 1",
       [identity.tenantId, identity.businessUnitId]
     );
     const previousHash = latest.rows.length ? latest.rows[0].event_hash : "GENESIS";
