@@ -74,6 +74,22 @@ ALTER TABLE powerops_ml_principal_role_assignments
   ALTER COLUMN grant_id SET DEFAULT gen_random_uuid(),
   ALTER COLUMN grant_id SET NOT NULL;
 
+DO $constraints$
+DECLARE
+  fk record;
+BEGIN
+  FOR fk IN
+    SELECT conname
+    FROM pg_constraint
+    WHERE conrelid = 'public.powerops_ml_model_approvals'::regclass
+      AND contype = 'f'
+      AND confrelid = 'public.powerops_ml_principal_role_assignments'::regclass
+  LOOP
+    EXECUTE format('ALTER TABLE public.powerops_ml_model_approvals DROP CONSTRAINT %I', fk.conname);
+  END LOOP;
+END
+$constraints$;
+
 ALTER TABLE powerops_ml_principal_role_assignments
   DROP CONSTRAINT IF EXISTS powerops_ml_principal_role_assignments_pkey;
 ALTER TABLE powerops_ml_principal_role_assignments
@@ -96,21 +112,7 @@ WHERE a.grant_id IS NULL
   AND a.principal_id = g.principal_id
   AND a.role_name = g.role_name;
 
-DO $constraints$
-DECLARE
-  fk record;
-BEGIN
-  FOR fk IN
-    SELECT conname
-    FROM pg_constraint
-    WHERE conrelid = 'public.powerops_ml_model_approvals'::regclass
-      AND contype = 'f'
-      AND confrelid = 'public.powerops_ml_principal_role_assignments'::regclass
-  LOOP
-    EXECUTE format('ALTER TABLE public.powerops_ml_model_approvals DROP CONSTRAINT %I', fk.conname);
-  END LOOP;
-END
-$constraints$;
+
 
 -- Existing approvals must retain their exact historical assignment reference.
 DO $legacy$
