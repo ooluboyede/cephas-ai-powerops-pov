@@ -73,8 +73,8 @@ jobs:
           test "$approval_assignment_trigger" = "1"
           scope_map_rows="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM powerops_security.db_principal_scopes")"
           test "$scope_map_rows" -ge "3"
-          scope_functions="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id')")"
-          test "$scope_functions" = "2"
+          scope_functions="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id','current_principal_id')")"
+          test "$scope_functions" = "3"
           echo "Restored database scope mappings: $scope_map_rows"
           echo "Restored database identity functions: $scope_functions"
 
@@ -84,6 +84,7 @@ jobs:
           docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 -c "REVOKE powerops_runtime FROM powerops_app_a1; GRANT powerops_registry_owner TO powerops_app_a1; GRANT ALL PRIVILEGES ON powerops_ml_model_candidates, powerops_ml_model_releases, powerops_ml_audit_events TO powerops_app_a1; GRANT SELECT, INSERT, UPDATE, DELETE ON powerops_security.db_principal_scopes TO powerops_app_a1"
           docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 < migrations/0003_powerops_privilege_hardening.sql
           docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 < migrations/0004_durable_model_approvals.sql
+          docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -v ON_ERROR_STOP=1 < migrations/0005_principal_bound_approval_authority.sql
 
           approval_owner_failures="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_roles r ON r.oid=c.relowner WHERE n.nspname='public' AND c.relname IN ('powerops_ml_principal_role_assignments','powerops_ml_model_approvals') AND r.rolname <> 'powerops_registry_owner'")"
           test "$approval_owner_failures" = "0"
