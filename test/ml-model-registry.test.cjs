@@ -2,7 +2,8 @@ const test=require("node:test");
 const assert=require("node:assert/strict");
 const crypto=require("node:crypto");
 const gov=require("../src/ml-governance.js");
-const {canonical,signModelArtifact}=require("../src/ml-training-pipeline.js");
+const {signModelArtifact}=require("../src/ml-training-pipeline.js");
+const {canonical}=gov;
 const {createTrustedArtifactVerifier}=require("../src/trusted-artifact-verifier.js");
 const {createRegistry}=require("../src/ml-model-registry.js");
 
@@ -39,7 +40,7 @@ test("candidate registration verifies raw signed bytes inside the registry and s
  assert.equal(result.artifactVerification.publisherKeyId,"publisher-test-key");
  assert.equal(result.artifactVerification.verificationMethod,"ed25519-sha256-before-json-parse");
  assert.throws(()=>registry.registerCandidate({candidateId:"forged",manifest:result.manifest,artifactSha256:"a".repeat(64),createdBy:"attacker",eligibility:{eligible:true},artifactVerification:{verified:true,artifactSha256:"a".repeat(64),publisherKeyId:"fake",verifierVersion:"fake"}}),/Raw model artifact bytes are required/);
- assert.throws(()=>registry.registerCandidate({candidateId:"bad-signature",manifest:result.manifest,artifactBytes,artifactSignature:"bad",publisherKeyId:"publisher-test-key",createdBy:"trainer-2"}),/canonical base64 Ed25519/);
+ assert.throws(()=>registry.registerCandidate({candidateId:"bad-signature",manifest,artifactBytes,artifactSignature:"bad",publisherKeyId:"publisher-test-key",createdBy:"trainer-2"}),/canonical base64 Ed25519/);
 });
 test("tampered artifact bytes fail signature verification before JSON parsing",()=>{
  const {artifactVerifier,artifactBytes,artifactSignature}=setup();
