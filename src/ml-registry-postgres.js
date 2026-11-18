@@ -152,7 +152,10 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
         );
         const prior = existing.rows[0]?.candidate_data;
         if (prior && prior.createdBy === candidate.createdBy && prior.modelVersion === candidate.modelVersion &&
-            prior.manifestSha256 === candidate.manifestSha256 && prior.artifactSha256 === candidate.artifactSha256) return prior;
+            prior.manifestSha256 === candidate.manifestSha256 && prior.artifactSha256 === candidate.artifactSha256) {
+          prior.approvals = await loadApprovalProjection(client, identity, candidate.candidateId);
+          return prior;
+        }
         throw new Error("Candidate ID already exists with different content");
       }
       await appendAudit(client, identity, "candidate-registered", { candidateId: candidate.candidateId, manifestSha256: candidate.manifestSha256, artifactSha256: candidate.artifactSha256 }, identity.subject);
@@ -180,7 +183,7 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
       );
       if (prior.rows.length) {
         const row = prior.rows[0];
-        if (row.principal_id !== identity.subject || row.role_name !== role || row.decision !== decision || row.reason !== reason) {
+        if (row.candidate_id !== candidateId || row.principal_id !== identity.subject || row.role_name !== role || row.decision !== decision || row.reason !== reason) {
           throw new Error("Approval ID already exists with different content");
         }
         const candidate = found.rows[0].candidate_data;
