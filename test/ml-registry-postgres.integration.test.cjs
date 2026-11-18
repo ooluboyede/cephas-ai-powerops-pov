@@ -135,6 +135,11 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
         ),
         /active scoped role assignment/i
       );
+      // Keep the negative-test candidate out of the subsequent tenant listing assertion.
+      await admin.query(
+        "DELETE FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",
+        ["tenant-a","unit-1",revokedCandidate]
+      );
       const hiddenAssignment = await scopedApprovalClient.query(
         "SELECT principal_id FROM powerops_ml_principal_role_assignments WHERE tenant_id='tenant-b'"
       );
