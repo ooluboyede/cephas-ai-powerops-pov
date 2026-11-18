@@ -1,6 +1,6 @@
 "use strict";
 const crypto=require("node:crypto");
-const {canonical,sha256,verifyModelManifest}=require("./ml-governance.js");
+const {canonical,verifyModelManifest}=require("./ml-governance.js");
 
 const DEFAULT_POLICY=Object.freeze({
  requiredApprovalRoles:["model-risk","security","operations-owner"],
@@ -11,8 +11,9 @@ const DEFAULT_POLICY=Object.freeze({
 function assert(ok,message){if(!ok)throw new Error(message)}
 function text(v,name){assert(typeof v==="string"&&v.trim().length>0,name+" is required")}
 function hash(value){return crypto.createHash("sha256").update(canonical(value)).digest("hex")}
-function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTRY-V1"}={}){
+function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTRY-V1",artifactVerifier}={}){
  text(registryId,"registryId");
+ if(policy.requireArtifactVerification)assert(artifactVerifier&&typeof artifactVerifier.verify==="function","Trusted artifact verifier must be injected by the trusted composition root");
  const state={schemaVersion:"1.0",registryId,policy:{...policy,requiredApprovalRoles:policy.requiredApprovalRoles.slice()},events:[],candidates:{},releases:[],activeReleaseId:null};
  function append(type,payload,actorId){
   text(actorId,"actorId");
@@ -27,16 +28,27 @@ function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTR
   const integrity=verifyModelManifest(input.manifest);
   assert(integrity.valid,"Cannot register a model with an invalid manifest");
   text(input.candidateId,"candidateId");text(input.createdBy,"createdBy");
-  text(input.artifactSha256,"artifactSha256");
-  assert(/^[a-f0-9]{64}$/.test(input.artifactSha256),"Artifact SHA-256 must be a 64-character lowercase hex digest");
-  assert(input.artifactVerification&&input.artifactVerification.verified===true,"Trusted artifact verification receipt is required");
-  assert(input.artifactVerification.artifactSha256===input.artifactSha256,"Artifact verification receipt hash mismatch");
-  text(input.artifactVerification.publisherKeyId,"publisherKeyId");
-  text(input.artifactVerification.verifierVersion,"verifierVersion");
   assert(!state.candidates[input.candidateId],"Candidate ID already exists");
-  const candidate={candidateId:input.candidateId,modelVersion:input.manifest.modelVersion,manifestSha256:input.manifest.manifestSha256,artifactSha256:input.artifactSha256,createdBy:input.createdBy,createdAt:input.createdAt||null,eligibility:input.eligibility||{eligible:false,reasons:["No promotion eligibility decision supplied"]},artifactVerification:{verified:true,artifactSha256:input.artifactSha256,publisherKeyId:input.artifactVerification.publisherKeyId,verifierVersion:input.artifactVerification.verifierVersion,verifiedAt:input.artifactVerification.verifiedAt||null},approvals:[],status:"candidate"};
+  let artifactVerification=null,artifactSha256=null;
+  if(state.policy.requireArtifactVerification){
+   assert(Buffer.isBuffer(input.artifactBytes),"Raw model artifact bytes are required");
+   const verified=artifactVerifier.verify({bytes:input.artifactBytes,signature:input.artifactSignature,publisherKeyId:input.publisherKeyId});
+   assert(verified&&verified.receipt&&verified.receipt.verified===true,"Trusted verifier did not return a valid receipt");
+   const model=verified.model,receipt=verified.receipt;
+   assert(model.modelVersion===input.manifest.modelVersion,"Artifact and manifest modelVersion mismatch");
+   assert(model.algorithm===(input.manifest.algorithm||"knn-novelty"),"Artifact and manifest algorithm mismatch");
+   assert(model.datasetSha256===input.manifest.datasetSha256,"Artifact and manifest dataset digest mismatch");
+   assert(Array.isArray(model.featureSchema)&&model.featureSchema.join("|")===input.manifest.featureSchema.join("|"),"Artifact and manifest feature schema mismatch");
+   artifactSha256=receipt.artifactSha256;
+   artifactVerification={verified:true,artifactSha256,publisherKeyId:receipt.publisherKeyId,verifierVersion:receipt.verifierVersion,verifiedAt:receipt.verifiedAt,verificationMethod:receipt.verificationMethod};
+  }else{
+   text(input.artifactSha256,"artifactSha256");
+   assert(/^[a-f0-9]{64}$/.test(input.artifactSha256),"Artifact SHA-256 must be a 64-character lowercase hex digest");
+   artifactSha256=input.artifactSha256;
+  }
+  const candidate={candidateId:input.candidateId,modelVersion:input.manifest.modelVersion,manifestSha256:input.manifest.manifestSha256,artifactSha256,createdBy:input.createdBy,createdAt:input.createdAt||null,eligibility:input.eligibility||{eligible:false,reasons:["No promotion eligibility decision supplied"]},artifactVerification,approvals:[],status:"candidate"};
   state.candidates[input.candidateId]=candidate;
-  append("candidate-registered",{candidateId:candidate.candidateId,modelVersion:candidate.modelVersion,manifestSha256:candidate.manifestSha256,artifactSha256:candidate.artifactSha256,createdBy:candidate.createdBy},"registry-service");
+  append("candidate-registered",{candidateId:candidate.candidateId,modelVersion:candidate.modelVersion,manifestSha256:candidate.manifestSha256,artifactSha256:candidate.artifactSha256,createdBy:candidate.createdBy,artifactVerification:candidate.artifactVerification},"registry-service");
   return snapshotCandidate(candidate);
  }
  function snapshotCandidate(c){return JSON.parse(JSON.stringify(c))}
