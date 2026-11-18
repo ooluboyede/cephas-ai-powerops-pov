@@ -11,9 +11,10 @@ const DEFAULT_POLICY=Object.freeze({
 function assert(ok,message){if(!ok)throw new Error(message)}
 function text(v,name){assert(typeof v==="string"&&v.trim().length>0,name+" is required")}
 function hash(value){return crypto.createHash("sha256").update(canonical(value)).digest("hex")}
-function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTRY-V1",artifactVerifier}={}){
+function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTRY-V1",artifactVerifier,promotionEvaluator}={}){
  text(registryId,"registryId");
  if(policy.requireArtifactVerification)assert(artifactVerifier&&typeof artifactVerifier.verify==="function","Trusted artifact verifier must be injected by the trusted composition root");
+ if(policy.requirePromotionEligibility)assert(promotionEvaluator&&typeof promotionEvaluator.evaluate==="function","Trusted promotion evaluator must be injected by the trusted composition root");
  const state={schemaVersion:"1.0",registryId,policy:{...policy,requiredApprovalRoles:policy.requiredApprovalRoles.slice()},events:[],candidates:{},releases:[],activeReleaseId:null};
  function append(type,payload,actorId){
   text(actorId,"actorId");
@@ -46,9 +47,15 @@ function createRegistry({policy=DEFAULT_POLICY,registryId="POWEROPS-DEMO-REGISTR
    assert(/^[a-f0-9]{64}$/.test(input.artifactSha256),"Artifact SHA-256 must be a 64-character lowercase hex digest");
    artifactSha256=input.artifactSha256;
   }
-  const candidate={candidateId:input.candidateId,modelVersion:input.manifest.modelVersion,manifestSha256:input.manifest.manifestSha256,artifactSha256,createdBy:input.createdBy,createdAt:input.createdAt||null,eligibility:input.eligibility||{eligible:false,reasons:["No promotion eligibility decision supplied"]},artifactVerification,approvals:[],status:"candidate"};
+  let eligibility={eligible:false,reasons:["No trusted promotion decision supplied"]},eligibilityVerification=null;
+  if(state.policy.requirePromotionEligibility){
+   const evaluated=promotionEvaluator.evaluate({bytes:input.evaluationReportBytes,signature:input.evaluationReportSignature,evaluatorKeyId:input.evaluatorKeyId,manifest:input.manifest,artifactSha256});
+   assert(evaluated&&evaluated.decision&&typeof evaluated.decision.eligible==="boolean"&&evaluated.receipt&&evaluated.receipt.verified===true,"Trusted promotion evaluator returned an invalid decision");
+   eligibility=evaluated.decision;eligibilityVerification=evaluated.receipt;
+  }
+  const candidate={candidateId:input.candidateId,modelVersion:input.manifest.modelVersion,manifestSha256:input.manifest.manifestSha256,artifactSha256,createdBy:input.createdBy,createdAt:input.createdAt||null,eligibility,eligibilityVerification,artifactVerification,approvals:[],status:"candidate"};
   state.candidates[input.candidateId]=candidate;
-  append("candidate-registered",{candidateId:candidate.candidateId,modelVersion:candidate.modelVersion,manifestSha256:candidate.manifestSha256,artifactSha256:candidate.artifactSha256,createdBy:candidate.createdBy,artifactVerification:candidate.artifactVerification},"registry-service");
+  append("candidate-registered",{candidateId:candidate.candidateId,modelVersion:candidate.modelVersion,manifestSha256:candidate.manifestSha256,artifactSha256:candidate.artifactSha256,createdBy:candidate.createdBy,artifactVerification:candidate.artifactVerification,eligibility:candidate.eligibility,eligibilityVerification:candidate.eligibilityVerification},"registry-service");
   return snapshotCandidate(candidate);
  }
  function snapshotCandidate(c){return JSON.parse(JSON.stringify(c))}
