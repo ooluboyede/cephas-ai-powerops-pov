@@ -1,7 +1,9 @@
 "use strict";
 
-// Gate 0.5.10: provision scoped LOGIN identities from the restored scope map.
-// Passwords must be supplied by a secret-manager-backed callback; never log them.
+const crypto = require("node:crypto");
+
+const SCRAM_ITERATIONS = 4096;
+
 function quoteIdentifier(value) {
   if (typeof value !== "string" || !/^[a-z_][a-z0-9_]{0,62}$/.test(value)) {
     throw new Error("Invalid PostgreSQL role identifier in scope map");
@@ -14,6 +16,19 @@ function quoteLiteral(value) {
     throw new Error("Scoped role credentials must be at least 24 characters");
   }
   return "'" + value.replace(/'/g, "''") + "'";
+}
+
+function createScramVerifier(password) {
+  if (typeof password !== "string" || Buffer.byteLength(password, "utf8") < 24) {
+    throw new Error("Scoped role credentials must be at least 24 bytes");
+  }
+  const salt = crypto.randomBytes(16);
+  const saltedPassword = crypto.pbkdf2Sync(password, salt, SCRAM_ITERATIONS, 32, "sha256");
+  const clientKey = crypto.createHmac("sha256", saltedPassword).update("Client Key").digest();
+  const storedKey = crypto.createHash("sha256").update(clientKey).digest();
+  const serverKey = crypto.createHmac("sha256", saltedPassword).update("Server Key").digest();
+  return "SCRAM-SHA-256$" + SCRAM_ITERATIONS + ":" + salt.toString("base64") +
+    "$" + storedKey.toString("base64") + ":" + serverKey.toString("base64");
 }
 
 async function provisionScopedDatabaseRoles({ admin, credentialForRole }) {
@@ -29,15 +44,15 @@ async function provisionScopedDatabaseRoles({ admin, credentialForRole }) {
   for (const item of inventory.rows) {
     if (!item.enabled) continue;
     const role = quoteIdentifier(item.role_name);
-    const password = quoteLiteral(await credentialForRole(item.role_name));
+    const verifier = quoteLiteral(createScramVerifier(await credentialForRole(item.role_name)));
     const exists = await admin.query("SELECT 1 FROM pg_roles WHERE rolname=$1", [item.role_name]);
     if (exists.rowCount) {
       await admin.query(
-        `ALTER ROLE ${role} WITH LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD ${password}`
+        `ALTER ROLE ${role} WITH LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD ${verifier}`
       );
     } else {
       await admin.query(
-        `CREATE ROLE ${role} WITH LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD ${password}`
+        `CREATE ROLE ${role} WITH LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD ${verifier}`
       );
     }
     await admin.query(`GRANT powerops_runtime TO ${role} WITH INHERIT TRUE, SET TRUE`);
@@ -46,4 +61,4 @@ async function provisionScopedDatabaseRoles({ admin, credentialForRole }) {
   return provisioned;
 }
 
-module.exports = { provisionScopedDatabaseRoles };
+module.exports = { provisionScopedDatabaseRoles, createScramVerifier };
