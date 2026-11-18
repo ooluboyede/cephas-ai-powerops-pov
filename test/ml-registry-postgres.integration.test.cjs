@@ -209,10 +209,18 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       principalApprovalClient.release();
     }
 
+    const adapterCandidate = "adapter-approval-" + crypto.randomUUID();
+    const adapterData = data(adapterCandidate,"tenant-a");
+    await admin.query(
+      "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8)",
+      ["tenant-a","unit-1",adapterCandidate,adapterData.modelVersion,adapterData.manifestSha256,adapterData.artifactSha256,JSON.stringify(adapterData),"model-author"]
+    );
     const principals = {
       readerA1: { tenantId: "tenant-a", businessUnitId: "unit-1", roles: ["registry-reader", "auditor"] },
       readerA2: { tenantId: "tenant-a", businessUnitId: "unit-2", roles: ["registry-reader"] },
-      readerB1: { tenantId: "tenant-b", businessUnitId: "unit-1", roles: ["registry-reader"] }
+      readerB1: { tenantId: "tenant-b", businessUnitId: "unit-1", roles: ["registry-reader"] },
+      "risk-reviewer-a": { tenantId: "tenant-a", businessUnitId: "unit-1", roles: ["model-risk"] },
+      "risk-reviewer-b": { tenantId: "tenant-a", businessUnitId: "unit-1", roles: ["model-risk"] }
     };
     const { createTokenAuthority } = require("../src/ml-registry-security.js");
     const { createPostgresRegistry } = require("../src/ml-registry-postgres.js");
@@ -221,11 +229,33 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       const role = roleMap.find(x => x.tenant === identity.tenantId && x.bu === identity.businessUnitId)?.role;
       return role ? pools.get(role) : null;
     };
-    const registry = createPostgresRegistry({ poolForIdentity, tokenAuthority: authority });
+    const registry = createPostgresRegistry({
+      poolForIdentity,
+      poolForApprovalIdentity: identity => pools.get("powerops_approver_a1"),
+      tokenAuthority: authority
+    });
 
     assert.ok((await registry.listCandidates(authority.issueToken("readerA1"))).some(x => x.candidateId === candidateA));
     assert.deepEqual(await registry.listCandidates(authority.issueToken("readerA2")), []);
     assert.deepEqual((await registry.listCandidates(authority.issueToken("readerB1"))).map(x => x.candidateId), [candidateB]);
+    const approvedProjection = await registry.recordApproval(authority.issueToken("risk-reviewer-a"), {
+      candidateId: adapterCandidate,
+      approvalId: "adapter-" + crypto.randomUUID(),
+      role: "model-risk",
+      decision: "approve",
+      reason: "Verified principal-bound adapter integration"
+    });
+    assert.equal(approvedProjection.approvals[0].approverId, "risk-reviewer-a");
+    await assert.rejects(
+      () => registry.recordApproval(authority.issueToken("risk-reviewer-b"), {
+        candidateId: adapterCandidate,
+        approvalId: "wrong-principal-" + crypto.randomUUID(),
+        role: "model-risk",
+        decision: "approve",
+        reason: "Must fail because DB pool is bound to another principal"
+      }),
+      /do not match the principal-bound database login/i
+    );
 
     // Critical negative test: the real tenant-A runtime login deliberately changes
     // both legacy custom GUCs to tenant-B. RLS must still use the immutable login mapping.
@@ -335,6 +365,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       "powerops_ml_model_candidates",
       "powerops_ml_model_releases",
       "powerops_ml_audit_events",
+      "powerops_ml_model_approvals",
       "powerops_security.db_principal_scopes"
     ];
     for (const objectName of protectedObjects) {
@@ -346,7 +377,9 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
         ? { can_select: true, can_insert: true, can_update: false, can_delete: false, can_truncate: false }
         : objectName === "powerops_security.db_principal_scopes"
           ? { can_select: false, can_insert: false, can_update: false, can_delete: false, can_truncate: false }
-          : { can_select: true, can_insert: true, can_update: true, can_delete: false, can_truncate: false };
+          : objectName === "powerops_ml_model_approvals"
+            ? { can_select: true, can_insert: false, can_update: false, can_delete: false, can_truncate: false }
+            : { can_select: true, can_insert: true, can_update: true, can_delete: false, can_truncate: false };
       assert.deepEqual(matrix.rows[0], expected, `unexpected effective privileges for ${objectName}`);
     }
 
