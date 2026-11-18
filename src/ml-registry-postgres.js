@@ -176,7 +176,7 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
       );
       if (!found.rows.length) throw new Error("Unknown model candidate in this tenant and business unit");
       const prior = await client.query(
-        "SELECT approval_id, principal_id, role_name, decision, reason FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND approval_id=$3",
+        "SELECT candidate_id, approval_id, principal_id, role_name, decision, reason FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND approval_id=$3",
         [identity.tenantId, identity.businessUnitId, approvalId]
       );
       if (prior.rows.length) {
