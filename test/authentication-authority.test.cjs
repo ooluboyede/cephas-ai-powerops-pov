@@ -69,3 +69,35 @@ test("authorization uses only server-mapped roles and fails closed", async () =>
 test("construction fails without durable revocation and trusted verifier adapters", () => {
   assert.throws(() => createAuthenticationAuthority({}), /assertion verifier/);
 });
+
+test("retained previous signing keys validate existing sessions during rotation", async () => {
+  let now = 1_800_000_000_000;
+  const revoked = new Set();
+  const common = {
+    clock: () => now,
+    assertionVerifier: async () => ({ verified: true, issuer: "https://idp.example.test", subject: "user-123" }),
+    principalResolver: async () => ({ tenantId: "tenant-a", businessUnitId: "bu-1", roles: ["model-trainer"] }),
+    revocationStore: { isRevoked: async id => revoked.has(id), revoke: async id => revoked.add(id) }
+  };
+  const previousAuthority = createAuthenticationAuthority({
+    ...common, signingKeys: { "key-previous": "previous-signing-secret-with-at-least-32-bytes-0002" },
+    activeKeyId: "key-previous"
+  });
+  const oldSession = await previousAuthority.authenticateExternalAssertion("valid");
+  const rotatedAuthority = createAuthenticationAuthority({
+    ...common,
+    signingKeys: {
+      "key-current": "test-signing-secret-with-at-least-32-bytes-0001",
+      "key-previous": "previous-signing-secret-with-at-least-32-bytes-0002"
+    },
+    activeKeyId: "key-current"
+  });
+  assert.equal((await rotatedAuthority.verifySessionToken(oldSession)).subject, "user-123");
+  const newSession = await rotatedAuthority.authenticateExternalAssertion("valid");
+  assert.equal((await rotatedAuthority.verifySessionToken(newSession)).subject, "user-123");
+  const retiredAuthority = createAuthenticationAuthority({
+    ...common, signingKeys: { "key-current": "test-signing-secret-with-at-least-32-bytes-0001" },
+    activeKeyId: "key-current"
+  });
+  await assert.rejects(() => retiredAuthority.verifySessionToken(oldSession), /Unknown or retired signing key/);
+});
