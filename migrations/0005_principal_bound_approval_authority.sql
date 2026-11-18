@@ -27,7 +27,9 @@ AS $function$
 $function$;
 ALTER FUNCTION powerops_security.current_principal_id() OWNER TO powerops_scope_owner;
 REVOKE ALL ON FUNCTION powerops_security.current_principal_id() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION powerops_security.current_principal_id() TO powerops_runtime;
+GRANT EXECUTE ON FUNCTION powerops_security.current_principal_id() TO powerops_runtime, powerops_registry_owner;
+GRANT EXECUTE ON FUNCTION powerops_security.current_tenant_id() TO powerops_registry_owner;
+GRANT EXECUTE ON FUNCTION powerops_security.current_business_unit_id() TO powerops_registry_owner;
 
 DO $roles$
 BEGIN
