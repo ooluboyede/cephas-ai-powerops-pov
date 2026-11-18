@@ -286,6 +286,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     assert.deepEqual(owners.rows, [
       { relname: "db_principal_scopes", owner: "powerops_scope_owner" },
       { relname: "powerops_ml_audit_events", owner: "powerops_registry_owner" },
+      { relname: "powerops_ml_model_approvals", owner: "powerops_registry_owner" },
       { relname: "powerops_ml_model_candidates", owner: "powerops_registry_owner" },
       { relname: "powerops_ml_model_releases", owner: "powerops_registry_owner" }
     ]);
@@ -293,13 +294,15 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
       SELECT p.proname, r.rolname AS owner
       FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
       JOIN pg_roles r ON r.oid=p.proowner
-      WHERE (n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id'))
-         OR (n.nspname='public' AND p.proname='powerops_ml_reject_audit_mutation')
+      WHERE (n.nspname='powerops_security' AND p.proname IN ('current_tenant_id','current_business_unit_id','current_principal_id'))
+         OR (n.nspname='public' AND p.proname IN ('powerops_ml_reject_audit_mutation','powerops_ml_record_principal_approval'))
       ORDER BY p.proname
     `);
     assert.deepEqual(functionOwners.rows, [
       { proname: "current_business_unit_id", owner: "powerops_scope_owner" },
+      { proname: "current_principal_id", owner: "powerops_scope_owner" },
       { proname: "current_tenant_id", owner: "powerops_scope_owner" },
+      { proname: "powerops_ml_record_principal_approval", owner: "powerops_registry_owner" },
       { proname: "powerops_ml_reject_audit_mutation", owner: "powerops_registry_owner" }
     ]);
     const schemaOwner = await admin.query(`
@@ -410,7 +413,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     await pools.get("powerops_app_a1").end();
     pools.set("powerops_app_a1", makePool("powerops_app_a1"));
     const afterReconnect = await registry.listCandidates(authority.issueToken("readerA1"));
-    assert.deepEqual(afterReconnect.map(x => x.candidateId), [candidateA]);
+    assert.deepEqual(afterReconnect.map(x => x.candidateId).sort(), [candidateA, adapterCandidate, revokedCandidate].sort());
   } finally {
     for (const pool of pools.values()) await pool.end();
     await admin.end();
