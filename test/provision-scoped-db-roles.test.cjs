@@ -12,6 +12,10 @@ test("SCRAM verifier is validly shaped and does not disclose the supplied passwo
   assert.equal(verifier.includes(password), false);
 });
 
+test("SCRAM verifier rejects credentials outside ASCII base64url", () => {
+  assert.throws(() => createScramVerifier("this-is-a-long-but-not-valid-password-π"), /ASCII base64url/);
+});
+
 test("role provisioning sends a SCRAM verifier, never the plaintext password, to PostgreSQL", async () => {
   const password = crypto.randomBytes(32).toString("base64url");
   const statements = [];
@@ -25,7 +29,6 @@ test("role provisioning sends a SCRAM verifier, never the plaintext password, to
       return { rowCount: 0, rows: [] };
     }
   };
-
   const provisioned = await provisionScopedDatabaseRoles({
     admin,
     credentialForRole: async role => {
@@ -33,7 +36,6 @@ test("role provisioning sends a SCRAM verifier, never the plaintext password, to
       return password;
     }
   });
-
   assert.equal(provisioned.length, 1);
   const roleStatement = statements.find(entry => entry.sql.startsWith("CREATE ROLE"));
   assert.ok(roleStatement);
