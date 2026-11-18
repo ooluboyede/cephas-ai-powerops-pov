@@ -86,6 +86,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     }
 
     const candidateA = "scope-a-" + crypto.randomUUID();
+    let revokedCandidate;
     const candidateB = "scope-b-" + crypto.randomUUID();
     const data = (candidateId, tenant) => ({
       candidateId, modelVersion: "identity-boundary-test", manifestSha256: "a".repeat(64),
@@ -162,7 +163,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
         /permission denied|append-only|immutable/i
       );
 
-      const revokedCandidate = "revoked-approval-" + crypto.randomUUID();
+      revokedCandidate = "revoked-approval-" + crypto.randomUUID();
       const revokedData = data(revokedCandidate,"tenant-a");
       await admin.query(
         "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8)",
