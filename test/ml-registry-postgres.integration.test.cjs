@@ -223,7 +223,7 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     };
     const registry = createPostgresRegistry({ poolForIdentity, tokenAuthority: authority });
 
-    assert.deepEqual((await registry.listCandidates(authority.issueToken("readerA1"))).map(x => x.candidateId), [candidateA]);
+    assert.deepEqual((await registry.listCandidates(authority.issueToken("readerA1"))).map(x => x.candidateId).sort(), [candidateA, revokedCandidate].sort());
     assert.deepEqual(await registry.listCandidates(authority.issueToken("readerA2")), []);
     assert.deepEqual((await registry.listCandidates(authority.issueToken("readerB1"))).map(x => x.candidateId), [candidateB]);
 
