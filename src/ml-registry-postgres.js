@@ -175,8 +175,6 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
         [identity.tenantId, identity.businessUnitId, candidateId]
       );
       if (!found.rows.length) throw new Error("Unknown model candidate in this tenant and business unit");
-      if (found.rows[0].status !== "candidate") throw new Error("Candidate is not open for approval");
-
       const prior = await client.query(
         "SELECT approval_id, principal_id, role_name, decision, reason FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND approval_id=$3",
         [identity.tenantId, identity.businessUnitId, approvalId]
@@ -190,9 +188,10 @@ function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, toke
         candidate.approvals = await loadApprovalProjection(client, identity, candidateId);
         return candidate;
       }
+      if (found.rows[0].status !== "candidate") throw new Error("Candidate is not open for approval");
 
       await client.query(
-        "SELECT powerops_ml_record_principal_approval($1,$2,$3,$4,$5)",
+        "SELECT public.powerops_ml_record_principal_approval($1,$2,$3,$4,$5)",
         [candidateId, approvalId, role, decision, reason]
       );
       const candidate = found.rows[0].candidate_data;
