@@ -229,6 +229,24 @@ BEGIN
       USING ERRCODE = '22023';
   END IF;
 
+  SELECT * INTO v_existing
+  FROM public.powerops_ml_model_approvals a
+  WHERE a.tenant_id = v_tenant_id
+    AND a.business_unit_id = v_business_unit_id
+    AND a.approval_id = p_approval_id;
+
+  IF FOUND THEN
+    IF v_existing.candidate_id = p_candidate_id
+       AND v_existing.principal_id = v_principal_id
+       AND v_existing.role_name = p_role_name
+       AND v_existing.decision = p_decision
+       AND v_existing.reason = p_reason THEN
+      RETURN to_jsonb(v_existing);
+    END IF;
+    RAISE EXCEPTION 'Approval ID already exists with different content'
+      USING ERRCODE = '23505';
+  END IF;
+
   SELECT a.grant_id INTO v_grant_id
   FROM public.powerops_ml_principal_role_assignments a
   WHERE a.tenant_id = v_tenant_id
@@ -263,23 +281,6 @@ BEGIN
       USING ERRCODE = '42501';
   END IF;
 
-  SELECT * INTO v_existing
-  FROM public.powerops_ml_model_approvals a
-  WHERE a.tenant_id = v_tenant_id
-    AND a.business_unit_id = v_business_unit_id
-    AND a.approval_id = p_approval_id;
-
-  IF FOUND THEN
-    IF v_existing.candidate_id = p_candidate_id
-       AND v_existing.principal_id = v_principal_id
-       AND v_existing.role_name = p_role_name
-       AND v_existing.decision = p_decision
-       AND v_existing.reason = p_reason THEN
-      RETURN to_jsonb(v_existing);
-    END IF;
-    RAISE EXCEPTION 'Approval ID already exists with different content'
-      USING ERRCODE = '23505';
-  END IF;
 
   INSERT INTO public.powerops_ml_model_approvals
     (tenant_id,business_unit_id,candidate_id,approval_id,principal_id,role_name,decision,reason,grant_id)
