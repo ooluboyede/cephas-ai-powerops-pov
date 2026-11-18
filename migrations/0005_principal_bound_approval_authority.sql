@@ -41,6 +41,26 @@ $roles$;
 ALTER ROLE powerops_approval_runtime NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
 GRANT USAGE ON SCHEMA powerops_security TO powerops_approval_runtime, powerops_registry_owner;
 
+-- Reconstruct approval capability membership after restore/hardening. The
+-- principal mapping is protected data; only mapped dedicated logins receive it.
+DO $principal_roles$
+DECLARE
+  scoped record;
+BEGIN
+  FOR scoped IN
+    SELECT db_role FROM powerops_security.db_principal_scopes
+    WHERE enabled = true AND principal_id IS NOT NULL
+  LOOP
+    EXECUTE format(
+      'ALTER ROLE %I WITH LOGIN INHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS',
+      scoped.db_role
+    );
+    EXECUTE format('GRANT powerops_runtime TO %I WITH INHERIT TRUE, SET TRUE', scoped.db_role);
+    EXECUTE format('GRANT powerops_approval_runtime TO %I WITH INHERIT TRUE, SET TRUE', scoped.db_role);
+  END LOOP;
+END
+$principal_roles$;
+
 -- Convert assignments into immutable grant records. Revocation is the only
 -- permitted update; re-grant creates a new UUID-backed row.
 ALTER TABLE powerops_ml_principal_role_assignments
