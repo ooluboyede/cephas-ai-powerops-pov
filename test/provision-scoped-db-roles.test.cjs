@@ -12,6 +12,10 @@ test("SCRAM verifier is validly shaped and does not disclose the supplied passwo
   assert.equal(verifier.includes(password), false);
 });
 
+test("SCRAM verifier rejects credentials outside ASCII base64url", () => {
+  assert.throws(() => createScramVerifier("this-is-a-long-but-not-valid-password-π"), /ASCII base64url/);
+});
+
 test("role provisioning sends a SCRAM verifier, never the plaintext password, to PostgreSQL", async () => {
   const password = crypto.randomBytes(32).toString("base64url");
   const statements = [];
