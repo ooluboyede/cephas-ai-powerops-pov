@@ -5,7 +5,7 @@ const { canonical, verifyModelManifest } = require("./ml-governance.js");
 const REQUIRED_APPROVALS = Object.freeze(["model-risk", "security", "operations-owner"]);
 function digest(value) { return crypto.createHash("sha256").update(canonical(value)).digest("hex"); }
 function requiredText(value, name) { if (typeof value !== "string" || !value.trim()) throw new Error(name + " is required"); }
-function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerifier, promotionAssessor }) {
+function createPostgresRegistry({ poolForIdentity, poolForApprovalIdentity, tokenAuthority, artifactVerifier, promotionAssessor }) {
   if (typeof poolForIdentity !== "function") throw new Error("A trusted poolForIdentity resolver is required; shared cross-scope database pools are not accepted");
   if (!tokenAuthority || typeof tokenAuthority.authenticate !== "function" || typeof tokenAuthority.authorize !== "function") throw new Error("A server token authority with authenticate/authorize methods is required");
   if (artifactVerifier !== undefined && typeof artifactVerifier !== "function") throw new Error("artifactVerifier must be a trusted server-side verification function");
@@ -42,6 +42,39 @@ function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerif
     }
   }
 
+  async function transactApproval(token, permission, operation) {
+    const identity = authorizeToken(token, permission);
+    if (typeof poolForApprovalIdentity !== "function") {
+      throw new Error("A dedicated principal-bound approval database pool resolver is required");
+    }
+    const approvalPool = poolForApprovalIdentity(identity);
+    if (!approvalPool || typeof approvalPool.connect !== "function") {
+      throw new Error("No dedicated approval database pool is configured for the authenticated principal and scope");
+    }
+    const client = await approvalPool.connect();
+    try {
+      await client.query("BEGIN");
+      const scope = await client.query(
+        "SELECT SESSION_USER AS db_role, powerops_security.current_tenant_id() AS tenant_id, powerops_security.current_business_unit_id() AS business_unit_id, powerops_security.current_principal_id() AS principal_id"
+      );
+      const databaseIdentity = scope.rows[0];
+      if (!databaseIdentity ||
+          databaseIdentity.tenant_id !== identity.tenantId ||
+          databaseIdentity.business_unit_id !== identity.businessUnitId ||
+          databaseIdentity.principal_id !== identity.subject) {
+        throw new Error("Authenticated token principal and scope do not match the principal-bound database login");
+      }
+      const result = await operation(client, identity);
+      await client.query("COMMIT");
+      return result;
+    } catch (error) {
+      try { await client.query("ROLLBACK"); } catch (_) { /* preserve original error */ }
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async function lockScope(client, identity) {
     // Serialize all mutations in one tenant/business-unit scope, including the first audit event.
     const scopeKey = identity.tenantId + ":" + identity.businessUnitId;
@@ -62,6 +95,21 @@ function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerif
       [identity.tenantId, identity.businessUnitId, sequence, eventType, JSON.stringify(payload), actorId, previousHash, eventHash]
     );
     return { ...descriptor, eventHash };
+  }
+
+  async function loadApprovalProjection(client, identity, candidateId) {
+    const result = await client.query(
+      "SELECT approval_id, principal_id, role_name, decision, reason, recorded_at FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 ORDER BY recorded_at, approval_id",
+      [identity.tenantId, identity.businessUnitId, candidateId]
+    );
+    return result.rows.map(row => ({
+      approvalId: row.approval_id,
+      approverId: row.principal_id,
+      role: row.role_name,
+      decision: row.decision,
+      reason: row.reason,
+      recordedAt: row.recorded_at instanceof Date ? row.recorded_at.toISOString() : row.recorded_at
+    }));
   }
 
   async function registerCandidate(token, input) {
@@ -117,26 +165,40 @@ function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerif
     requiredText(candidateId, "candidateId"); requiredText(approvalId, "approvalId"); requiredText(reason, "reason");
     if (!REQUIRED_APPROVALS.includes(role)) throw new Error("Approval role is not part of the release policy");
     if (!["approve", "reject"].includes(decision)) throw new Error("Invalid approval decision");
-    return transact(token, "approval:" + role, async (client, identity) => {
+    return transactApproval(token, "approval:" + role, async (client, identity) => {
       await lockScope(client, identity);
       const found = await client.query(
-        "SELECT candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
+        "SELECT candidate_data, status FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3 FOR UPDATE",
         [identity.tenantId, identity.businessUnitId, candidateId]
       );
       if (!found.rows.length) throw new Error("Unknown model candidate in this tenant and business unit");
-      const candidate = found.rows[0].candidate_data;
-      const priorId = candidate.approvals.find(a => a.approvalId === approvalId);
-      if (priorId) {
-        if (priorId.approverId === identity.subject && priorId.role === role && priorId.decision === decision && priorId.reason === reason) return candidate;
-        throw new Error("Approval ID already exists with different content");
+      if (found.rows[0].status !== "candidate") throw new Error("Candidate is not open for approval");
+
+      const prior = await client.query(
+        "SELECT approval_id, principal_id, role_name, decision, reason FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND approval_id=$3",
+        [identity.tenantId, identity.businessUnitId, approvalId]
+      );
+      if (prior.rows.length) {
+        const row = prior.rows[0];
+        if (row.principal_id !== identity.subject || row.role_name !== role || row.decision !== decision || row.reason !== reason) {
+          throw new Error("Approval ID already exists with different content");
+        }
+        const candidate = found.rows[0].candidate_data;
+        candidate.approvals = await loadApprovalProjection(client, identity, candidateId);
+        return candidate;
       }
-      if (candidate.status !== "candidate") throw new Error("Candidate is not open for approval");
-      if (candidate.createdBy === identity.subject) throw new Error("Model creator cannot approve their own candidate");
-      if (candidate.approvals.some(a => a.approverId === identity.subject)) throw new Error("Approvers must be distinct");
-      if (candidate.approvals.some(a => a.role === role)) throw new Error("An approval decision already exists for this role");
-      const approval = { approvalId, approverId: identity.subject, role, decision, reason, recordedAt: new Date().toISOString() };
-      candidate.approvals.push(approval);
-      if (decision === "reject") candidate.status = "rejected";
+
+      await client.query(
+        "SELECT powerops_ml_record_principal_approval($1,$2,$3,$4,$5)",
+        [candidateId, approvalId, role, decision, reason]
+      );
+      const candidate = found.rows[0].candidate_data;
+      candidate.approvals = await loadApprovalProjection(client, identity, candidateId);
+      const statusResult = await client.query(
+        "SELECT status FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",
+        [identity.tenantId, identity.businessUnitId, candidateId]
+      );
+      candidate.status = statusResult.rows[0].status;
       await client.query(
         "UPDATE powerops_ml_model_candidates SET candidate_data=$4::jsonb,status=$5,updated_at=now() WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",
         [identity.tenantId, identity.businessUnitId, candidateId, JSON.stringify(candidate), candidate.status]
@@ -169,9 +231,16 @@ function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerif
       if (found.rows[0].status !== "candidate" || candidate.status !== "candidate") throw new Error("Candidate is not promotable");
       if (candidate.eligibility?.eligible !== true) throw new Error("Promotion eligibility is blocked or missing");
       if (candidate.artifactVerification?.verified !== true) throw new Error("Artifact verification is missing");
-      const approved = new Set(candidate.approvals.filter(a => a.decision === "approve").map(a => a.role));
+      const approvalProjection = await loadApprovalProjection(client, identity, candidateId);
+      candidate.approvals = approvalProjection;
+      if (approvalProjection.some(approval => approval.decision === "reject")) {
+        throw new Error("A rejected approval blocks model release");
+      }
+      const approved = new Set(approvalProjection.filter(a => a.decision === "approve").map(a => a.role));
+      const distinctApprovers = new Set(approvalProjection.filter(a => a.decision === "approve").map(a => a.approverId));
       const missing = REQUIRED_APPROVALS.filter(role => !approved.has(role));
       if (missing.length) throw new Error("Required independent approvals missing: " + missing.join(", "));
+      if (distinctApprovers.size !== REQUIRED_APPROVALS.length) throw new Error("Each required approval must come from a distinct database-authenticated principal");
       const previous = await client.query(
         "SELECT release_id FROM powerops_ml_model_releases WHERE tenant_id=$1 AND business_unit_id=$2 AND is_active=true FOR UPDATE",
         [identity.tenantId, identity.businessUnitId]
@@ -220,7 +289,13 @@ function createPostgresRegistry({ poolForIdentity, tokenAuthority, artifactVerif
         "SELECT candidate_id, candidate_data FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 ORDER BY created_at DESC",
         [identity.tenantId, identity.businessUnitId]
       );
-      return result.rows.map(row => row.candidate_data);
+      const candidates = [];
+      for (const row of result.rows) {
+        const candidate = row.candidate_data;
+        candidate.approvals = await loadApprovalProjection(client, identity, row.candidate_id);
+        candidates.push(candidate);
+      }
+      return candidates;
     });
   }
 
