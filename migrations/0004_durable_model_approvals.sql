@@ -72,7 +72,7 @@ SET search_path=pg_catalog
 AS $
 BEGIN
  IF NOT EXISTS (
-   SELECT 1 FROM powerops_ml_principal_role_assignments a
+   SELECT 1 FROM public.powerops_ml_principal_role_assignments a
    WHERE a.tenant_id=NEW.tenant_id
      AND a.business_unit_id=NEW.business_unit_id
      AND a.principal_id=NEW.principal_id
