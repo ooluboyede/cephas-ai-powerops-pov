@@ -48,8 +48,9 @@ function createAuthenticationAuthority({ assertionVerifier, principalResolver, s
   if (typeof assertionVerifier !== "function") fail("A trusted external assertion verifier is required");
   if (typeof principalResolver !== "function") fail("A server-side principal resolver is required");
   if (!signingKeys || typeof signingKeys !== "object" || Array.isArray(signingKeys)) fail("A signing key ring is required");
+  const keyRing = Object.freeze({ ...signingKeys });
   if (typeof activeKeyId !== "string" || !activeKeyId || !keyRing[activeKeyId]) fail("An active signing key id is required");
-  const keyRing = Object.freeze({ ...signingKeys });\n  for (const [kid, key] of Object.entries(keyRing)) {
+  for (const [kid, key] of Object.entries(keyRing)) {
     if (!/^[A-Za-z0-9._-]{1,64}$/.test(kid) || typeof key !== "string" || Buffer.byteLength(key) < 32) fail("Every signing key must have a safe id and at least 32 bytes");
   }
   if (!revocationStore || typeof revocationStore.isRevoked !== "function" || typeof revocationStore.revoke !== "function") fail("A durable revocation store adapter is required");
