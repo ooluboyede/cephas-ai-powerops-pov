@@ -89,10 +89,18 @@ jobs:
           restored_runtime_access="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT pg_has_role('powerops_app_a1','powerops_runtime','USAGE') AND has_table_privilege('powerops_app_a1','powerops_ml_model_candidates','SELECT')")"
           test "$restored_runtime_access" = "t"
 
-          spoofed_read="$(docker exec -e PGPASSWORD=powerops_gate058_test_password "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -At -F '|' -c "WITH spoof AS MATERIALIZED (SELECT set_config('app.tenant_id','tenant-b',false) AS setting) SELECT SESSION_USER, powerops_security.current_tenant_id(), spoof.setting, (SELECT count(*) FROM powerops_ml_model_candidates WHERE tenant_id='tenant-b') FROM spoof")"
+          # Use a one-run random credential. psql's \password command reads it
+          # from stdin and computes the SCRAM verifier client-side; no cleartext
+          # password is placed in SQL text or the workflow source.
+          restore_test_password="$(openssl rand -hex 32)"
+          echo "::add-mask::$restore_test_password"
+          printf '%s\n%s\n' "$restore_test_password" "$restore_test_password" | \
+            docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test \
+              -v ON_ERROR_STOP=1 -c '\password powerops_app_a1'
+          spoofed_read="$(docker exec -e PGPASSWORD="$restore_test_password" "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -At -F '|' -c "WITH spoof AS MATERIALIZED (SELECT set_config('app.tenant_id','tenant-b',false) AS setting) SELECT SESSION_USER, powerops_security.current_tenant_id(), spoof.setting, (SELECT count(*) FROM powerops_ml_model_candidates WHERE tenant_id='tenant-b') FROM spoof")"
           echo "Restored scoped login identity and spoof-test output: $spoofed_read"
           test "$spoofed_read" = "powerops_app_a1|tenant-a|tenant-b|0"
-          if docker exec -e PGPASSWORD=powerops_gate058_test_password "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -v ON_ERROR_STOP=1 -c "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ('tenant-b','unit-1','restore-spoof','restore-test','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','candidate','{}','restore-test')"; then
+          if docker exec -e PGPASSWORD="$restore_test_password" "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -v ON_ERROR_STOP=1 -c "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ('tenant-b','unit-1','restore-spoof','restore-test','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','candidate','{}','restore-test')"; then
             echo "Cross-tenant insert unexpectedly succeeded after restore."
             exit 1
           else
@@ -100,3 +108,25 @@ jobs:
           fi
           echo "Restored ownership, membership, privilege and tenant-isolation checks passed."
           echo "PostgreSQL restart and backup/restore checks passed."
+
+      - name: Verify fresh-cluster role reconstruction after logical restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name powerops-fresh-cluster -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=powerops_fresh -p 5433:5432 postgres:16
+          cleanup() { docker rm -f powerops-fresh-cluster >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          for attempt in $(seq 1 40); do
+            if pg_isready -h localhost -p 5433 -U postgres -d powerops_fresh; then break; fi
+            sleep 2
+          done
+          pg_isready -h localhost -p 5433 -U postgres -d powerops_fresh
+          docker exec -i powerops-fresh-cluster pg_restore -U postgres -d powerops_fresh --no-owner --no-privileges < /tmp/powerops-registry.dump
+          fresh_roles_before="$(docker exec powerops-fresh-cluster psql -U postgres -d powerops_fresh -At -c "SELECT count(*) FROM pg_roles WHERE rolname LIKE 'powerops_app_%'")"
+          echo "Scoped login roles present on fresh cluster before provisioning: $fresh_roles_before"
+          test "$fresh_roles_before" = "0"
+          POWEROPS_FRESH_CLUSTER_PG_ADMIN_URL=postgres://postgres:postgres@localhost:5433/powerops_fresh node scripts/fresh-cluster-recovery-smoke.cjs
+          fresh_roles_after="$(docker exec powerops-fresh-cluster psql -U postgres -d powerops_fresh -At -c "SELECT count(*) FROM pg_roles WHERE rolname LIKE 'powerops_app_%'")"
+          echo "Scoped login roles reconstructed on fresh cluster: $fresh_roles_after"
+          test "$fresh_roles_after" = "3"
+          echo "Fresh PostgreSQL 16 cluster reconstruction, full privilege/membership matrix and isolation acceptance passed."
