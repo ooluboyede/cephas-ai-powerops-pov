@@ -19,8 +19,10 @@ function quoteLiteral(value) {
 }
 
 function createScramVerifier(password) {
-  if (typeof password !== "string" || Buffer.byteLength(password, "utf8") < 24) {
-    throw new Error("Scoped role credentials must be at least 24 bytes");
+  // Restrict credentials to ASCII base64url so PostgreSQL SASLprep cannot
+  // normalize the supplied value differently from this derivation.
+  if (typeof password !== "string" || !/^[A-Za-z0-9_-]{32,}$/.test(password)) {
+    throw new Error("Scoped role credentials must be at least 32 ASCII base64url characters");
   }
   const salt = crypto.randomBytes(16);
   const saltedPassword = crypto.pbkdf2Sync(password, salt, SCRAM_ITERATIONS, 32, "sha256");
