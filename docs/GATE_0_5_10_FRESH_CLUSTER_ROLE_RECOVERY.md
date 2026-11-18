@@ -33,3 +33,14 @@ The migration and smoke test operate only on synthetic PoV records. They do not 
 The reviewer should inspect and execute the exact Gate 0.5.10 head, confirm the fresh container begins with zero scoped login roles, inspect the provisioning callback boundary, verify that secrets are not printed, and confirm each recreated login authenticates and passes the identity/privilege assertions. F-04 remains open until the reviewer explicitly accepts this exact commit.
 
 PR remains draft and unmerged pending independent acceptance and CEPHAS approval.
+
+
+## Gate 0.5.11 — Complete fresh-cluster security acceptance
+
+The fresh-cluster smoke test now repeats the full effective privilege matrix for every reconstructed scoped LOGIN across all four protected tables: model candidates, model releases, audit events, and the protected scope map. It verifies all five table privileges (SELECT, INSERT, UPDATE, DELETE, TRUNCATE) against the established runtime contract.
+
+For every reconstructed login, the test executes real DELETE and TRUNCATE statements against each protected table and requires PostgreSQL SQLSTATE 42501. It verifies exactly one membership in `powerops_runtime` with `INHERIT TRUE`, `SET TRUE`, and `ADMIN FALSE`; verifies the runtime and owner capability roles remain NOLOGIN, NOINHERIT, non-privileged and without memberships; and checks ownership of the security schema, protected tables, scope map and security functions.
+
+The test seeds synthetic records for each restored tenant/business-unit scope, then authenticates as every reconstructed login and checks that cross-scope candidate, release and audit reads return no rows. It attempts cross-scope writes to all three tenant-scoped registry tables and requires insufficient-privilege/RLS rejection. It also repeats custom-GUC spoofing checks after provisioning.
+
+These assertions run inside the independent PostgreSQL 16 fresh-cluster CI job. F-04 remains open until an independent reviewer accepts the exact resulting PR head. CI success is evidence for this automated test suite only; it is not production certification or customer disaster-recovery validation.
