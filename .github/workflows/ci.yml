@@ -89,14 +89,14 @@ jobs:
           restored_runtime_access="$(docker exec "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test -At -c "SELECT pg_has_role('powerops_app_a1','powerops_runtime','USAGE') AND has_table_privilege('powerops_app_a1','powerops_ml_model_candidates','SELECT')")"
           test "$restored_runtime_access" = "t"
 
-          # Use a one-run random credential. psql's \\password command reads it
+          # Use a one-run random credential. psql's \password command reads it
           # from stdin and computes the SCRAM verifier client-side; no cleartext
           # password is placed in SQL text or the workflow source.
           restore_test_password="$(openssl rand -hex 32)"
           echo "::add-mask::$restore_test_password"
-          printf '%s\\n%s\\n' "$restore_test_password" "$restore_test_password" | \\
-            docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test \\
-              -v ON_ERROR_STOP=1 -c '\\password powerops_app_a1'
+          printf '%s\n%s\n' "$restore_test_password" "$restore_test_password" | \
+            docker exec -i "$POSTGRES_CONTAINER_ID" psql -U postgres -d powerops_restore_test \
+              -v ON_ERROR_STOP=1 -c '\password powerops_app_a1'
           spoofed_read="$(docker exec -e PGPASSWORD="$restore_test_password" "$POSTGRES_CONTAINER_ID" psql -h 127.0.0.1 -U powerops_app_a1 -d powerops_restore_test -At -F '|' -c "WITH spoof AS MATERIALIZED (SELECT set_config('app.tenant_id','tenant-b',false) AS setting) SELECT SESSION_USER, powerops_security.current_tenant_id(), spoof.setting, (SELECT count(*) FROM powerops_ml_model_candidates WHERE tenant_id='tenant-b') FROM spoof")"
           echo "Restored scoped login identity and spoof-test output: $spoofed_read"
           test "$spoofed_read" = "powerops_app_a1|tenant-a|tenant-b|0"
