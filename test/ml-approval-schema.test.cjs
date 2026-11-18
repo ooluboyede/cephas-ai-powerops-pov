@@ -7,22 +7,23 @@ const sql=fs.readFileSync(path.join(__dirname,"..","migrations","0004_durable_mo
 
 test("Gate 0.6.3 creates tenant and business-unit scoped durable role assignments",()=>{
  assert.match(sql,/CREATE TABLE IF NOT EXISTS powerops_ml_principal_role_assignments/);
- assert.match(sql,/PRIMARY KEY\s*\(tenant_id,business_unit_id,principal_id,role_name\)/);
+ assert.match(sql,/PRIMARY KEY\\s*\\(tenant_id,business_unit_id,principal_id,role_name\\)/);
  assert.match(sql,/revoked_at timestamptz/);
- assert.match(sql,/powerops_security\.current_tenant_id\(\)/);
- assert.match(sql,/powerops_security\.current_business_unit_id\(\)/);
+ assert.match(sql,/powerops_security\\.current_tenant_id\\(\\)/);
+ assert.match(sql,/powerops_security\\.current_business_unit_id\\(\\)/);
  assert.match(sql,/ENABLE ROW LEVEL SECURITY/);
  assert.match(sql,/FORCE ROW LEVEL SECURITY/);
 });
 
 test("Gate 0.6.3 approvals bind to an existing candidate and a matching scoped role assignment",()=>{
  assert.match(sql,/CREATE TABLE IF NOT EXISTS powerops_ml_model_approvals/);
- assert.match(sql,/FOREIGN KEY\s*\(tenant_id,business_unit_id,candidate_id\)/);
+ assert.match(sql,/FOREIGN KEY\\s*\\(tenant_id,business_unit_id,candidate_id\\)/);
  assert.match(sql,/REFERENCES powerops_ml_model_candidates/);
- assert.match(sql,/FOREIGN KEY\s*\(tenant_id,business_unit_id,principal_id,role_name\)/);
+ assert.match(sql,/FOREIGN KEY\\s*\\(tenant_id,business_unit_id,principal_id,role_name\\)/);
  assert.match(sql,/REFERENCES powerops_ml_principal_role_assignments/);
- assert.match(sql,/UNIQUE\s*\(tenant_id,business_unit_id,candidate_id,role_name\)/);
- assert.match(sql,/UNIQUE\s*\(tenant_id,business_unit_id,candidate_id,principal_id\)/);
+ // The primary key is the stronger exact-one-approval-per-candidate/role constraint.
+ assert.match(sql,/PRIMARY KEY\\s*\\(tenant_id,business_unit_id,candidate_id,role_name\\)/);
+ assert.match(sql,/UNIQUE\\s*\\(tenant_id,business_unit_id,candidate_id,principal_id\\)/);
 });
 
 test("Gate 0.6.3 runtime privileges separate role administration from approval recording",()=>{
