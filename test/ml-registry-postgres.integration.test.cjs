@@ -60,6 +60,8 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
     }
     const hardening = fs.readFileSync(path.join(__dirname, "..", "migrations", "0003_powerops_privilege_hardening.sql"), "utf8");
     await admin.query(hardening);
+    const durableApprovals = fs.readFileSync(path.join(__dirname, "..", "migrations", "0004_durable_model_approvals.sql"), "utf8");
+    await admin.query(durableApprovals);
     for (const item of roleMap) pools.set(item.role, makePool(item.role));
 
     const roleFlags = await admin.query(
@@ -89,6 +91,60 @@ test("PostgreSQL RLS scope is bound to SESSION_USER and resists custom-GUC imper
         [tenant, bu, candidateId, d.modelVersion, d.manifestSha256, d.artifactSha256, JSON.stringify(d), tenant]
       );
     }
+
+    // Durable approval authorization is provisioned by an administrative workflow,
+    // not by the runtime principal. The runtime can read assignments and append an
+    // approval only when the exact principal/role/scope assignment exists.
+    await admin.query(
+      "INSERT INTO powerops_ml_principal_role_assignments (tenant_id,business_unit_id,principal_id,role_name,granted_by) VALUES ($1,$2,$3,$4,$5)",
+      ["tenant-a","unit-1","risk-reviewer-a","model-risk","security-admin"]
+    );
+    const scopedApprovalClient = await pools.get("powerops_app_a1").connect();
+    try {
+      const assignment = await scopedApprovalClient.query(
+        "SELECT principal_id,role_name FROM powerops_ml_principal_role_assignments WHERE principal_id=$1 AND role_name=$2",
+        ["risk-reviewer-a","model-risk"]
+      );
+      assert.equal(assignment.rowCount,1);
+      await scopedApprovalClient.query(
+        "INSERT INTO powerops_ml_model_approvals (tenant_id,business_unit_id,candidate_id,approval_id,principal_id,role_name,decision,reason) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+        ["tenant-a","unit-1",candidateA,"approval-"+crypto.randomUUID(),"risk-reviewer-a","model-risk","approve","Independent model-risk review"]
+      );
+      await assert.rejects(
+        () => scopedApprovalClient.query("UPDATE powerops_ml_model_approvals SET decision='reject' WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",["tenant-a","unit-1",candidateA]),
+        /permission denied|append-only|immutable/i
+      );
+      await assert.rejects(
+        () => scopedApprovalClient.query("DELETE FROM powerops_ml_model_approvals WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",["tenant-a","unit-1",candidateA]),
+        /permission denied|append-only|immutable/i
+      );
+      const revokedCandidate = "revoked-approval-" + crypto.randomUUID();
+      const revokedData = data(revokedCandidate,"tenant-a");
+      await admin.query(
+        "INSERT INTO powerops_ml_model_candidates (tenant_id,business_unit_id,candidate_id,model_version,manifest_sha256,artifact_sha256,status,candidate_data,created_by) VALUES ($1,$2,$3,$4,$5,$6,'candidate',$7::jsonb,$8)",
+        ["tenant-a","unit-1",revokedCandidate,revokedData.modelVersion,revokedData.manifestSha256,revokedData.artifactSha256,JSON.stringify(revokedData),"tenant-a"]
+      );
+      await admin.query(
+        "UPDATE powerops_ml_principal_role_assignments SET revoked_at=clock_timestamp() WHERE tenant_id=$1 AND business_unit_id=$2 AND principal_id=$3 AND role_name=$4",
+        ["tenant-a","unit-1","risk-reviewer-a","model-risk"]
+      );
+      await assert.rejects(
+        () => scopedApprovalClient.query(
+          "INSERT INTO powerops_ml_model_approvals (tenant_id,business_unit_id,candidate_id,approval_id,principal_id,role_name,decision,reason) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+          ["tenant-a","unit-1",revokedCandidate,"revoked-"+crypto.randomUUID(),"risk-reviewer-a","model-risk","approve","Must be rejected after revocation"]
+        ),
+        /active scoped role assignment/i
+      );
+      // Keep the negative-test candidate out of the subsequent tenant listing assertion.
+      await admin.query(
+        "DELETE FROM powerops_ml_model_candidates WHERE tenant_id=$1 AND business_unit_id=$2 AND candidate_id=$3",
+        ["tenant-a","unit-1",revokedCandidate]
+      );
+      const hiddenAssignment = await scopedApprovalClient.query(
+        "SELECT principal_id FROM powerops_ml_principal_role_assignments WHERE tenant_id='tenant-b'"
+      );
+      assert.equal(hiddenAssignment.rowCount,0,"RLS must hide role assignments from other tenants");
+    } finally { scopedApprovalClient.release(); }
 
     const principals = {
       readerA1: { tenantId: "tenant-a", businessUnitId: "unit-1", roles: ["registry-reader", "auditor"] },
