@@ -39,7 +39,7 @@ BEGIN
 END
 $roles$;
 ALTER ROLE powerops_approval_runtime NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-GRANT USAGE ON SCHEMA powerops_security TO powerops_approval_runtime;
+GRANT USAGE ON SCHEMA powerops_security TO powerops_approval_runtime, powerops_registry_owner;
 
 -- Convert assignments into immutable grant records. Revocation is the only
 -- permitted update; re-grant creates a new UUID-backed row.
@@ -175,7 +175,7 @@ CREATE OR REPLACE FUNCTION powerops_ml_record_principal_approval(
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog, public, powerops_security
+SET search_path = pg_catalog
 AS $body$
 DECLARE
   v_tenant_id text;
