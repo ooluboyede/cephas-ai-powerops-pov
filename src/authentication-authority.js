@@ -48,8 +48,8 @@ function createAuthenticationAuthority({ assertionVerifier, principalResolver, s
   if (typeof assertionVerifier !== "function") fail("A trusted external assertion verifier is required");
   if (typeof principalResolver !== "function") fail("A server-side principal resolver is required");
   if (!signingKeys || typeof signingKeys !== "object" || Array.isArray(signingKeys)) fail("A signing key ring is required");
-  if (typeof activeKeyId !== "string" || !activeKeyId || !signingKeys[activeKeyId]) fail("An active signing key id is required");
-  for (const [kid, key] of Object.entries(signingKeys)) {
+  if (typeof activeKeyId !== "string" || !activeKeyId || !keyRing[activeKeyId]) fail("An active signing key id is required");
+  const keyRing = Object.freeze({ ...signingKeys });\n  for (const [kid, key] of Object.entries(keyRing)) {
     if (!/^[A-Za-z0-9._-]{1,64}$/.test(kid) || typeof key !== "string" || Buffer.byteLength(key) < 32) fail("Every signing key must have a safe id and at least 32 bytes");
   }
   if (!revocationStore || typeof revocationStore.isRevoked !== "function" || typeof revocationStore.revoke !== "function") fail("A durable revocation store adapter is required");
@@ -68,7 +68,7 @@ function createAuthenticationAuthority({ assertionVerifier, principalResolver, s
       iat: now, nbf: now, exp: now + sessionTtlSeconds, jti: crypto.randomUUID()
     }));
     const signingInput = header + "." + payload;
-    return signingInput + "." + sign(signingInput, signingKeys[activeKeyId]);
+    return signingInput + "." + sign(signingInput, keyRing[activeKeyId]);
   }
 
   async function authenticateExternalAssertion(assertion) {
@@ -88,7 +88,7 @@ function createAuthenticationAuthority({ assertionVerifier, principalResolver, s
     const header = parseSegment(parts[0], "session header");
     const claims = parseSegment(parts[1], "session claims");
     if (header.alg !== "HS256" || header.typ !== "JWT" || typeof header.kid !== "string") fail("Unsupported session token header");
-    const key = signingKeys[header.kid];
+    const key = keyRing[header.kid];
     if (!key) fail("Unknown or retired signing key");
     const signingInput = parts[0] + "." + parts[1];
     if (!safeEqual(parts[2], sign(signingInput, key))) fail("Invalid session token signature");
