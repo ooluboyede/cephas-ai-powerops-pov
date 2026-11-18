@@ -66,6 +66,32 @@ REVOKE ALL ON powerops_ml_principal_role_assignments,powerops_ml_model_approvals
 GRANT SELECT ON powerops_ml_principal_role_assignments TO powerops_runtime;
 GRANT SELECT,INSERT ON powerops_ml_model_approvals TO powerops_runtime;
 
+CREATE OR REPLACE FUNCTION powerops_ml_require_active_approval_assignment()
+RETURNS trigger LANGUAGE plpgsql
+SET search_path=pg_catalog
+AS $
+BEGIN
+ IF NOT EXISTS (
+   SELECT 1 FROM powerops_ml_principal_role_assignments a
+   WHERE a.tenant_id=NEW.tenant_id
+     AND a.business_unit_id=NEW.business_unit_id
+     AND a.principal_id=NEW.principal_id
+     AND a.role_name=NEW.role_name
+     AND a.revoked_at IS NULL
+ ) THEN
+   RAISE EXCEPTION 'An active scoped role assignment is required for this approval'
+    USING ERRCODE='42501';
+ END IF;
+ RETURN NEW;
+END;
+$;
+ALTER FUNCTION powerops_ml_require_active_approval_assignment() OWNER TO powerops_registry_owner;
+REVOKE ALL ON FUNCTION powerops_ml_require_active_approval_assignment() FROM PUBLIC;
+DROP TRIGGER IF EXISTS powerops_ml_approval_requires_active_assignment ON powerops_ml_model_approvals;
+CREATE TRIGGER powerops_ml_approval_requires_active_assignment
+ BEFORE INSERT ON powerops_ml_model_approvals
+ FOR EACH ROW EXECUTE FUNCTION powerops_ml_require_active_approval_assignment();
+
 CREATE OR REPLACE FUNCTION powerops_ml_reject_approval_mutation()
 RETURNS trigger LANGUAGE plpgsql
 SET search_path=pg_catalog
