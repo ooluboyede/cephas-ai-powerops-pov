@@ -121,4 +121,4 @@ jobs:
           fresh_roles_after="$(docker exec powerops-fresh-cluster psql -U postgres -d powerops_fresh -At -c "SELECT count(*) FROM pg_roles WHERE rolname LIKE 'powerops_app_%'")"
           echo "Scoped login roles reconstructed on fresh cluster: $fresh_roles_after"
           test "$fresh_roles_after" = "3"
-          echo "Fresh PostgreSQL 16 cluster role reconstruction and authentication acceptance passed."
+          echo "Fresh PostgreSQL 16 cluster reconstruction, full privilege/membership matrix and isolation acceptance passed."
