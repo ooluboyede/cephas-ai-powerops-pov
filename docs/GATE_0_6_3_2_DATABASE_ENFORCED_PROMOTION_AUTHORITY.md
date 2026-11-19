@@ -1305,3 +1305,183 @@ All six findings remain **OPEN pending independent reassessment**. The additions
 - **Implementation authorization: NOT GRANTED.**
 - PR #20 remains Draft, open and unmerged.
 - Synthetic-data-first, customer-hosted/customer-controlled and advisory-only boundaries remain unchanged. Model promotion remains registry governance only. No live IBEDC telemetry, SCADA/ADMS/DMS control, switching, dispatch, meter commands, billing adjustments, refunds, journal postings or automatic production model deployment is authorized.
+
+
+---
+
+## D-07 through D-10 — Required design-contract amendment
+
+This section supplements, and where explicitly stated supersedes, the earlier D-02, D-04, D-05 and D-06 wording. It is additive to the reviewed history. No prior baseline or finding record is rewritten. If any earlier lock-order or event-field statement conflicts with this section, this section is normative for the next design version.
+
+### D-07 — Principal/login identity-to-scope resolution and serialization
+
+#### D-07.1 Canonical identity mapping
+
+The authenticated database login is not itself an authorization principal. Authorization must resolve the authenticated session identity to exactly one active, issuer-qualified canonical principal and exactly one tenant/business-unit scope using a protected identity-mapping record.
+
+The mapping key is the complete authenticated identity tuple defined by the authentication boundary: database-authenticated login identity plus issuer and immutable subject identifier where federated identity is used. Display names, email addresses, caller-supplied tenant IDs, request-body principal IDs and mutable aliases are never authoritative lookup keys. The mapping record must contain a stable mapping ID/version, canonical principal ID, issuer, subject, database login binding, tenant ID, business-unit ID, status, effective interval and audit provenance.
+
+A login with zero mappings, multiple active mappings, an expired mapping, a disabled login, an ambiguous issuer/subject pair, or a mapping whose scope is inconsistent with the protected principal record fails closed. No fallback to a caller-provided scope or a default tenant is permitted.
+
+#### D-07.2 Mapping-row lock before scope mutex
+
+The identity mapping is the bootstrap authority needed to determine which scope mutex applies. Therefore the universal transaction lock order is amended as follows:
+
+1. Resolve the authenticated login to its unique protected mapping key without trusting caller-supplied identity or scope fields.
+2. Lock the exact identity-mapping row using a transaction-scoped row lock. Authorization transactions take a shared lock; mapping lifecycle transactions take an exclusive lock. The mapping lookup must use a unique constraint over the complete canonical mapping key.
+3. While retaining the mapping-row lock, read the currently active mapping and derive the authoritative tenant/business-unit scope.
+4. Acquire that scope's mutex.
+5. Re-read and revalidate the mapping, principal, issuer/subject binding, login status, scope, effective interval and mapping version in a new SQL statement after the scope mutex is held.
+6. Continue with the D-02 lock order only if the re-read values are identical to the locked mapping version and still valid. Any mismatch aborts the complete transaction; the caller must retry from identity resolution.
+
+The mapping-row lock is intentionally acquired before the scope mutex because the scope cannot safely be selected until the authenticated mapping is locked. This is a narrowly defined bootstrap prefix to the D-02 scope protocol, not an exception allowing stale identity resolution. Every path that changes an identity mapping must take the same mapping-row lock first, then the affected scope mutex or mutexes, then the remaining D-02 locks in their normative order.
+
+No code path may acquire a scope mutex and subsequently attempt to acquire an identity-mapping row lock. This prevents inversion between authorization and identity lifecycle operations.
+
+#### D-07.3 Mapping lifecycle and cross-scope reassignment
+
+The common serialized mutation inventory explicitly includes:
+
+- login-to-principal mapping creation, activation, disablement and revocation;
+- issuer/subject remapping and issuer trust changes that alter the identity binding;
+- principal remapping and canonical-principal replacement;
+- alias creation, consolidation, retirement and reassignment;
+- login disablement, reassignment or re-enablement;
+- tenant/business-unit scope assignment, removal or reassignment;
+- identity proofing and mapping-status changes that affect authorization eligibility.
+
+A mutation that changes scope must lock the mapping row exclusively, then acquire both old and new scope mutexes in ascending canonical byte order of the immutable scope key (tenant UUID followed by business-unit UUID). Duplicate scope keys are acquired once. It then locks affected principal/accountable-role/grant rows and remaining objects in the D-02 order. If either scope cannot be resolved or locked, the mutation aborts. No partial cross-scope reassignment is permitted.
+
+For a newly created mapping with no prior scope, the transaction locks the mapping row and then the new scope mutex. For disablement without reassignment, it locks the mapping row and its current scope mutex. Alias consolidation affecting multiple mapping rows locks mapping rows in ascending immutable mapping UUID order before acquiring the union of old/new scope mutexes in ascending scope-key order. Every transaction must follow this ordering; implementations must not introduce a second lock order.
+
+#### D-07.4 Fixed PostgreSQL isolation contract
+
+The required isolation level for this gate is PostgreSQL READ COMMITTED. SERIALIZABLE is not an alternative mode for the authorization protocol in this gate. The contract relies on explicit row locks and fresh-statement re-reads, not on an implementation-dependent assumption about snapshot refresh.
+
+After acquiring each required lock, the transaction must issue a new SQL statement that re-reads every authorization-relevant row whose value may have changed while waiting. The final eligibility query must execute after all locks in the applicable lock map are held. It must derive identity, scope, grants, accountable roles, risk acceptance, verifier/publisher trust, evidence, candidate, request, approvals, policy and active-release state from protected database rows. Values previously read before waiting for a lock must not be reused as authorization inputs.
+
+All state-changing functions must reject transaction isolation levels other than READ COMMITTED. The check must occur within the protected function before any state mutation. Applications must not silently retry only the final statement: a serialization, deadlock, lock-timeout or mapping-version mismatch retry restarts the complete transaction from authenticated identity resolution. A retry must obtain a fresh mapping lock and repeat all scope derivation and eligibility checks.
+
+The authorization linearization point remains the final database-derived eligibility evaluation after all required locks and re-reads have completed, immediately before the atomic state transition. Mapping validity must be true at that point. A mapping mutation that commits first causes the waiting authorization operation to re-read and fail or resolve under a newly initiated transaction; an authorization operation that reaches its linearization point first completes under the mapping version it locked, after which the mapping mutation proceeds and records its effect.
+
+#### D-07.5 Required lock map and adversarial fixtures
+
+The normative lock map must include the identity-mapping row as the first protected row, followed by one or two scope mutexes, then the D-02 ordered rows. The implementation must publish a machine-readable lock-map version and assert the same order in every stored procedure and mutation path.
+
+Independent-session tests must cover both orderings for: login disablement versus approval; principal remapping versus promotion; issuer/subject remapping versus approval; alias consolidation versus promotion; tenant/business-unit reassignment versus approval and promotion; mapping creation versus attempted use; duplicate/ambiguous mapping insertion; and two-scope reassignment racing with operations in each scope. Tests must assert the exact winner, mapping version used, scope mutexes acquired, committed audit events, and absence of partial state. Include deadlock detection, lock timeout, transaction rollback and full-transaction retry. No authorization may proceed using a mapping or scope invalidated before its linearization point.
+
+### D-08 — Rollback request v1 target-evidence completeness
+
+#### D-08.1 Mandatory target evidence digests
+
+The closed rollback request schema is amended to include these mandatory, non-null fields:
+
+- target_dataset_snapshot_sha256;
+- target_provenance_sha256;
+- target_assessment_sha256.
+
+Each is a lowercase 64-character SHA-256 digest of the exact immutable target evidence object used to establish target release eligibility. These fields are separate from target artifact and manifest digests and must not be inferred from an evidence-version ID, attestation ID, receipt digest or opaque reference.
+
+The rollback request v1 envelope must bind all three values directly in its canonical field set. If the implementation uses a nested target-evidence envelope, that nested object must itself be closed and versioned, and the rollback envelope must include its digest as well as the three mandatory digests above. The nested form does not replace or weaken the explicit fields.
+
+#### D-08.2 Creation, approval and execution checks
+
+At request creation, the service must load the immutable target evidence record from the database, independently recompute or verify the three digests against the stored canonical evidence bytes, and populate the request fields from those protected records. Caller-supplied digest values are assertions only and must exactly match the database-derived values; they are never accepted as the source of truth.
+
+Every approval must bind the complete rollback request digest, which includes the three target evidence digests. At execution, after all D-02/D-07 locks are held, the service must reload the same immutable target evidence version, verify its tenant/business-unit scope and recompute all three digests. Each must equal the values in the approved request. Any mismatch, missing evidence, superseded/quarantined evidence, invalid attestation or changed target transition aborts execution and invalidates the approval set for that request. A corrected target requires a new request ID, new canonical request bytes and new approvals.
+
+#### D-08.3 Canonical fixtures
+
+Publish independent serializer fixtures containing all three digests. For each field, mutate one digest after request creation and separately after approval; execution must fail. Also test omitted, null, malformed, wrong-scope, stale-version and evidence-reference substitution cases. Two independent serializers must produce byte-identical RFC 8785 canonical bytes and identical domain-separated SHA-256 request digests. Promotion and rollback request types remain non-interchangeable.
+
+### D-09 — Complete audit registry for authority lifecycle mutations
+
+#### D-09.1 Additional required event types
+
+The D-05 registry is extended with these closed event types and schema tokens:
+
+| Event type | Payload schema token | Mandatory closed payload fields |
+| --- | --- | --- |
+| approval_grant.created | cephas.powerops.audit-payload.approval-grant-created.v1 | grant_id, grant_version, scope_tenant_id, scope_business_unit_id, principal_id, issuer, subject, role_code, granted_by_principal_id, effective_at, expires_at, grant_record_sha256, reason_code |
+| approval_grant.changed | cephas.powerops.audit-payload.approval-grant-changed.v1 | grant_id, grant_version, scope_tenant_id, scope_business_unit_id, principal_id, issuer, subject, role_code, prior_status, new_status, prior_expires_at, new_expires_at, changed_by_principal_id, effective_at, reason_code, grant_record_sha256 |
+| identity_mapping.created | cephas.powerops.audit-payload.identity-mapping-created.v1 | mapping_id, mapping_version, database_login_binding, issuer, subject, principal_id, scope_tenant_id, scope_business_unit_id, status, effective_at, mapping_record_sha256, actor_principal_id, reason_code |
+| identity_mapping.changed | cephas.powerops.audit-payload.identity-mapping-changed.v1 | mapping_id, prior_mapping_version, new_mapping_version, database_login_binding, issuer, subject, prior_principal_id, new_principal_id, prior_scope_tenant_id, prior_scope_business_unit_id, new_scope_tenant_id, new_scope_business_unit_id, prior_status, new_status, effective_at, mapping_record_sha256, actor_principal_id, reason_code |
+| request.invalidated | cephas.powerops.audit-payload.request-invalidated.v1 | request_id, operation_type, request_sha256, prior_status, new_status, invalidation_reason_code, invalidating_object_type, invalidating_object_id, invalidating_object_version, actor_principal_id, effective_at |
+
+The approval-grant events cover creation, activation, expiry, suspension, revocation, role change and replacement. The identity-mapping events cover creation, activation, disablement, issuer/subject remapping, principal remapping, alias consolidation/reassignment, login disablement/reassignment and scope reassignment. The event payload must preserve prior and new state and identify all affected scope keys. For multi-scope changes, the event is written in each affected scope's audit chain under the cross-scope atomicity rule below, with one globally unique mutation ID linking the records.
+
+#### D-09.2 Expiry and durable request invalidation semantics
+
+Grant expiry is an eligibility fact determined from database time during every authorization check; passage of time alone does not require a background mutation or an expiry event. If a worker or administrator persists an explicit grant status transition to expired, that committed status transition emits exactly one approval_grant.changed event. Expiry must not be represented as an unrecorded manual edit.
+
+A request is not automatically mutated merely because an eligibility predicate becomes false. If the system persists a request status transition such as stale, invalidated, quarantined or superseded, it must emit exactly one request.invalidated event in the same transaction, binding the original request digest and the exact invalidating object/version. If no durable request-state transition is made, the request remains immutable and execution is rejected by re-evaluating current eligibility; no request.invalidated event is emitted. This distinction prevents invented lifecycle events and duplicate invalidations.
+
+#### D-09.3 Complete mutation-to-event coverage and atomicity
+
+Every mutation enumerated in D-02.1 and D-07.3 must map to exactly one registered event schema or to an explicitly documented, bounded event combination. The implementation must publish a machine-readable mutation-to-event coverage matrix. An unregistered mutation, missing event, duplicate event, wrong-scope event or event whose prior/new state differs from the authoritative transition causes the transaction to fail.
+
+For a cross-scope identity mutation, all affected scope-chain events, the immutable mapping transition record and the mapping state change must commit atomically in one PostgreSQL transaction. The global mutation ID and canonical payload digest must be identical across the affected scope events; each event has its own scope-bound chain sequence and digest. If the database design cannot guarantee atomic append to all affected scope chains, cross-scope mapping mutation must fail closed; an asynchronous best-effort audit is prohibited.
+
+Approval grant and identity mapping event actors must be database-derived from the authenticated, currently valid actor mapping and must not be caller-selected. The event must carry prior/new values from locked rows, the exact reason code and database timestamp. A failed event append aborts the corresponding authority mutation.
+
+#### D-09.4 Required registry and coverage fixtures
+
+Fixtures must cover every D-02.1 and D-07.3 mutation, each approval-grant state transition, each identity-mapping transition, and both persisted and non-persisted stale-request cases. Positive and negative tests must demonstrate that: a committed mutation has its required event; an aborted mutation has no event; no mutation emits an unregistered event; no event is committed without its matching mutation; multi-scope changes have all scope events or none; and duplicate event insertion is rejected by uniqueness constraints.
+
+### D-10 — Non-circular audit transition and external-anchor acknowledgement
+
+#### D-10.1 Pre-commit anchor contract identity
+
+The D-05 audit.version_transition payload must not contain an object-version ID, acknowledgement ID, provider receipt or other value that is created only after the transition event has been committed and submitted to external storage.
+
+Before constructing the transition event, the customer must provision and approve an immutable anchor contract identified by a stable anchor_contract_id and anchor_stream_id. The transition event binds only these pre-existing identifiers, the contract version/digest, the customer-controlled destination identity, the required retention mode, the expected writer/reader identities, the canonicalization/hash versions and the maximum unanchored window. These values must be known and immutable before the event is hashed.
+
+The transition event also binds the historical verification report digest, old chain head and manifest digest, source snapshot digest, new chain version and continuation rule as already required. The event's canonical bytes and digest are finalized before the database transaction commits. They are never amended after external submission.
+
+#### D-10.2 Transactional outbox and post-commit acknowledgement
+
+The database transaction that appends the transition event must atomically write: the immutable transition event; the new audit chain head; and an outbox record containing the exact canonical event bytes, event digest, scope, sequence, anchor_contract_id, anchor_stream_id and idempotency key. The outbox record does not claim successful anchoring.
+
+After commit, the anchor worker submits those exact bytes to the pre-approved external anchor destination. The external service returns an acknowledgement. The worker validates that the acknowledgement identifies the expected anchor contract/stream, exact event digest and byte length, sequence/range, provider object/version, provider timestamp and retention-lock evidence. It must reject an acknowledgement for different bytes, a different scope or a different stream.
+
+The acknowledgement is stored as a separate immutable audit-anchor-acknowledgement.v1 record, with its own canonical bytes and digest. It includes the transition event digest, anchor contract/stream IDs and version, provider/object/version ID, exact event range, submitted-byte digest and length, provider acknowledgement timestamp, retention mode/status, provider receipt digest, verification result, worker identity and signer identity/key. It is never inserted retroactively into the already-hashed transition event or used to rewrite its payload.
+
+The acknowledgement record is itself exported to the independently retained anchor evidence location, or to a separately configured acknowledgement stream under the same customer-controlled anchor contract. The export of the acknowledgement is recorded by a subsequent immutable acknowledgement-of-acknowledgement record or independently verifiable provider receipt. The system must document the trust boundary for this final receipt and must not claim that a database-only acknowledgement record is independently retained.
+
+#### D-10.3 State model and recovery
+
+Anchor state is derived from immutable records and has the closed states pending, submitted, acknowledged, verified, failed and quarantined. State transitions are append-only records; no acknowledgement or failure record is overwritten. Duplicate submissions use the same idempotency key and exact bytes. A duplicate provider acknowledgement is accepted only if every bound field matches the original; conflicting acknowledgements quarantine the stream and raise an incident.
+
+If the external service is unavailable, the outbox remains pending or failed with bounded retry metadata. The transition event and database chain remain immutable. The configured maximum unanchored window is enforced according to the customer-approved outage policy; absent an approved policy, the service fails closed for governed promotion/approval once the limit is reached. Recovery resumes from the exact outbox bytes and verifies the resulting provider receipt. A restore must reconcile database outbox records, externally retained event objects and acknowledgement records without rewriting any chain event.
+
+#### D-10.4 Required end-to-end fixture
+
+The independent fixture must execute this exact order:
+
+1. Verify the historical chain under its original algorithm and canonicalization.
+2. Produce and sign the historical verification report.
+3. Confirm the pre-provisioned anchor contract and stream identity.
+4. Construct and hash the transition event using only pre-existing anchor contract/stream identifiers.
+5. Atomically commit the transition event, new chain head and exact-byte outbox record.
+6. Submit the exact committed bytes using the stable idempotency key.
+7. Receive and validate the external provider acknowledgement.
+8. Persist the acknowledgement as a separate immutable record without changing the transition event.
+9. Independently export/anchor the acknowledgement record and verify its provider receipt.
+10. Have two independent verifiers validate the historical report, transition event, outbox bytes, provider object, acknowledgement record and acknowledgement-retention receipt as one linked sequence.
+
+Tampering with any event byte, digest, stream ID, object version, acknowledgement field, signer, receipt or retention evidence must be detected. Test delayed, duplicate, conflicting and missing acknowledgements; outage and recovery; and database restore. No WORM or F-05 closure claim is permitted until customer acceptance and independent end-to-end evidence exist.
+
+### Updated closure matrix for D-07 through D-10
+
+| Finding | Normative contract addition | Evidence required before closure |
+| --- | --- | --- |
+| D-07 High | Mapping-row bootstrap lock, scope derivation/revalidation, deterministic two-scope locking, READ COMMITTED only, fresh post-lock re-reads | Machine-readable lock map; two-session mapping/approval/promotion races; disablement/remapping/reassignment tests; deadlock/retry evidence |
+| D-08 Medium | Explicit target dataset, provenance and assessment digests in rollback v1; creation/approval/execution recomputation | Two independent serializers; per-field mutation-after-approval tests; wrong-scope and stale-evidence rejection |
+| D-09 Medium | Approval-grant and identity-mapping event schemas; explicit persisted/non-persisted request invalidation semantics; complete mutation-to-event matrix | Fixtures for every D-02.1/D-07.3 mutation; atomic multi-scope event tests; aborted-transaction and duplicate-event tests |
+| D-10 Medium | Pre-existing anchor contract/stream in transition event; exact-byte outbox; separate immutable post-commit acknowledgement and independent retention receipt | End-to-end two-verifier fixture; outage, retry, duplicate/conflict, restore and tamper tests; customer WORM acceptance |
+
+### Supersession and governance status
+
+This amendment resolves the four identified design ambiguities at the specification level only. It does not close D-07 through D-10, earlier F/N findings, or any implementation acceptance criterion. D-01 and D-03 remain design-contract resolved only, subject to implementation evidence and independent acceptance. All other findings remain open until their stated evidence is delivered and independently reviewed.
+
+This is documentation-only. No database schema, PostgreSQL function, migration, identity service, serializer, audit registry implementation, outbox worker, external anchor integration, customer risk acceptance or adversarial test implementation is claimed. Implementation authorization remains NOT GRANTED. PR #20 must remain Draft, open and unmerged. Product and operational boundaries remain unchanged.
