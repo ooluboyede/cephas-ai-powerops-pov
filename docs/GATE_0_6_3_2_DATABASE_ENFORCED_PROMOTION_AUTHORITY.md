@@ -891,3 +891,417 @@ These amendments define requirements only. They do not prove PostgreSQL enforcem
 - C-05 — Customer governance: Risk record, accountable roles and fail-closed enablement precondition specified; customer approval and implementation enforcement remain outstanding.
 
 **Implementation authorization remains NOT GRANTED.** This amendment requests a new independent exact-commit reassessment. PR #20 must remain Draft, open and unmerged. Synthetic data and advisory-only utility PoV boundaries remain unchanged. No live IBEDC telemetry, SCADA/ADMS/DMS control, switching, dispatch, meter commands, billing adjustments, refunds, journal postings or automatic production model deployment is authorized.
+
+
+---
+
+## Independent reassessment amendment — D-01 through D-06
+**Amendment date:** 19 November 2026  
+**Parent design commit:** `de5e10dd23e643d4658fdbd9d25f64ffb95a1018`  
+**Purpose:** Convert the six findings in the independent reassessment into normative, testable implementation-contract requirements. This section is additive. It does not alter or supersede the parent commit or earlier review baselines.
+
+### Amendment status and interpretation
+
+This is still a design-only amendment. It does not establish that any PostgreSQL migration, privilege report, concurrent-session test, serializer, rollback function, audit registry, external immutable anchor, customer risk acceptance or deployment control exists or has passed. Implementation authorization remains **NOT GRANTED** pending independent review of the exact amended commit.
+
+The threat model continues to exclude compromise of PostgreSQL superuser/DBA, the database host, the operating-system administrator, and the customer secret manager. These exclusions are not accepted implicitly by Model A risk acceptance. They require separate customer risk treatment, administrative separation, monitored privileged access, independently retained audit evidence, tested backup/recovery and incident response. No database-only design in this gate claims to resist an administrator who can rewrite database storage, replace binaries or control the host.
+
+---
+
+### D-01 — Normative effective-privilege closure matrix
+
+#### D-01.1 Closed inventory is a release artifact
+
+The implementation must ship a versioned, machine-readable privilege contract named `powerops-privilege-matrix.v1`. It is part of the migration and acceptance evidence, not an informal checklist. It must enumerate every role, schema, table, partition, sequence, view, materialized view, type, domain, function, procedure, trigger function, extension-owned object, default-privilege rule and ownership relationship that can read or affect:
+
+- tenant/business-unit identity and scope mapping;
+- risk-acceptance records and accountable-role mappings;
+- verifier identities, verifier keys, attestations and evidence;
+- candidates, candidate projections and model artifacts/references;
+- promotion and rollback requests and approvals;
+- grants, principal mappings and revocation state;
+- active-release state and release history;
+- audit events, canonical bytes, chain heads and migration ledger;
+- quarantine, incident, supersession and re-verification records.
+
+The inventory must include object OIDs and qualified names for a specific database build, object owner, object kind, partition parent/child relationship, schema, direct ACL, effective ACL, inherited role path, PUBLIC privileges, grant option, RLS state, FORCE RLS state, policy definitions, function language, SECURITY DEFINER status, owner, fixed search_path, EXECUTE grants, and applicable ALTER DEFAULT PRIVILEGES entries. The report must identify the migration version, database version, cluster identity, extraction timestamp and matrix version.
+
+An object that is not in the matrix is not implicitly safe. Any newly introduced object in a protected schema or any new callable function that can affect a protected invariant must cause the privilege-closure check to fail until the matrix is deliberately versioned and reviewed.
+
+#### D-01.2 Required role classes and authority
+
+The matrix must define, at minimum, these separate role classes. Names may be mapped to deployment-specific names, but their capabilities must not be combined:
+
+| Role class | Permitted authority | Prohibited authority |
+| --- | --- | --- |
+| Database superuser / break-glass DBA | Emergency administration under customer-controlled dual control and monitored break-glass procedure | Routine application use; use as runtime/verifier/approver identity |
+| Schema/object owner roles | Own only their explicitly assigned objects; NOLOGIN | Application login; ordinary runtime use; direct human approval |
+| Migration executor | Execute approved forward-only migrations during controlled maintenance window | Runtime traffic; evidence registration; approval; promotion outside migration contract |
+| `powerops_runtime` | Minimum scoped reads and explicitly listed non-authoritative projection operations | Writes to protected evidence, trust, risk, grant, request, approval, release, audit or migration authority |
+| Evidence verifier login | EXECUTE only on the evidence-registration entry point and read only the minimum candidate inputs required | Direct table/sequence writes; approval, promotion, rollback, risk acceptance, quarantine disposition |
+| Human approver login | Submit an approval through the approval function for its authenticated principal and active grant | Direct approval-table writes; grant/risk/key/evidence mutation; promotion/rollback execution unless separately authorized |
+| Promotion executor capability | Invoked only by the approved promotion function path | Direct login; general table ownership; arbitrary request or approval mutation |
+| Incident/quarantine authority | Invoke narrowly scoped quarantine and incident functions for assigned scope | Rewrite evidence, audit history, or already-committed release history |
+| Audit verifier / exporter | Read-only verification and export of committed audit evidence | Mutate event bytes, chain head, WORM copy or source rows |
+| External anchor writer | Append-only write to separately controlled immutable storage | Delete, overwrite, shorten retention or administer source database |
+
+No role used by application traffic may own a protected object, be a member of an owner/capability role, possess SET ROLE into one, possess CREATEROLE/CREATEDB/REPLICATION/BYPASSRLS, or have an indirect path to those capabilities. NOLOGIN alone is not proof of safety: ownership, memberships, grant options and SECURITY DEFINER call paths must all be included.
+
+#### D-01.3 Object-class privilege rules
+
+The version-1 matrix must encode these minimum rules:
+
+| Protected object class | Runtime | Verifier | Approver | Authority functions |
+| --- | --- | --- | --- | --- |
+| Trust/risk/identity/grant base tables | No INSERT/UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER; scoped SELECT only where explicitly required | No writes; minimum read only | No writes; minimum read only | Access only through fixed-owner functions |
+| Evidence/attestation base tables | No writes | No direct writes; registration function only | No writes | Registration/quarantine/re-verification functions only |
+| Candidate/release/active-release tables | No authority-changing writes | No writes | No writes | Promotion/rollback functions only |
+| Request/approval tables | No writes | No writes | No direct writes; approval function only | Request/approval/promotion functions only |
+| Audit event/canonical-byte/chain-head tables | No writes | No writes | No writes | Authority functions append atomically; verifier reads only |
+| Migration ledger and cutover marker | No writes | No writes | No writes | Migration executor under migration contract only |
+| Sequences/identity generators | No direct USAGE/UPDATE unless explicitly required and proven non-authoritative | No direct use unless explicitly required | No direct use unless explicitly required | Functions own and consume required sequences |
+| Views/materialized views | SELECT only when scoped and non-leaking | Minimum required reads | Minimum required reads | No authority is conferred by a view |
+| Partitions and partition parents | Same restrictions as protected parent; no direct child bypass | Same | Same | Functions only |
+| Functions/procedures/triggers | EXECUTE only on enumerated public entry points | Registration entry point only | Approval entry point only | Internal helpers inaccessible to application principals |
+
+All protected schemas must revoke unneeded privileges from PUBLIC. Default privileges must be set for every object-creating owner before object creation and verified afterwards. A default-privilege rule is not a substitute for checking already-created objects.
+
+The matrix must explicitly address partition attachment/detachment, inherited grants on partition children, ownership transfer, function replacement, trigger replacement, view owner semantics, security-invoker/security-definer behavior, extension objects, temporary schemas, search_path shadowing, overloaded functions, operators and casts that privileged SQL may resolve. Privileged functions must schema-qualify every non-catalog object reference, use a fixed safe search_path, reject untrusted dynamic SQL, and have no attacker-writable schema in name resolution.
+
+#### D-01.4 Effective privilege report and fail-closed comparison
+
+After migration and after every fresh-cluster restore, the migration gate must generate a database-derived effective-privilege report using catalog inspection and real role impersonation/session tests. It must calculate transitive membership closure and effective privileges, not merely display direct ACL entries. It must compare the observed inventory against the committed matrix and fail on:
+
+- an unexpected owner, membership, grant, grant option, PUBLIC privilege or default-privilege rule;
+- any protected object absent from the matrix;
+- any runtime/verifier/approver path to protected DML, TRUNCATE, ownership, schema CREATE, function replacement or privileged SET ROLE;
+- any partition whose effective privileges exceed its parent contract;
+- any SECURITY DEFINER function with an unapproved owner, unsafe search_path, unexpected EXECUTE grant or mutable helper dependency;
+- any RLS-disabled or non-FORCE-RLS protected table where the matrix requires both;
+- any difference between the pre-restore and post-restore authority inventory.
+
+The report must be retained with migration ID, database build, matrix version and cryptographic digest. A human-readable summary is insufficient without the raw machine-readable result and reproducible query/test harness.
+
+#### D-01.5 Required acceptance tests
+
+Use distinct real PostgreSQL login credentials for runtime, verifier, each approver, migration executor and break-glass DBA. Prove that runtime/verifier/approver cannot directly mutate protected tables, partitions, sequences, views, materialized views, functions, triggers or helper objects; cannot create a shadow object resolved by privileged code; cannot SET ROLE or inherit capability membership; and cannot exploit owner, default-privilege or PUBLIC paths.
+
+Repeat the complete test after a clean fresh-cluster restore, not only same-cluster restart. Include a negative fixture that deliberately adds one unexpected grant, membership, owner or helper function and prove the gate fails. D-01 closes only when the matrix, observed report, adversarial tests and independent review agree.
+
+---
+
+### D-02 — One serialization protocol for all promotion-eligibility mutations
+
+#### D-02.1 Scope mutex is mandatory for every authority-affecting writer
+
+Every transaction that can change whether a promotion or rollback is eligible must acquire the same tenant/business-unit scope mutex used by promotion, before reading or mutating governed state. This includes, without exception:
+
+- verifier identity activation, disablement, suspension and revocation;
+- verifier key activation, expiry, revocation, compromise declaration and supersession;
+- customer risk-acceptance creation, amendment, expiry-state transition, revocation and supersession;
+- accountable-role appointment, replacement, grant, suspension and removal;
+- evidence quarantine, quarantine release, supersession and re-verification;
+- publisher-key trust changes where they affect the candidate's evidence;
+- promotion-policy activation, retirement or revocation;
+- approval grant creation, expiry, suspension and revocation;
+- incident disposition that changes evidence eligibility;
+- promotion and rollback request creation, approval and execution.
+
+No direct table DML may mutate these records. Each class must have one or more narrowly scoped database entry-point functions; triggers may enforce invariants but must not create an alternate weaker authorization path.
+
+#### D-02.2 Canonical lock order
+
+All authority-changing transactions must acquire locks in this exact order, omitting only a class that the operation provably does not touch:
+
+1. tenant/business-unit scope mutex row;
+2. customer risk-acceptance record and accountable-role mapping rows, ordered by immutable UUID;
+3. verifier identity and verifier-key trust rows, ordered by immutable UUID;
+4. publisher-key trust rows, ordered by immutable UUID;
+5. evidence/attestation/quarantine/supersession rows, ordered by immutable UUID;
+6. candidate row;
+7. promotion or rollback request row;
+8. approval and grant rows, ordered by immutable UUID;
+9. active-release pointer and relevant release-history rows;
+10. audit chain-head row;
+11. append-only audit event insertion and final state writes within the same transaction.
+
+The implementation must publish a lock-acquisition map for every authority function. A function may not acquire a lower-order lock and later acquire a higher-order lock. Batch operations must sort same-class UUIDs lexicographically before locking. A missing scope mutex or trust row is a hard failure, not a reason to skip serialization.
+
+Where foreign-key checks or trigger execution acquire implicit locks, the implementation must document and test those effects against this order. Deadlock detection/retry must be bounded and idempotent; retry must re-read all trust and request state under the complete lock protocol.
+
+#### D-02.3 Linearization and winner semantics
+
+The authorization linearization point is the final, database-derived eligibility evaluation performed by the authority function after all required locks are held and before the first irreversible state transition, while the scope mutex remains held until commit or rollback.
+
+All writers listed in D-02.1 must hold that same scope mutex until their trust mutation, version increment and corresponding audit event commit. Therefore:
+
+- If promotion obtains the scope mutex first, performs the final checks and commits first, the promotion is ordered before a later revocation/quarantine/expiry-state mutation. The later mutation must identify the just-committed release in its impact assessment; it must not rewrite history.
+- If revocation, quarantine, risk-acceptance invalidation, key disablement or role removal obtains the mutex and commits first, a subsequent promotion must observe the invalid state and fail.
+- A promotion must never commit based on a pre-lock or stale snapshot that predates a trust mutation committed before its own linearization point.
+- A transaction that aborts has no authority effect and no committed audit event. Its lock release permits the next transaction to evaluate the then-current committed state.
+- No asynchronous worker may make a previously approved request executable without repeating the complete final eligibility evaluation under the same lock protocol.
+
+The contract requires PostgreSQL READ COMMITTED or a stricter isolation level with explicit row locking and re-read after lock acquisition. If REPEATABLE READ or SERIALIZABLE is used, the implementation must prove that stale snapshots cannot bypass the required post-lock checks and must treat serialization failures as full transaction retries, not partial continuation. The exact supported isolation level must be fixed in the implementation contract and tested.
+
+#### D-02.4 Expiry semantics
+
+Time-based validity is evaluated using PostgreSQL database time captured after the scope mutex and all relevant trust rows have been locked. A record is valid only when `effective_at <= authorization_time < expires_at`, with no grace period. Equality with expires_at is expired. The same captured authorization_time is used for all validity checks and persisted in the request/decision/audit event. Client clocks and application timestamps are never authoritative.
+
+If an expiry boundary is crossed before the linearization point, the action fails. If the action linearizes before expiry and commits after the wall-clock expiry instant, it is ordered before expiry and records the captured authorization_time. Expiry itself does not depend on a background job: every authority function checks the timestamp directly. Background expiry workers may update display/status projections only and must use the same mutex if they mutate authoritative state.
+
+#### D-02.5 Required concurrency tests
+
+Use independent PostgreSQL sessions and deterministic barriers to test both lock acquisition orders for promotion racing with each of: verifier identity revocation, verifier key revocation, publisher-key revocation, risk-acceptance revocation, risk-acceptance expiry, accountable-role removal, approval-grant revocation, evidence quarantine, evidence supersession and policy retirement.
+
+For each pair, prove the only outcomes are:
+- mutation commits first and promotion fails; or
+- promotion commits first and the mutation records its later ordering and affected release.
+
+No third outcome is acceptable. Test lock timeout, deadlock, transaction rollback, serialization failure, retry, expiry equality, and a timestamp crossing while waiting for the mutex. Verify one audit event per committed state transition and none for rolled-back transitions. Preserve already-promoted release history unchanged.
+
+---
+
+### D-03 — Versioned customer risk acceptance as a serialized authorization object
+
+#### D-03.1 Immutable version model
+
+Customer Model A risk acceptance is a protected, versioned authorization object, not a mutable free-form flag. Each version must have:
+
+- immutable risk_acceptance_id and monotonically increasing version;
+- customer entity, deployment, tenant and business-unit scope;
+- exact threat-model identifier and explicit Model A verifier-credential residual risk;
+- explicit exclusions for DBA/superuser, host and secret-manager compromise;
+- named, issuer-qualified accountable principal IDs and role assignments;
+- approval evidence digest, approver authority reference and approval timestamp;
+- effective_at, expires_at, revocation/supersession metadata and prior-version digest;
+- schema version and immutable canonical record digest.
+
+A version is never edited in place. Material changes create a new version and a supersession event. Revocation is a one-way state transition recorded by a protected function; revoked versions cannot be reactivated. The currently effective version pointer is protected and updated under the scope mutex.
+
+#### D-03.2 Role-holder validity
+
+Risk approval, verifier credential custody, signing-key custody, incident command, quarantine authority, independent re-verification and escalation must each map to an issuer-qualified principal with a validated customer authority record. The mapping must include immutable principal identity, issuer, subject, role, scope, grant ID, effective/expiry interval, status and evidence of customer appointment.
+
+Removal, expiry or revocation of any required role invalidates the risk acceptance for new evidence registration and promotion at the next authorization linearization point. The risk acceptance does not remain valid merely because its original approval signature is intact. A replacement role-holder requires a new risk-acceptance version and customer approval; the implementation team cannot silently substitute itself.
+
+#### D-03.3 Registration and promotion race behavior
+
+Evidence registration and promotion both acquire the D-02 scope mutex and lock the current risk-acceptance version and all required role mappings in the D-02 order. After locking, the function captures database authorization_time and validates that exactly one current risk-acceptance version is in scope, active, unrevoked, unsuperseded, within its validity interval, and supported by all required active role mappings.
+
+The registration or promotion request stores the risk_acceptance_id, version and canonical digest it relied upon. Promotion rechecks that exact version remains current and valid at its own linearization point. A newly approved replacement version does not silently grandfather old pending requests; they must be re-evaluated and, where the material risk or authority basis changed, re-requested and re-approved.
+
+If revocation, supersession, role removal or expiry commits first, evidence registration and promotion fail. If registration or promotion linearizes first, its event records that ordering and the later governance mutation records the affected evidence, requests and releases. A previously registered receipt is not deleted; it becomes non-promotable if its risk-acceptance basis is invalidated.
+
+#### D-03.4 Required tests
+
+Race registration and promotion against risk-record revocation, expiry, supersession, role-holder removal, role-grant revocation and role-holder identity disablement in both lock orders. Test exact expiry equality and time crossing while blocked on the scope mutex. Test missing, duplicate, out-of-scope, expired, revoked, superseded and incorrectly issuer-qualified roles. Demonstrate that no client-supplied timestamp or caller-supplied risk-acceptance ID can override the database's current version.
+
+---
+
+### D-04 — Complete rollback request schema version 1
+
+#### D-04.1 Closed envelope
+
+A rollback request is a distinct immutable schema, not a promotion request with a different operation label. Version 1 uses the exact schema token `cephas.powerops.rollback-request.v1`, RFC 8785 canonicalization and SHA-256. The envelope contains exactly these fields:
+
+| Field | Type / rule |
+| --- | --- |
+| request_schema_version | Exact string `cephas.powerops.rollback-request.v1` |
+| canonicalization_version | Exact string `RFC8785` |
+| digest_algorithm | Exact string `SHA-256` |
+| operation_type | Exact string `rollback` |
+| rollback_request_id | Unique lowercase canonical UUID |
+| tenant_id | Canonical tenant UUID |
+| business_unit_id | Canonical business-unit UUID |
+| source_active_release_id | Canonical UUID of the exact currently active release |
+| source_active_transition_sha256 | Digest of the immutable transition that made source release active |
+| target_release_id | Canonical UUID of the exact historical target release |
+| target_release_transition_sha256 | Digest of the immutable transition that created/activated the target release |
+| target_candidate_id | Canonical UUID |
+| target_candidate_version | Positive interoperable safe integer |
+| target_artifact_sha256 | 64 lowercase hexadecimal SHA-256 |
+| target_manifest_sha256 | 64 lowercase hexadecimal SHA-256 |
+| target_evidence_version_id | Immutable UUID |
+| target_attestation_id | Immutable UUID |
+| target_receipt_sha256 | 64 lowercase hexadecimal SHA-256 |
+| target_publisher_key_id | Immutable publisher-key identifier |
+| target_verifier_identity_id | Immutable verifier identity identifier |
+| target_verifier_key_id | Immutable verifier-key identifier |
+| target_policy_id | Immutable policy identifier |
+| target_policy_version | Immutable policy version token |
+| target_policy_sha256 | 64 lowercase hexadecimal SHA-256 |
+| rollback_policy_id | Immutable rollback-policy identifier |
+| rollback_policy_version | Immutable rollback-policy version token |
+| rollback_policy_sha256 | 64 lowercase hexadecimal SHA-256 |
+| rollback_reason_code | Closed enumerated policy reason code; no arbitrary free-text authority |
+| rollback_reason_sha256 | Digest of separately retained immutable reason/context record; required even when the record represents a minimal reason |
+| eligibility_assessment_sha256 | Digest of the database-derived rollback eligibility assessment |
+| requestor_principal_id | Canonical human principal UUID from protected DB identity mapping |
+| requestor_issuer | Canonical issuer URI from protected identity mapping |
+| requestor_subject | Exact canonical subject from protected identity mapping |
+| request_created_at | PostgreSQL-generated UTC timestamp with exactly six fractional digits |
+| risk_acceptance_id | Current immutable customer risk-acceptance UUID |
+| risk_acceptance_version | Positive safe integer |
+| risk_acceptance_sha256 | Canonical digest of the exact risk-acceptance version |
+
+Every field is mandatory and non-null. There is no genesis/no-active-release rollback: rollback requires an existing source active release and an independently eligible historical target. If no active release exists, rollback is rejected; initial release is a promotion operation. No additional fields, omitted fields, implicit defaults or extension maps are permitted in v1.
+
+The target must be independently revalidated at execution. It is not enough that the target was once active: its exact artifact, manifest, evidence, attestation, publisher/verifier trust, policy and quarantine status must remain eligible under current policy. A rollback must not revive evidence or trust that has since been revoked or quarantined.
+
+#### D-04.2 Canonical bytes and digest
+
+The database constructs the envelope from locked, authoritative rows. It persists exact canonical UTF-8 bytes R and computes:
+
+`SHA-256(UTF8("CEPHAS-POWEROPS-ROLLBACK-REQUEST-V1") || 0x00 || R)`
+
+The prefix is distinct from promotion. The exact schema token, canonicalization version, hash algorithm, canonical bytes and lowercase digest are immutable. Caller-supplied request bytes or digest are never authority.
+
+#### D-04.3 Approval and execution binding
+
+Rollback approvals bind the exact rollback_request_id and digest, operation type, scope, source active release and transition digest, target release and transition digest, target candidate/version, target artifact/manifest/evidence/attestation/receipt, publisher/verifier identities and keys, rollback policy/version/digest, reason code/digest, eligibility assessment, requestor and risk-acceptance version/digest. Each approval also binds the authenticated principal, active grant ID and role at recording time.
+
+At execution the rollback function recomputes the envelope digest, rechecks the exact source active release and target, rechecks all current trust and quarantine state, rechecks grants and risk acceptance under D-02/D-03 locks, and rejects any mismatch. A changed source, target, reason record, policy, eligibility assessment, trust key, evidence, requestor or risk-acceptance version requires a new rollback request and fresh approvals. Promotion approvals cannot authorize rollback and rollback approvals cannot authorize promotion.
+
+#### D-04.4 Required tests
+
+Two independent implementations must emit byte-identical canonical rollback bytes and digest for normative fixtures. Negative fixtures cover every field, missing/extra/null fields, invalid UUIDs/digests, invalid timestamp, reason code, policy and source/target transition changes. PostgreSQL tests mutate each bound field after approval and prove execution fails; test cross-operation approval reuse; test target quarantine/revocation and source active-release changes; test duplicate/replayed request IDs.
+
+---
+
+### D-05 — Normative audit event registry and closed payload schemas
+
+#### D-05.1 Registry rules
+
+The audit registry is immutable and versioned as `cephas.powerops.audit-payload-registry.v1`. Every authority function must emit only an event type registered below. The event object's top-level fields remain exactly those specified by audit event v1; `event_payload_schema` must equal the exact registry token associated with `event_type`. Unknown event types, unknown schema tokens, missing fields, extra fields, wrong types, invalid references and inconsistent scope relationships fail closed.
+
+All UUIDs below use lowercase canonical UUID text; all digest fields use 64 lowercase hexadecimal SHA-256 text; all timestamps use the audit-v1 database-generated UTC six-fractional-digit representation. Event payload objects are closed: no arbitrary maps, unknown properties or implicit nulls. Where a field is not applicable, the schema must define an explicit enum state rather than omit it.
+
+#### D-05.2 Required event registry
+
+| Event type | Payload schema token | Mandatory closed payload fields |
+| --- | --- | --- |
+| `risk_acceptance.created` | `cephas.powerops.audit-payload.risk-acceptance-created.v1` | risk_acceptance_id, version, record_sha256, customer_entity_id, deployment_id, tenant_id, business_unit_id, effective_at, expires_at, approver_principal_id, approval_evidence_sha256 |
+| `risk_acceptance.revoked` | `cephas.powerops.audit-payload.risk-acceptance-revoked.v1` | risk_acceptance_id, version, record_sha256, revocation_reason_code, revoking_principal_id, prior_status, affected_evidence_count, affected_request_count |
+| `risk_acceptance.superseded` | `cephas.powerops.audit-payload.risk-acceptance-superseded.v1` | prior_risk_acceptance_id, prior_version, prior_record_sha256, successor_risk_acceptance_id, successor_version, successor_record_sha256 |
+| `accountable_role.changed` | `cephas.powerops.audit-payload.accountable-role-changed.v1` | risk_acceptance_id, risk_acceptance_version, role_code, prior_principal_id, new_principal_id, prior_grant_id, new_grant_id, change_reason_code |
+| `verifier_identity.changed` | `cephas.powerops.audit-payload.verifier-identity-changed.v1` | verifier_identity_id, prior_status, new_status, verifier_key_id, change_reason_code, effective_at, actor_principal_id |
+| `verifier_key.changed` | `cephas.powerops.audit-payload.verifier-key-changed.v1` | verifier_identity_id, verifier_key_id, prior_status, new_status, key_fingerprint_sha256, change_reason_code, effective_at |
+| `publisher_key.changed` | `cephas.powerops.audit-payload.publisher-key-changed.v1` | publisher_key_id, prior_status, new_status, key_fingerprint_sha256, change_reason_code, effective_at |
+| `evidence.registered` | `cephas.powerops.audit-payload.evidence-registered.v1` | candidate_id, candidate_version, evidence_version_id, attestation_id, receipt_sha256, artifact_sha256, manifest_sha256, dataset_snapshot_sha256, provenance_sha256, assessment_sha256, verifier_identity_id, verifier_key_id, risk_acceptance_id, risk_acceptance_version |
+| `evidence.quarantined` | `cephas.powerops.audit-payload.evidence-quarantined.v1` | evidence_version_id, attestation_id, quarantine_id, incident_id, reason_code, verifier_identity_id, verifier_key_id, affected_request_count, affected_release_count |
+| `evidence.quarantine_released` | `cephas.powerops.audit-payload.evidence-quarantine-released.v1` | evidence_version_id, quarantine_id, incident_id, independent_reverification_id, new_evidence_version_id, verifier_identity_id, verifier_key_id, disposition_code |
+| `evidence.superseded` | `cephas.powerops.audit-payload.evidence-superseded.v1` | prior_evidence_version_id, prior_receipt_sha256, successor_evidence_version_id, successor_receipt_sha256, supersession_reason_code |
+| `promotion.requested` | `cephas.powerops.audit-payload.promotion-requested.v1` | promotion_request_id, request_sha256, candidate_id, candidate_version, prior_active_release_state, prior_active_release_id, policy_id, policy_version, evidence_version_id |
+| `promotion.approved` | `cephas.powerops.audit-payload.promotion-approved.v1` | promotion_request_id, request_sha256, approval_id, approval_role, approver_principal_id, grant_id, decision, approval_evidence_sha256 |
+| `promotion.rejected` | `cephas.powerops.audit-payload.promotion-rejected.v1` | promotion_request_id, request_sha256, approval_id, approval_role, approver_principal_id, grant_id, rejection_reason_code |
+| `promotion.executed` | `cephas.powerops.audit-payload.promotion-executed.v1` | promotion_request_id, request_sha256, release_id, release_transition_sha256, candidate_id, candidate_version, prior_active_release_id, evidence_version_id, policy_sha256 |
+| `rollback.requested` | `cephas.powerops.audit-payload.rollback-requested.v1` | rollback_request_id, request_sha256, source_active_release_id, source_active_transition_sha256, target_release_id, target_release_transition_sha256, rollback_policy_sha256, reason_code, reason_sha256 |
+| `rollback.approved` | `cephas.powerops.audit-payload.rollback-approved.v1` | rollback_request_id, request_sha256, approval_id, approval_role, approver_principal_id, grant_id, decision, approval_evidence_sha256 |
+| `rollback.rejected` | `cephas.powerops.audit-payload.rollback-rejected.v1` | rollback_request_id, request_sha256, approval_id, approval_role, approver_principal_id, grant_id, rejection_reason_code |
+| `rollback.executed` | `cephas.powerops.audit-payload.rollback-executed.v1` | rollback_request_id, request_sha256, source_active_release_id, target_release_id, target_release_transition_sha256, resulting_active_release_id, resulting_transition_sha256 |
+| `incident.opened` | `cephas.powerops.audit-payload.incident-opened.v1` | incident_id, incident_type, severity_code, opened_by_principal_id, affected_verifier_identity_ids, affected_key_ids, affected_evidence_ids, exposure_start_state |
+| `incident.dispositioned` | `cephas.powerops.audit-payload.incident-dispositioned.v1` | incident_id, disposition_code, disposition_record_sha256, incident_commander_principal_id, independent_reviewer_principal_id, affected_release_ids |
+| `migration.transitioned` | `cephas.powerops.audit-payload.migration-transitioned.v1` | migration_id, migration_contract_version, prior_state, new_state, state_version, source_schema_version, target_schema_version, checkpoint_sha256, active_release_snapshot_sha256 |
+| `audit.version_transition` | `cephas.powerops.audit-payload.audit-version-transition.v1` | transition_id, prior_audit_schema_version, prior_hash_algorithm, prior_last_sequence, prior_head_digest, prior_verification_report_sha256, new_audit_schema_version, new_hash_algorithm, new_genesis_or_continuation_rule, external_anchor_reference |
+
+This registry is the minimum required event set for this gate. If an implementation emits another authority-affecting event, it must first define a new registry version with its exact payload schema and fixtures; silently emitting an unregistered event is prohibited. Fields whose values are arrays must use canonical UUID ordering, contain no duplicates, and have explicit maximum lengths. Empty arrays are permitted only where the schema semantics define “none”; otherwise the event is rejected.
+
+#### D-05.3 Payload relationships and atomicity
+
+Each event payload must reference the exact governed database row and immutable request/evidence digest that caused it. The database must validate tenant/business-unit relationships between event scope and every referenced record. A payload must not assert a different actor, candidate, release, risk-acceptance version, evidence version or request digest than the locked source rows.
+
+For an authority mutation, the business state, immutable transition record, audit canonical bytes, event digest and chain-head update commit in one transaction. A failed append or schema validation aborts the authority mutation. The event actor and timestamp are database-derived. An event must not be emitted for an aborted state transition.
+
+#### D-05.4 Required registry fixtures
+
+Publish normative positive and negative fixtures for every event type. At minimum, two independently implemented validators must agree on schema acceptance/rejection and produce identical canonical bytes/digests. Negative fixtures must include unknown event type, unknown payload token, extra/missing property, null in a non-null field, malformed identifier/digest, duplicate or unsorted UUID array, cross-tenant reference, wrong request digest, wrong actor, wrong prior state and payload/state mismatch.
+
+---
+
+### D-06 — Historical audit-chain transition and external immutable-anchor handoff
+
+#### D-06.1 Historical verification report
+
+Before a historical chain transitions to audit v1, an independent verifier must produce a signed, immutable verification report containing exactly:
+
+- verification_report_schema_version;
+- source customer/deployment/tenant/business-unit scope;
+- historical audit schema/hash algorithm/canonicalization versions;
+- first and last sequence numbers verified;
+- event count;
+- exact last historical head digest;
+- digest of the complete ordered event-digest manifest;
+- verification software identity/version and build digest;
+- verifier principal/issuer/subject and signing-key ID;
+- verification timestamp;
+- result and enumerated warnings/exceptions;
+- immutable source snapshot/backup reference and digest;
+- external anchor reference, if one exists, including provider/object/version/retention-lock evidence.
+
+The report itself is canonicalized under a separately versioned report schema and signed by an independent audit-verification authority whose credentials are not held by the database administrator, verifier service or application runtime. If no prior external anchor exists, the report must state `anchor_status=not_previously_anchored`; it must not imply that a database-presented head is independently trustworthy. The customer must explicitly accept the historical chain's provenance limitation before treating it as a trusted transition source.
+
+#### D-06.2 Exact transition event
+
+The first transition event must use the D-05 `audit.version_transition` schema and bind:
+
+- old schema version, canonicalization version and hash algorithm;
+- old first/last sequence and exact old head digest;
+- historical event count and ordered event-digest-manifest digest;
+- signed verification-report digest and signer identity/key ID;
+- immutable source snapshot/backup digest;
+- old external anchor reference and anchor status;
+- new audit schema/hash/canonicalization versions;
+- explicit continuation rule: new chain sequence starts at 1 for its new versioned chain, and its genesis/transition event carries the prior chain head and verification-report digest as payload references;
+- new external anchor reference for the transition event after it is committed.
+
+The transition event is itself hashed using the new audit-v1 rules. The prior historical chain is never rewritten or rehashed under v1. Independent verifiers must verify the historical chain with its original algorithm, verify the signed transition report, validate the transition event's exact references, then verify the new chain from its defined genesis. A database-only reference to an old digest is not proof that the old digest was externally anchored.
+
+#### D-06.3 External immutable/WORM anchor is a separate acceptance gate
+
+The external anchor must be customer-controlled and administratively separate from the PowerOps database and application identities. The anchor contract must define:
+
+- storage provider/service and customer ownership;
+- immutable object format and exact bytes/digest;
+- append-only or compliance-mode retention lock;
+- retention duration and legal-hold semantics;
+- writer identity and least-privilege append capability;
+- independent reader/verifier identity;
+- separation of duties for retention-policy changes and deletion;
+- timestamping and object-version identifiers;
+- periodic anchor cadence and maximum unanchored event window;
+- acknowledgement, retry, duplicate/idempotency and outage behavior;
+- monitoring/alerting for missed anchors or retention-policy changes;
+- backup, export and recovery procedure;
+- evidence that a database administrator cannot alter or delete the external copy.
+
+The source database transaction must not claim that an external anchor has committed merely because an outbox row was written. An asynchronous anchor worker must persist a distinct acknowledgement containing anchor object ID/version, exact event range, digest, provider timestamp and verification result. An outage leaves events marked pending/unanchored and raises an operational alert; it does not permit deletion or mutation of source events. Promotion/approval availability during an anchor outage must follow a customer-approved bounded-outage policy; absent such policy, fail closed once the configured maximum unanchored window is reached.
+
+#### D-06.4 Required acceptance tests
+
+Build a fixture containing historical events, a signed historical verification report, the version-transition event, new audit-v1 events and an external anchor receipt. Two independent verifiers must validate the entire sequence. Tamper independently with the old head, historical manifest, verification report, signer key, source snapshot reference, transition payload, new chain event and anchor receipt; verification must fail at the corresponding boundary.
+
+Demonstrate that a database administrator with full database privileges cannot modify or delete the externally anchored object or its retention settings. Test anchor outage, retry, duplicate acknowledgement, delayed acknowledgement, restore from backup and independent recovery of the anchored event range. Do not claim WORM compliance or close F-05 until these tests and customer acceptance pass.
+
+---
+
+### Consolidated closure matrix and required evidence
+
+| Finding | Contract addition now specified | Evidence required before closure |
+| --- | --- | --- |
+| D-01 High | Versioned exhaustive privilege matrix, role classes, object inventory, effective-privilege comparison, partition/default privilege/ownership closure | Machine-readable matrix; catalog-derived report; real login adversarial tests; fresh-cluster restore repetition; independent review |
+| D-02 High | One scope mutex and deterministic lock order for every trust/eligibility mutation; explicit linearization and winner semantics | Concurrent independent PostgreSQL sessions for every mutation pair; expiry, rollback, deadlock and retry tests |
+| D-03 Medium | Immutable versioned risk acceptance; role-holder validation; serialized revocation/expiry/supersession | Both-order race tests for registration/promotion and all risk/role changes; exact database-time boundary tests |
+| D-04 Medium | Complete closed rollback v1 envelope, canonical bytes and distinct domain-separated digest | Two independent serializers; per-field mutation tests; cross-operation approval rejection |
+| D-05 Medium | Complete event-type/payload registry for this gate | Positive/negative fixtures for every event; two independent validators; atomicity tests |
+| D-06 Medium | Signed historical verification report, exact transition event and separate customer-controlled WORM contract | End-to-end historical-to-v1 verification; tamper tests; external retention/access/recovery tests |
+
+All six findings remain **OPEN pending independent reassessment**. The additions specify the contract; they do not constitute closure evidence.
+
+### Explicit governance and authorization status
+
+- Parent commit `de5e10dd23e643d4658fdbd9d25f64ffb95a1018` remains an immutable review record.
+- Earlier baselines `428abadf5ed612408cfd82ac9c835d6769dcd95e` and `8442032703642e780ffdfd7fd348849640f35d04` remain preserved and unchanged.
+- This amendment is documentation-only. No PostgreSQL implementation, migration, serializer, WORM integration, customer acceptance or adversarial test is claimed.
+- **Implementation authorization: NOT GRANTED.**
+- PR #20 remains Draft, open and unmerged.
+- Synthetic-data-first, customer-hosted/customer-controlled and advisory-only boundaries remain unchanged. Model promotion remains registry governance only. No live IBEDC telemetry, SCADA/ADMS/DMS control, switching, dispatch, meter commands, billing adjustments, refunds, journal postings or automatic production model deployment is authorized.
