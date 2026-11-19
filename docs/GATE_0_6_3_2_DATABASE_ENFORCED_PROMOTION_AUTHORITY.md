@@ -609,3 +609,285 @@ The six clarifications above are submitted for independent reassessment. They do
 The reviewer must also retain explicit dispositions for F-01 through F-08. No original finding is deemed closed merely because a clarification has been written. Implementation, once authorized, remains a separate gate requiring actual PostgreSQL implementation evidence, adversarial tests, fresh-cluster recovery and independent implementation review.
 
 PR #20 must remain Draft, open and unmerged. No production certification, live utility telemetry integration, operational control or automatic production model deployment is authorized.
+
+
+---
+
+## Independent reassessment response — mandatory pre-implementation conditions C-01 through C-05
+
+**Source disposition:** The independent reassessment of commit 428abadf5ed612408cfd82ac9c835d6769dcd95e was ACCEPT WITH CONDITIONS. Implementation authorization was withheld. This is a documentation-only response. It does not claim customer risk acceptance, implementation, or successful implementation testing.
+
+The reviewed baseline 8442032703642e780ffdfd7fd348849640f35d04 and reassessed commit 428abadf5ed612408cfd82ac9c835d6769dcd95e remain immutable historical commits. This amendment is additive and must be reassessed at its own exact commit.
+
+### C-01 / C-05 — Model A residual risk acceptance, customer governance and promotion-time quarantine
+
+#### Explicit trust decision
+
+This design retains Model A: the trusted verifier service, its protected database login and its narrowly scoped evidence-registration function collectively form a privileged evidence-registration authority. PostgreSQL authenticates the database login and restricts its function capability. PostgreSQL does not independently verify the Ed25519 receipt signature. A party able to use the verifier database credential can register fabricated evidence through the permitted registration function, even without possession of the verifier signing key.
+
+This residual risk is accepted as a possible trust model for a controlled, synthetic-data, advisory-only PoV only after the customer has knowingly accepted it in writing. It is not cryptographically independent evidence verification and must not be described as such. The customer may reject Model A; in that case the verifier registration authority remains disabled until a separately designed and independently reviewed trust model is approved.
+
+#### Mandatory customer-approved risk-acceptance record
+
+Before the verifier registration authority can be enabled, the customer must approve a durable, versioned security-risk-acceptance record containing, at minimum:
+
+- unique immutable risk-acceptance record ID and schema version;
+- customer legal entity, deployment/environment ID, tenant and business-unit scope;
+- explicit selection of Model A and an unambiguous statement that compromise of the verifier database credential can register fabricated evidence without the signing key;
+- the residual risk, plausible impact, limitations of PostgreSQL verification, and the fact that a signed receipt does not remove the verifier from the trust boundary;
+- verifier service identity, database login identity, registration-function identity, verifier key IDs and credential/key custody arrangements;
+- named accountable customer roles and identified human principals for risk approval, verifier credential custody, signing-key custody, incident command, quarantine authorization, independent re-verification and escalation;
+- incident notification channel and escalation path, including who can disable the verifier login and revoke registration-function execution;
+- approval decision, approving authority, approval timestamp, effective date, review/expiry date and conditions; and
+- immutable evidence of customer authorization, such as a customer-controlled signed approval artifact or equivalent independently auditable approval record.
+
+The record must be approved by the customer's designated security/risk authority, not self-approved by the implementation team, verifier operator or repository owner. Role assignments must resolve to canonical issuer-qualified human identities under the customer identity-governance process. The record must be in force, in scope and unexpired.
+
+The deployment must fail closed if this record is absent, invalid, expired, revoked, out of scope or missing any accountable role. The verifier login and registration-function capability must not be enabled before the database has verified the approved record. Renewal or material change to the verifier identity, credential/key custody, incident owner or accepted residual risk requires a new approval record before continued operation. The implementation must not create a default or synthetic customer acceptance record.
+
+#### Database-enforced enablement precondition
+
+The verifier registration function must, at its authorization linearization point, confirm that:
+
+1. an active customer risk-acceptance record exists for the exact deployment and scope;
+2. the record explicitly accepts Model A and identifies the verifier authority being enabled;
+3. the approving customer authority and required accountable roles remain valid under protected customer identity/grant mappings;
+4. the record has not expired, been revoked or been superseded; and
+5. the verifier identity and key are active and mapped to the exact permitted scope.
+
+The enable/disable state must be held in protected database state. Ordinary runtime, verifier and approver logins must not be able to create, amend, extend or bypass the customer risk-acceptance record or its enablement check. Changes must use a separately governed customer-administration function and produce an audit event. Loss of a valid acceptance record disables new evidence registration and fails closed.
+
+#### Promotion-time trust and quarantine checks
+
+The promotion function must re-evaluate evidence trust at the authorization linearization point, after acquiring the required scope mutex and relevant row locks and immediately before committing the release transition. It must not rely solely on trust status captured when evidence was registered.
+
+For every evidence version bound to the immutable promotion request, the function must confirm:
+
+- the verifier identity is currently enabled and trusted for the exact deployment and scope;
+- the verifier key is currently active, not revoked, not expired and not superseded for new use;
+- the receipt/attestation is the exact immutable version referenced by the request;
+- the evidence version is not quarantined, superseded, revoked or otherwise non-promotable;
+- the customer Model A risk-acceptance record is current and applicable; and
+- the candidate's evidence binding has not changed since the request and approvals were created.
+
+A revoked verifier identity or key must make all evidence versions dependent on it non-promotable, including evidence registered before revocation. A quarantine must invalidate eligibility for every dependent candidate and every not-yet-executed promotion request. These checks must be database-enforced, not application-only filters or mutable JSON flags.
+
+#### Quarantine propagation and already-promoted transitions
+
+Quarantine must preserve original evidence, approval, candidate and release-transition records. It must not rewrite historical evidence or silently deactivate, replace or reactivate an active release.
+
+The incident procedure must create an immutable incident record identifying the verifier identity/key, exposure window, affected attestation IDs and evidence versions, dependent candidate versions, promotion requests, approval sets and release-transition IDs. If the exposure start is unknown, the affected set extends back to the last independently verified clean credential/key rotation or activation, as applicable.
+
+Every release transition that relied on affected evidence must be explicitly listed in the incident record and assigned a customer-approved disposition. Dispositions may include independent re-verification and a newly governed transition, continued legacy/current-state treatment under a documented customer decision, or another customer-authorized response. A historical transition must never be silently rewritten as though it had not occurred. While the incident remains unresolved, affected evidence cannot authorize a new promotion or rollback; any further state change must follow a separately approved incident/governance procedure.
+
+Independent re-verification must use retained exact artifact, manifest, dataset, provenance and policy bytes, a clean verifier identity and newly authorized key. It creates a new attestation/evidence version with an immutable supersession link. It does not revive the quarantined receipt. Quarantine, re-verification, supersession and each affected-transition disposition must be append-only audit/security events, with an incident record retained outside the affected verifier authority.
+
+#### C-01 / C-05 acceptance criteria
+
+Before enabling the verifier authority, an implementation acceptance test must prove that registration fails when the customer risk-acceptance record is missing, expired, revoked, out of scope or lacks an accountable required role, and succeeds only with a valid customer-approved record.
+
+A PostgreSQL adversarial test must register evidence through the permitted verifier function, revoke the verifier identity/key, quarantine the evidence and attempt promotion using a request and approval set created before revocation. Promotion must fail. The test must also prove that all dependent candidate versions and unexecuted requests are non-promotable, and that an already-promoted transition is identified in the incident record without silently changing historical rows. Test unknown exposure start and quarantine back to the last independently verified clean rotation/activation.
+
+No customer risk-acceptance record is asserted to exist by this design amendment. Customer approval is a deployment prerequisite and remains outstanding until supplied and verified in the customer-controlled environment.
+
+### C-02 — Closed and versioned audit event serialization contract
+
+The prior open-ended phrase describing fields “at minimum” is replaced by a closed serialization contract. Audit hash version 1 is normative.
+
+#### Version-1 top-level event object
+
+The canonical JSON object must contain exactly these fields and no others:
+
+| Field | JSON type | Rule |
+| --- | --- | --- |
+| audit_schema_version | string | Exactly cephas.powerops.audit-event.v1 |
+| canonicalization_version | string | Exactly RFC8785 |
+| hash_algorithm | string | Exactly SHA-256 |
+| event_id | string | Lowercase canonical UUID text |
+| tenant_id | string | Canonical tenant UUID text |
+| business_unit_id | string | Canonical business-unit UUID text |
+| sequence_number | number | Integer from 1 through 9,007,199,254,740,991 inclusive |
+| previous_event_digest | string | Exactly 64 lowercase hexadecimal characters; genesis is 64 ASCII zeroes |
+| event_type | string | Non-empty registered event-type token, maximum 128 UTF-8 bytes |
+| operation_id | string | Lowercase canonical UUID text identifying the governed operation/request |
+| actor_principal_id | string or null | Canonical immutable principal UUID; null only for explicitly registered system events |
+| actor_issuer | string or null | Canonical issuer URI; null if and only if actor_principal_id is null |
+| actor_subject | string or null | Exact canonical subject from the issuer; null if and only if actor_principal_id is null |
+| event_timestamp | string | UTC timestamp in fixed YYYY-MM-DDTHH:mm:ss.ffffffZ form, six fractional digits |
+| event_payload_schema | string | Registered, immutable event-specific payload schema token |
+| event_payload | object | Exact payload conforming to the registered schema named by event_payload_schema |
+
+No top-level property may be omitted. No top-level property may be added in version 1. Nullable fields must be present with JSON null; omission is not equivalent to null. actor_principal_id, actor_issuer and actor_subject must be either all null for a specifically permitted system event or all non-null. Empty strings are not substitutes for null.
+
+#### Event payload closure
+
+Every event_type must map to one immutable event_payload_schema. Each payload schema must define exact property names, JSON types, bounds, nullability and required/optional semantics. Unknown properties are prohibited at every object level. Optional values, where a particular payload schema permits them, must be represented using an explicitly defined nullable field rather than omission. A payload schema must not permit arbitrary untyped extension maps or caller-supplied authoritative scope, actor, sequence, timestamp, previous digest or hash fields.
+
+A new event type or a change to any payload schema that can change canonical bytes requires a new registered payload-schema version. A change to the top-level event schema, field type, null/omission rule, timestamp representation, canonicalization or digest construction requires a new audit schema/hash version. Version 1 must never be silently reinterpreted or extended.
+
+#### Scalar and encoding rules
+
+- UUIDs use lowercase canonical hyphenated text. Non-canonical UUID representations are rejected before serialization.
+- Digests use lowercase hexadecimal SHA-256 text without a prefix.
+- sequence_number is a JSON integer, never a string or floating-point value, and must remain within the stated interoperable integer bound.
+- event_timestamp is generated by PostgreSQL from trusted database time, normalized to UTC and rendered with exactly six fractional digits. It must parse to a valid timestamp in the inclusive UTC range 2000-01-01T00:00:00.000000Z through 9999-12-31T23:59:59.999999Z. Local offsets, leap-second notation, variable precision and timezone-less values are rejected.
+- All strings are Unicode scalar-value strings encoded as UTF-8; invalid Unicode and unpaired surrogate representations are rejected. RFC 8785 governs canonical JSON escaping and property ordering.
+- JSON numbers other than the bounded sequence_number are prohibited in version-1 event payloads unless the event-specific payload schema explicitly defines a safe integer range and exact numeric semantics. Binary quantities and arbitrary-precision decimals must use schema-defined canonical strings, not implementation-dependent floating-point serialization.
+- The exact canonical UTF-8 byte sequence used for hashing must be persisted immutably as canonical_event_bytes or an equivalent byte-for-byte immutable representation. A parsed JSON projection may also be stored, but it is not a substitute for the canonical bytes.
+
+#### Hash construction and genesis
+
+Let C be the exact UTF-8 byte sequence obtained by applying RFC 8785 to the complete version-1 event object. The event digest is:
+
+SHA-256(UTF8("CEPHAS-POWEROPS-AUDIT-EVENT-V1") || 0x00 || C)
+
+The domain-separation prefix and terminating zero byte are mandatory. The stored digest is 64 lowercase hexadecimal characters. The first event in a scope uses 64 ASCII zeroes as previous_event_digest; subsequent events use the exact digest of the immediately preceding committed event in that scope.
+
+The chain-head row stores the last committed digest and next sequence number as ordinary transactional values. The business mutation, event insert, canonical bytes, digest and chain-head update occur in one transaction under the existing lock order. A failed transaction consumes neither a sequence number nor a digest position.
+
+#### Independent verification and version transition
+
+A verifier must validate the exact version token, exact field set, scalar constraints, event-specific payload schema, canonicalization version, canonical bytes, domain-separated hash and previous-digest chain. Unknown schema versions, unknown payload schemas, extra/missing fields, invalid nullability or non-canonical bytes fail verification; verifiers must not guess.
+
+A version transition is explicit. A new event/hash version has a new version token and a separately specified canonical preimage and domain-separation prefix. Historical version-1 bytes and digests remain verifiable using this contract. External immutable/WORM anchoring, retention, independent copies and recovery remain separate controls; a successful database-chain verification does not close the WORM requirement.
+
+#### C-02 acceptance criteria
+
+Provide at least two independently implemented audit serializers/verifiers. For the same normative fixtures they must produce byte-identical canonical output and identical digests. Fixtures must cover explicit nulls, rejected omissions, Unicode and escaping, maximum permitted sequence number, genesis and non-genesis links, timestamp precision/range, unknown fields, unknown payload schema, and a schema/hash-version transition. Include negative fixtures proving that altered property sets, null semantics, timestamps, payload types or domain-separation bytes fail verification.
+
+### C-03 — Enumerated migration state machine and crash/retry contract
+
+The migration runner must persist a durable migration-control record for this gate, keyed by a stable migration ID and recording the migration-contract version, source schema version, target schema version, current state, state version, timestamps, preparatory-operation checkpoints, source/target reconciliation evidence and failure details. The record is not authoritative merely because the runner reports progress; each transition must be supported by database-observable evidence.
+
+#### Normative states and transitions
+
+| Current state | Permitted next state | Required durable evidence / action |
+| --- | --- | --- |
+| NOT_STARTED | PREFLIGHT_RUNNING | Acquire migration lock; create immutable migration ID and initial control record |
+| PREFLIGHT_RUNNING | PREFLIGHT_PASSED | Read-only preflight report, source counts, active-release snapshot and audit verification results persisted |
+| PREFLIGHT_RUNNING | FAILED_RECOVERY_REQUIRED | Preflight failure record; no protected authority change permitted |
+| PREFLIGHT_PASSED | PREPARATORY_OPERATIONS_IN_PROGRESS | Persist ordered preparatory-operation manifest and expected checksums |
+| PREPARATORY_OPERATIONS_IN_PROGRESS | PREPARATORY_OPERATIONS_IN_PROGRESS | Persist each operation's started/completed checkpoint and independently verified result |
+| PREPARATORY_OPERATIONS_IN_PROGRESS | PREPARATORY_OPERATIONS_VERIFIED | Every required preparatory operation completed, idempotency/reconciliation checks passed, and effective authority remains unchanged |
+| PREPARATORY_OPERATIONS_IN_PROGRESS | FAILED_RECOVERY_REQUIRED | Failure/compensation record; authority remains at the complete pre-cutover model |
+| PREPARATORY_OPERATIONS_VERIFIED | CUTOVER_IN_PROGRESS | Begin one database transaction; record this state inside that transaction only |
+| CUTOVER_IN_PROGRESS | CUTOVER_COMMITTED | In the same transaction, commit schema/data cutover, protected privileges/functions/RLS, migration ledger and cutover marker |
+| CUTOVER_COMMITTED | POST_CUTOVER_VERIFICATION_IN_PROGRESS | Reacquire migration lock and verify committed cutover marker and expected target schema |
+| POST_CUTOVER_VERIFICATION_IN_PROGRESS | POST_CUTOVER_VERIFICATION_PASSED | Durable final verification report proves target authority, preservation and reconciliation invariants |
+| POST_CUTOVER_VERIFICATION_IN_PROGRESS | FAILED_RECOVERY_REQUIRED | Durable failure report; new promotion/evidence authority remains fail-closed pending controlled repair |
+| FAILED_RECOVERY_REQUIRED | PREPARATORY_OPERATIONS_IN_PROGRESS | Only after authorized recovery decision and verified idempotent retry/compensation plan, where cutover has not committed |
+| FAILED_RECOVERY_REQUIRED | POST_CUTOVER_VERIFICATION_IN_PROGRESS | Only after authorized forward-repair/reverification plan where cutover has committed |
+| POST_CUTOVER_VERIFICATION_PASSED | none | Terminal success for this migration ID; rerun is a no-op after rechecking committed marker and final report |
+
+No other transition is permitted. A transition must use compare-and-set on the expected current state and state version under the migration lock. State regression, skipped states and success without supporting evidence are prohibited.
+
+#### Transactional cutover and crash determination
+
+CUTOVER_IN_PROGRESS is written only inside the same transaction as the authority cutover. It must not be exposed as a separately committed state. If the process or database fails before commit, PostgreSQL rolls back the cutover transaction and the last durable state remains PREPARATORY_OPERATIONS_VERIFIED; the runner may safely retry the cutover after rechecking preconditions.
+
+If the commit succeeds but the runner loses its connection before receiving confirmation, restart logic must inspect the durable migration ledger, committed cutover marker, target schema version, migration ID and transactionally written cutover evidence. If all agree, the runner treats cutover as committed and proceeds to post-cutover verification; it must not repeat non-idempotent operations or infer rollback from a missing client acknowledgement. If the marker and schema/authority state disagree, the runner enters FAILED_RECOVERY_REQUIRED and must not report success.
+
+#### Preparatory operations and retry
+
+Each non-transactional preparatory operation must have a stable operation ID, deterministic input digest, expected output/checksum, start checkpoint, completion checkpoint and independent verification result. Re-running an operation with the same ID and same input must be idempotent or detect that its expected output already exists. Reusing an operation ID with different inputs is rejected. Compensation, where possible, must itself be an explicit checkpointed operation; the runner must never assume an external side effect was undone because its process exited.
+
+Preparatory work must not grant ordinary runtime, verifier or approver roles broader effective authority than the pre-migration model. It must not alter the active-release identity/state. Before every retry, reconcile actual external/database state with durable checkpoints. Ambiguous state requires FAILED_RECOVERY_REQUIRED, not blind retry.
+
+#### Failure, success and active-release preservation
+
+The migration runner must not report success, enable the new verifier/promotion authority or mark the gate operationally ready until CUTOVER_COMMITTED and POST_CUTOVER_VERIFICATION_PASSED are both durably confirmed.
+
+If post-cutover verification fails, do not automatically reverse or partially roll back the committed authority cutover. Keep new evidence registration and promotion fail-closed, preserve active-release identity/state and historical rows, and require an authorized forward-repair or separately reviewed restore plan. The runner must not mark success.
+
+Capture the exact active-release identity and state before preparatory work. Reconcile it after every preparatory restart, after cutover commit and after final verification. Any mismatch is a hard failure requiring recovery; no migration step may silently deactivate, replace, reactivate or promote a release.
+
+#### C-03 acceptance criteria
+
+In disposable PostgreSQL 16 environments, inject process termination and database interruption at every state transition boundary and after every non-transactional preparatory operation. Restart the runner and demonstrate correct state determination, safe retry/compensation, no duplicate side effects, no premature authority enablement and exact active-release preservation. Test the ambiguous lost-commit-acknowledgement case. Verify that the runner cannot declare success unless the committed cutover marker and final verification report both exist and reconcile.
+
+### C-04 — Complete immutable promotion-request envelope and digest
+
+Promotion and rollback use one operation-binding framework with distinct operation types, unique request IDs and non-transferable approval sets. Promotion requests are specified as completely as rollback requests.
+
+#### Promotion request schema version 1
+
+A promotion request is an immutable record containing exactly the following canonical fields:
+
+| Field | Type / rule |
+| --- | --- |
+| request_schema_version | Exact string cephas.powerops.promotion-request.v1 |
+| canonicalization_version | Exact string RFC8785 |
+| digest_algorithm | Exact string SHA-256 |
+| operation_type | Exact string promotion |
+| promotion_request_id | Unique lowercase canonical UUID |
+| tenant_id | Canonical tenant UUID |
+| business_unit_id | Canonical business-unit UUID |
+| candidate_id | Canonical candidate UUID |
+| candidate_version | Immutable positive integer within the interoperable safe-integer bound |
+| artifact_sha256 | 64 lowercase hexadecimal characters |
+| manifest_sha256 | 64 lowercase hexadecimal characters |
+| dataset_snapshot_sha256 | 64 lowercase hexadecimal characters |
+| provenance_sha256 | 64 lowercase hexadecimal characters |
+| assessment_sha256 | 64 lowercase hexadecimal characters |
+| evidence_version_id | Immutable evidence-version UUID |
+| attestation_id | Immutable verifier attestation UUID |
+| receipt_sha256 | 64 lowercase hexadecimal characters |
+| publisher_key_id | Immutable publisher-key identifier |
+| verifier_identity_id | Immutable verifier identity identifier |
+| verifier_key_id | Immutable verifier-key identifier |
+| policy_id | Immutable promotion-policy identifier |
+| policy_version | Immutable policy version token |
+| policy_sha256 | 64 lowercase hexadecimal characters |
+| prior_active_release | Required object defined below; never omitted |
+| requestor_principal_id | Canonical immutable human principal UUID authenticated by the database |
+| requestor_issuer | Canonical issuer URI from protected identity mapping |
+| requestor_subject | Exact canonical subject from protected identity mapping |
+| request_created_at | Database-generated UTC timestamp in fixed six-fractional-digit form |
+
+prior_active_release is a closed object with exactly three fields: state, release_id and transition_sha256. If state is present, release_id is a canonical UUID and transition_sha256 is a 64-character lowercase SHA-256 digest of the immutable transition that made it active. If state is none, both release_id and transition_sha256 must be explicit JSON null. This explicitly represents the genesis/no-active-release case; omission or an empty string is invalid.
+
+All fields are mandatory. No additional fields are allowed in schema version 1. No field may be omitted. Null is prohibited except for the two explicitly nullable prior_active_release members in the none case. All identifiers, digests, timestamp and integer constraints are validated before canonicalization. The requestor identity and timestamp are derived by the database, not accepted as authority from caller-supplied JSON.
+
+#### Canonical bytes and digest
+
+The database constructs the immutable request envelope from trusted candidate/evidence/policy/identity/release state. It serializes the complete object using RFC 8785 to UTF-8 canonical bytes P. The request digest is:
+
+SHA-256(UTF8("CEPHAS-POWEROPS-PROMOTION-REQUEST-V1") || 0x00 || P)
+
+Persist the exact canonical request bytes, schema/canonicalization/hash versions and 64-character lowercase digest. Recompute the digest from immutable stored fields when recording approvals and again inside the promotion function. Do not trust a caller-supplied digest or mutable JSON projection.
+
+#### Approval and execution binding
+
+Each required approval (model-risk, security, operations-owner) must reference the exact promotion_request_id and promotion_request_digest, operation type, tenant/business-unit scope, candidate ID/version, evidence version, artifact/manifest/dataset/assessment/receipt digests, policy ID/version/digest and prior-active-release state. Each approval must also bind to the exact database-authenticated canonical human principal and active grant ID at recording time. Three distinct principals and creator exclusion remain mandatory.
+
+At execution, the promotion function must recompute the request digest and compare it to every approval's stored request ID/digest and bound fields. It must re-check that the prior active release is exactly the one in the request, including the explicit none state; that the candidate and evidence versions remain unchanged; that the verifier identity/key and evidence remain trusted and non-quarantined; that the policy remains effective; and that all grants remain valid at the authorization linearization point.
+
+If the prior active release changes, or any candidate version, artifact, manifest, dataset, provenance, assessment, evidence/attestation version, verifier/publisher key, policy, scope or requestor-bound field changes, the request is stale and its approval set cannot authorize execution. Create a new promotion request ID and collect fresh approvals. An approval cannot be transferred between requests, candidates, evidence versions, scopes, prior-active states, policy versions, promotion and rollback operations. Exact duplicate approval submission may be idempotent only for the identical approval/request binding; conflicting replay is rejected and security-logged.
+
+Rollback uses the same canonical request framework with operation_type=rollback, a distinct rollback request schema/version and a unique rollback request ID. Promotion and rollback schemas must not be conflated, and neither operation may consume the other's approval set.
+
+#### C-04 acceptance criteria
+
+PostgreSQL adversarial tests must attempt approval reuse after changing, one at a time, candidate version, artifact digest, manifest digest, dataset snapshot, provenance, assessment, evidence version, attestation/receipt, publisher key, verifier identity/key, policy ID/version/digest, scope, requestor, prior active release and the genesis/no-active-release state. Every mismatch must fail closed and require a new request and fresh approvals. Verify byte-identical RFC 8785 serialization and digest reproduction in two independent implementations, exact request immutability, stale-request rejection and cross-operation approval non-transfer.
+
+### Cross-condition implementation and governance acceptance
+
+The following conditions remain pre-implementation requirements and must not be deferred to ordinary post-implementation hardening:
+
+1. The customer-approved Model A risk-acceptance record and accountable incident roles are mandatory before verifier authority enablement.
+2. The closed audit-event v1 schema and domain-separated hash construction are part of the implementation contract.
+3. The migration state machine and crash/retry contract are part of the implementation contract.
+4. The immutable promotion-request v1 envelope and digest are part of the implementation contract.
+5. PostgreSQL must enforce all enablement, quarantine, request-binding, state-transition and privilege boundaries; application-only checks are insufficient.
+
+These amendments define requirements only. They do not prove PostgreSQL enforcement, independent serialization agreement, migration recovery, customer acceptance or incident readiness.
+
+### Updated gate status
+
+- C-01 — Model A residual risk: Design requirement specified; customer acceptance and implementation enforcement remain outstanding.
+- C-02 — Audit serialization: Closed schema and digest contract specified; independent serializer/verifier and PostgreSQL implementation tests remain outstanding.
+- C-03 — Migration recovery: States, transitions and crash/retry contract specified; implementation and failure-injection tests remain outstanding.
+- C-04 — Promotion request binding: Complete immutable request schema and digest specified; implementation and adversarial approval-reuse tests remain outstanding.
+- C-05 — Customer governance: Risk record, accountable roles and fail-closed enablement precondition specified; customer approval and implementation enforcement remain outstanding.
+
+**Implementation authorization remains NOT GRANTED.** This amendment requests a new independent exact-commit reassessment. PR #20 must remain Draft, open and unmerged. Synthetic data and advisory-only utility PoV boundaries remain unchanged. No live IBEDC telemetry, SCADA/ADMS/DMS control, switching, dispatch, meter commands, billing adjustments, refunds, journal postings or automatic production model deployment is authorized.
