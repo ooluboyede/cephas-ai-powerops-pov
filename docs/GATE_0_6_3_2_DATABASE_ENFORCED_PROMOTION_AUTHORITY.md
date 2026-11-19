@@ -414,3 +414,198 @@ The reviewer’s ACCEPT WITH CONDITIONS is not converted into unconditional acce
 - F-05: OPEN; external WORM anchoring remains a separate requirement.
 - PR #20: must remain Draft/open/unmerged.
 - Production certification and operational utility integration: not authorized.
+
+
+---
+
+## Independent reassessment response — N-01 through N-06
+
+### Baseline preservation and status
+
+This amendment is a new commit descended from reviewed baseline `8442032703642e780ffdfd7fd348849640f35d04`. The baseline is preserved unchanged in Git history and remains the exact commit assessed in the preceding independent reassessment. This amendment does not rewrite, force-push over, or relabel that baseline.
+
+The independent reassessment returned **ACCEPT WITH CONDITIONS — DESIGN DIRECTION ONLY** and withheld implementation authorization. The six findings below are incorporated as explicit design requirements. They are proposed clarifications, not evidence that any control has been implemented or tested.
+
+### N-01 — High: Verifier credential is a privileged evidence authority
+
+#### Selected trust model
+
+For this gate, adopt **Model A — Trusted verifier authority**, with the trust boundary made explicit:
+
+- The dedicated verifier service and its protected database login together constitute a high-impact evidence-registration authority.
+- PostgreSQL authenticates the verifier login through the protected `SESSION_USER` mapping and restricts it to the evidence-registration function.
+- PostgreSQL validates envelope structure, version, scope, candidate and digest bindings, key identifiers/status metadata available to the database, uniqueness and state transitions. Unless an independently reviewed database-side Ed25519 verifier is added, PostgreSQL does not independently validate the Ed25519 signature.
+- The signed receipt is independently checkable by auditors and downstream verification tools, but its presence in a row is not proof that PostgreSQL verified the signature.
+- Possession of the verifier database credential is itself sufficient to invoke the evidence-registration authority. A stolen verifier database credential can therefore register a fabricated or incorrectly attested envelope even if the attacker does not possess the verifier signing key. This residual risk is accepted as part of Model A and must not be described as prevented by the signature field.
+
+#### Required credential and service protections
+
+The verifier database credential must be held only by the verifier service, retrieved from customer-controlled secret storage at runtime, excluded from source code, images, logs, CI output and operator workstations, and rotated/revoked through a documented procedure. Network access to the database must be restricted to the verifier service identity and approved deployment path; use mutually authenticated transport where supported. The verifier login must have no direct table DML and no EXECUTE rights beyond the single evidence-registration entry point.
+
+The verifier signing key remains separately protected in customer-controlled secret storage or HSM/KMS where available. Signing-key separation reduces the chance that one secret exposes both signing and registration capabilities, but it does not neutralize compromise of the database credential because Model A trusts that credential to register evidence.
+
+#### Compromise semantics
+
+A suspected or confirmed compromise of either the verifier service or its database credential is treated as **verifier-authority compromise**, not merely as signing-key compromise. The response must:
+
+1. Disable the verifier login and revoke registration-function EXECUTE.
+2. Revoke/disable the affected verifier signing key and stop accepting new receipts from it.
+3. Establish the earliest plausible exposure start and containment time.
+4. Quarantine every evidence record registered by the affected verifier identity during the exposure window, including records whose receipt signature appears valid, until independently re-verified.
+5. Mark candidates/releases relying on that evidence as non-promotable or under incident review through a separately authorized incident procedure; preserve original rows and history.
+6. Re-verify exact retained artifact, manifest, dataset, provenance and policy bytes using a clean verifier identity and newly authorized key.
+7. Record containment, quarantine, re-verification and supersession as append-only audit/security events and retain the incident record outside the affected verifier authority.
+
+If the exposure start cannot be bounded, quarantine all evidence registered by that verifier identity since its credential/key activation or last independently verified clean rotation.
+
+#### Acceptance criteria
+
+The implementation review must demonstrate that the verifier login cannot directly mutate evidence, candidates, approvals or releases and cannot invoke approval, promotion or rollback functions. The reviewer must also confirm the explicit residual: a compromised verifier database credential can submit false evidence through its permitted function, and all evidence within the exposure window is quarantined pending independent re-verification. Do not claim that a fabricated signature is rejected by PostgreSQL unless a separately reviewed cryptographic verifier is actually implemented and tested.
+
+### N-02 — Medium: Receipt identity, replay prevention and validity
+
+Every signed verifier receipt must contain a globally unique immutable `attestation_id` (UUID), candidate UUID and immutable candidate version, scope, artifact/manifest/dataset/policy digests, verifier identity and key ID, issue time, expiry time, and protocol version. The database assigns a trusted registration timestamp and immutable evidence-row ID. Receipt identity is unique across the deployment; the database also enforces uniqueness for the receipt digest and the candidate-version/evidence relationship.
+
+A receipt is valid only when:
+
+- its issue time is not materially in the future under the configured clock-skew allowance;
+- its expiry is later than its issue time and within the configured maximum receipt lifetime;
+- it is registered before expiry;
+- the verifier identity and signing key are active and not revoked at registration;
+- all candidate, scope and digest bindings match the immutable candidate version; and
+- the receipt has not already been consumed by a different registration request.
+
+The customer deployment must configure a maximum receipt lifetime and bounded clock-skew allowance. These values are versioned policy, not caller-controlled parameters. Use trusted server/database time for registration decisions; do not trust a caller-supplied registration timestamp.
+
+A repeated submission of the same `attestation_id` and exact receipt digest returns the original registration result as an idempotent response and creates no new evidence row, audit event or eligibility transition. Reuse of an ID with different bytes/digest, or reuse against a different candidate/version/scope, is rejected and security-logged.
+
+A receipt first presented after expiry or after its verifier key has been revoked is rejected. Revocation after registration places affected evidence into quarantine/non-promotable status pending independent re-verification; it does not silently rewrite or erase the original evidence. A superseded receipt remains permanently superseded and cannot become eligible again. Re-verification creates a new attestation ID and new evidence version with an explicit immutable supersession link. It does not revive an old receipt.
+
+Acceptance tests must cover duplicate idempotent submission, ID collision with different bytes, cross-candidate replay, expired receipt, future issue time, revoked key before registration, key revocation after registration, supersession and attempted revival.
+
+### N-03 — Medium: Transactional audit sequence and exact hash preimage
+
+The audit-chain head for each tenant/business-unit scope must store both the current event digest and the next sequence number as ordinary transactional row values. Do not use PostgreSQL sequences (`nextval()` or equivalent non-transactional allocators) for the gap-free audit-chain sequence.
+
+Within the same transaction as the business mutation:
+
+1. Acquire the scope mutex according to F-04.
+2. Lock the scope's audit-chain-head row with `SELECT ... FOR UPDATE`.
+3. Read the current head digest and next sequence number.
+4. Construct the canonical event envelope.
+5. Compute the event digest.
+6. Insert the event and update the head digest and next sequence number.
+7. Commit the business mutation, audit event and head update together.
+
+Version 1 hash preimage is the exact UTF-8 byte sequence produced by RFC 8785 canonicalization of an object containing, at minimum:
+
+- `audit_schema_version`;
+- `canonicalization_version`;
+- `hash_algorithm`;
+- tenant and business-unit scope identifiers;
+- integer sequence number;
+- previous event digest (explicit genesis value for the first event);
+- event type and operation/request identifier;
+- canonical event payload;
+- database-generated event timestamp.
+
+The digest is SHA-256 over those canonical bytes. Persist the canonicalization/hash version and the exact canonical event bytes (or an exactly reproducible immutable representation) needed for later verification. The database, not the caller, supplies sequence, previous digest and event timestamp.
+
+The chain-head row update and event insert must be rolled back if any later operation in the transaction fails. This guarantees transactional sequence allocation; it does not by itself protect against a privileged DBA rewriting both the chain and head, and it is not WORM.
+
+Acceptance test: deliberately raise an error after the chain-head row has been locked and the next sequence value tentatively incremented, and after the associated business mutation has been attempted. Confirm that the chain-head digest, next sequence number, event row and business mutation all remain exactly at their pre-transaction values. Then retry successfully and confirm the next committed event uses the unconsumed sequence number with the correct prior digest. Also test concurrent appends and independent full-chain verification.
+
+### N-04 — Medium: All authority-changing lifecycle operations share the scope mutex
+
+Extend the F-04 serialization contract to every operation capable of changing the canonical approver identity, approval authority or the validity of an approval. The scope mutex must be acquired before any lower-level row lock for:
+
+- approval-grant creation, replacement, revocation and re-grant;
+- principal-to-login binding creation, disablement and replacement;
+- canonical issuer/subject mapping creation, correction, alias consolidation and deactivation;
+- identity-provider issuer/subject migration or account-link changes;
+- login disablement and credential retirement where they affect an approver binding;
+- grant-expiry changes and any administrative override to an approval authority; and
+- promotion, rollback and any operation that changes candidate/release authority.
+
+All such functions follow the same lock order already defined in F-04: scope mutex, candidates in stable UUID order, grants in stable UUID order, approvals in stable UUID order, release rows in stable UUID order, then audit head. Multi-scope changes acquire scope mutexes in lexicographic tenant/business-unit order before lower-level locks. No identity/grant administration path may bypass this contract with direct table DML.
+
+#### Expiry and authorization linearization
+
+Grant validity is evaluated at the authorization linearization point: after the scope mutex and relevant grant/approval locks have been acquired, and immediately before the promotion/rollback function commits its governed state transition. The function must re-check active status and expiry using trusted database time at that point. Grant expiry is not extended by a transaction that began before expiry.
+
+Set a strict transaction/statement timeout for these authority-changing functions. If the transaction cannot complete within the configured maximum duration, it aborts and releases its locks; it must not commit based on a stale pre-lock authorization check. The exact timeout is deployment configuration with a documented upper bound and must be shorter than the operational approval/credential validity window.
+
+A grant or identity change that obtains the mutex first is visible to the subsequent promotion/rollback check. If promotion/rollback obtains the mutex first and commits after a successful final authorization check, it linearizes before the waiting grant/identity change. Every outcome is serialized and auditable.
+
+Acceptance tests must cover grant create/revoke/re-grant, identity alias consolidation, login disablement, issuer/subject remapping, grant expiry during a queued promotion, both mutex acquisition orders and timeout/rollback behavior. Actual concurrent PostgreSQL sessions must be used.
+
+### N-05 — Medium: Atomic migration, preflight and active-release preservation
+
+The forward-only migration after 0005 must have an explicit migration state machine and must not expose a partially upgraded promotion authority.
+
+#### Preflight
+
+Before changing protected privileges or release authority, run read-only preflight checks under a migration lock. Verify:
+
+- expected schema/migration version and absence of conflicting concurrent migration;
+- all protected tables, constraints, indexes, owners, grants, RLS policies and function signatures match the expected baseline;
+- every historical candidate, approval, grant, audit row and release can be enumerated and classified;
+- historical audit payloads/digests and the current active-release state can be preserved and independently verified;
+- required immutable artifact/evidence references are available or can be explicitly quarantined;
+- no ambiguous duplicate active releases or inconsistent scope references exist without an explicit quarantine/repair decision; and
+- sufficient storage, permissions and maintenance window are available.
+
+If preflight cannot establish preservation of historical rows, audit verification data or active-release state, abort before changing protected authority.
+
+#### Transaction boundary and non-transactional operations
+
+Where PostgreSQL supports transactional execution, apply schema changes, data classification, privilege changes, function installation and authority cutover in one transaction. Use a transaction-scoped advisory migration lock to prevent concurrent execution. Do not use non-transactional DDL such as `CREATE INDEX CONCURRENTLY` inside the authority-cutover transaction.
+
+If an operational step cannot be made transactional, isolate it in an explicitly documented preparatory phase that does not alter effective promotion authority. Make that phase idempotent and verifiable; record a durable migration checkpoint; and do not perform the protected authority cutover until every preparatory step has passed. Define a tested retry/compensation procedure for each such step. No intermediate state may grant ordinary runtime broader effective privileges than either the pre-migration or final approved model.
+
+#### Legacy active-release handling
+
+Preserve the exact historical active-release identity and state during migration. Do not silently deactivate, replace, reactivate or promote a release as a side effect of schema migration. If the existing active release lacks evidence required by the new policy, preserve it as historical/current legacy state but mark it explicitly as not eligible for a new promotion or governed rollback until fresh evidence and approvals satisfy the new policy. If preserving a coherent active-state representation is impossible, abort the migration and require an independently reviewed remediation plan; do not guess which release should remain active.
+
+#### Completion and recovery
+
+Before declaring success, verify in a final transaction that all migration steps are recorded, the full migration chain is applied, role/function/object privileges match the intended matrix, RLS/FORCE RLS and ownership are correct, protected functions are callable only by intended roles, no ordinary runtime bypass remains, legacy classifications reconcile to source counts, audit hashes verify, and the pre-migration active-release state has been preserved consistently.
+
+A failed transactional migration must leave the database at the complete pre-migration state. A failed preparatory phase must be safely retryable without changing authority. Test both failure and retry paths against a disposable PostgreSQL 16 database, then perform fresh-cluster restore verification. Produce a durable migration report with before/after counts, classifications, active-release identifiers and verification outcomes.
+
+Acceptance tests must inject failures at each migration phase, prove no partial authority cutover, prove retry idempotency, verify active-release preservation and confirm the final privilege/owner/RLS/function state.
+
+### N-06 — Medium: Rollback approvals bind to one immutable transition request
+
+A rollback is a distinct operation type and must not reuse approvals issued for promotion or for another rollback request.
+
+Create an immutable rollback request with a globally unique `rollback_request_id` and a canonical request digest. The digest must bind:
+
+- operation type = `rollback`;
+- rollback request ID;
+- tenant and business-unit scope;
+- candidate and target historical release identifiers;
+- exact target artifact and manifest digests;
+- exact target evidence/attestation version and verifier receipt digest;
+- prior active release identifier and digest at request creation;
+- reason and requestor identity;
+- effective rollback policy ID, version and digest; and
+- request creation timestamp and request schema version.
+
+Each of the three required approval records (`model-risk`, `security`, `operations-owner`) must reference the exact rollback request ID and request digest, scope, target release/artifact digest, prior active release, policy version and operation type. Approvals must be signed/recorded by the database-authenticated canonical human identity and exact active grant ID. They remain subject to distinct-human, creator-exclusion, grant-validity and revocation rules.
+
+The rollback function must recompute the canonical request digest from immutable stored fields and require a complete, positive approval set for that exact digest. It must also confirm that the prior active release has not changed since the request was approved. If it has changed, the request is stale and must be cancelled/rejected; a new rollback request and fresh approvals are required.
+
+Any change to scope, target release, artifact/manifest/evidence digest, prior active release, reason where policy-relevant, operation type or policy version creates a new rollback request ID and invalidates the old approval set for execution. An approval cannot be transferred between rollback requests, targets, scopes, promotion and rollback operations, or prior-active-release states. Replayed approval submissions are idempotent only for the exact same approval/request binding; mismatched replay is rejected and security-logged.
+
+The same operation-binding principle applies to promotion approvals: each approval must reference the immutable promotion request/candidate version, scope, evidence digest and policy version it authorizes. A candidate-level approval detached from a specific operation/evidence version is insufficient.
+
+Acceptance tests must attempt to reuse an approval across two rollback targets, two artifact digests, two scopes, two prior active releases, a promotion request and a different rollback request. Every mismatch must fail closed. Also test stale prior-active state, changed policy version, duplicate/replayed approval and successful execution with three distinct fresh approvals.
+
+### Updated design entry criteria and implementation status
+
+The six clarifications above are submitted for independent reassessment. They do not themselves authorize implementation. Implementation remains **NOT AUTHORIZED** until an independent reviewer assesses the exact amended commit, confirms whether N-01 through N-06 are resolved or remain open, and explicitly authorizes the design as an implementation contract.
+
+The reviewer must also retain explicit dispositions for F-01 through F-08. No original finding is deemed closed merely because a clarification has been written. Implementation, once authorized, remains a separate gate requiring actual PostgreSQL implementation evidence, adversarial tests, fresh-cluster recovery and independent implementation review.
+
+PR #20 must remain Draft, open and unmerged. No production certification, live utility telemetry integration, operational control or automatic production model deployment is authorized.
