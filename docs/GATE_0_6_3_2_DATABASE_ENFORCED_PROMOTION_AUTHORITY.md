@@ -4,6 +4,8 @@
 
 Architecture/design gate only. This document does not implement the controls, close F-03/F-05, certify production readiness, or authorize merge/deployment. It is based on the independent review of PR #19 at `c61652fa155ca72e6035c0d97cb338ea0583afd0`.
 
+**Current normative amendment:** `docs/GATE_0_6_3_2_CONSOLIDATED_NORMATIVE_AMENDMENT.md` is the single authoritative consolidation for D-07.1, D-08.1, D-09.1 and D-10.1/D-10.2 and supersedes prior conflicting wording on those subjects. The earlier separate remediation addendum is retired. The original design and historical review baselines remain preserved; see the consolidated amendment for exact precedence, rollback-request v2, audit registry v2 and implementation authorization status.
+
 ## Objective
 
 Close the release-authority bypass identified in the independent review: a scoped ordinary runtime login must not be able to alter trusted candidate evidence or create, activate, deactivate, or rewrite model-release records through direct SQL. Every successful promotion must be enforced by PostgreSQL using immutable evidence and durable approval records, not merely by `activateRelease()` application logic.
