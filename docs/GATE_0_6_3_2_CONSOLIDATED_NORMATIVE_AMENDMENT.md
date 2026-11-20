@@ -1,6 +1,6 @@
 # Gate 0.6.3.2 — Consolidated Normative Amendment
 
-**Status:** Documentation-only design amendment. This file is the single authoritative amendment for the D-07.1, D-08.1, D-09.1 and D-10.1/D-10.2 conditions and cross-cutting findings X-01 through X-07.
+**Status:** Historical consolidated amendment, supplemented and superseded for remaining reassessment findings by `docs/GATE_0_6_3_2_FINAL_DESIGN_CLOSURE.md`. The final closure contract is the single authoritative source for H-01–H-04 and M-01–M-04; this file remains the normative source for unaffected D-08 rollback-request v2 preimage and evidence-binding rules.
 
 **Reviewed baseline:** `20361119cb17c6854f175b9fcc54a42dedd825d1`  
 **Earlier design baseline preserved:** `3fb64cf277eab3d6ed333bc13a2f95aca138caf8`  
@@ -9,6 +9,8 @@
 **Authorization:** IMPLEMENTATION NOT AUTHORIZED. This amendment specifies contracts only. It does not claim database objects, migrations, authentication hooks, serializers, audit writers, provider adapters, workers, or tests have been implemented.
 
 ## 0. Normative precedence and supersession
+
+The later `GATE_0_6_3_2_FINAL_DESIGN_CLOSURE.md` supersedes this file where the independent reassessment identified remaining contradictions: global lock order, trusted session registration, registry v2 event coverage/schema versions, commit-time capture, quarantine reconciliation and descriptor-digest verification. In any conflict on those subjects, the final closure contract controls.
 
 This amendment is intended to be read with the original Gate 0.6.3.2 design document. It consolidates and replaces the prior separate D-07.1–D-10.2 remediation addendum.
 
