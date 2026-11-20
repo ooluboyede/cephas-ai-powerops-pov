@@ -3824,9 +3824,7 @@
         "prior_active_release_id": null,
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": "2026-11-20T00:00:00Z",
-        "prior_status": "approved",
-        "resulting_status": "executed"
+        "executed_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -4161,9 +4159,7 @@
         "target_release_id": "99999999-9999-4999-8999-999999999999",
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": "2026-11-20T00:00:00Z",
-        "prior_status": "approved",
-        "resulting_status": "executed"
+        "executed_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
