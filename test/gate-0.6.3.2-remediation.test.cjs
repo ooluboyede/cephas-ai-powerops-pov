@@ -51,7 +51,7 @@ test("every negative payload fixture reaches its declared rejecting validator",(
  for(const f of catalog.event_fixtures){const v=validatorFor(f.event_payload_schema_token);for(const n of f.negative_payload_fixtures||[]){executed++;const k=n.expected_failure;
   if(k==="semantic-reconstruction"){assert.equal(v(n.payload),true,f.mutation_type+"/"+n.case_id+" schema precondition");assert.equal(eventMatchesManifest(n.payload,manifestForEvent(f.positive_fixture)),false,f.mutation_type+"/"+n.case_id);semanticRejected++;}
   else if(String(k).startsWith("semantic:")){assert.equal(v(n.payload),true,f.mutation_type+"/"+n.case_id+" schema precondition");assert.equal(semanticAccepts(f.mutation_type,n.payload),false,f.mutation_type+"/"+n.case_id);semanticRejected++;}
-  else if(k==="state-transition"){assert.equal(v(n.payload),true,f.mutation_type+"/"+n.case_id+" schema precondition");assert.equal(lifecycleAccepts(f.mutation_type,n.payload),false,f.mutation_type+"/"+n.case_id);semanticRejected++;}
+  else if(k==="state-transition"){assert.equal(v(n.payload),false,f.mutation_type+"/"+n.case_id+" schema rejection");assert.equal(lifecycleAccepts(f.mutation_type,n.payload),false,f.mutation_type+"/"+n.case_id+" lifecycle rejection");schemaRejected++;}
   else{assert.equal(v(n.payload),false,f.mutation_type+"/"+n.case_id+" schema rejection");schemaRejected++;}
  }}
  const declared=catalog.event_fixtures.reduce((n,f)=>n+(f.negative_payload_fixtures||[]).length,0);
@@ -74,7 +74,7 @@ test("expected-event item enforces common global-versus-tenant scope constraints
 });
 test("all mutation-reconstruction negative descriptors are executable adversarial cases",()=>{
  assert.ok(catalog.mutation_reconstruction_negative_fixtures.length>0);
- const mf=catalog.manifest_golden_fixtures[0],m=JSON.parse(JSON.stringify(mf.source_object)),f=eventFixtures.get("approval_grant.created"),e=JSON.parse(JSON.stringify(f.positive_fixture));e.mutation_payload_sha256=digest(m);
+ const mf=catalog.manifest_golden_fixtures[0],m=JSON.parse(JSON.stringify(mf.source_object)),f=eventFixtures.get("approval_grant.created"),e=JSON.parse(JSON.stringify(f.positive_fixture));m.affected_object_refs=JSON.parse(JSON.stringify(e.affected_object_refs));m.changed_objects=m.changed_objects.map((o,i)=>({...o,object_type:e.affected_object_refs[i]?.object_type||o.object_type,object_id:e.affected_object_refs[i]?.object_id||o.object_id}));e.mutation_payload_sha256=digest(m);
  assert.equal(reconstructs(m,[e]),true,"baseline reconstruction");
  for(const x of catalog.mutation_reconstruction_negative_fixtures){let mm=JSON.parse(JSON.stringify(m)),es=[JSON.parse(JSON.stringify(e))];switch(x.case_id){
  case "missing-scope-event":es=[];break;case "duplicate-scope-event":es.push(JSON.parse(JSON.stringify(e)));break;case "wrong-scope-event":es[0].tenant_id="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";break;
@@ -85,5 +85,5 @@ test("all mutation-reconstruction negative descriptors are executable adversaria
  }
 });
 test("quarantine remains terminal under incident reconciliation",()=>{
- const f=eventFixtures.get("security_incident.reconciled"),n=f.negative_payload_fixtures.find(x=>x.expected_failure==="state-transition");assert.ok(n);assert.equal(validatorFor(f.event_payload_schema_token)(n.payload),true);assert.equal(lifecycleAccepts("security_incident.reconciled",n.payload),false);
+ const f=eventFixtures.get("security_incident.reconciled"),n=f.negative_payload_fixtures.find(x=>x.case_id==="quarantine-cleared-by-reconciliation");assert.ok(n);assert.equal(validatorFor(f.event_payload_schema_token)(n.payload),false);assert.equal(lifecycleAccepts("security_incident.reconciled",n.payload),false);
 });

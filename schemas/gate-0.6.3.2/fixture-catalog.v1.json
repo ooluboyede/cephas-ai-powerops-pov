@@ -559,7 +559,7 @@
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.accountable-role-granted.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "authority.accountable-role-granted",
             "mutation_type": "accountable_role.granted",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -16528,7 +16528,7 @@
         },
         {
           "case_id": "quarantine-cleared-by-reconciliation",
-          "expected_failure": "state-transition",
+          "expected_failure": "schema: quarantine terminality",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
