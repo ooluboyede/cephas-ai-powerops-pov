@@ -48,8 +48,8 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "login_binding_id": "99999999-9999-4999-8999-999999999999",
-        "database_oid": 0,
-        "role_oid": 0,
+        "database_oid": 1,
+        "role_oid": 1,
         "prior_status": "active",
         "resulting_status": "disabled",
         "prior_login_epoch": 1,
@@ -134,8 +134,8 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "login_binding_id": "99999999-9999-4999-8999-999999999999",
-        "database_oid": 0,
-        "role_oid": 0,
+        "database_oid": 1,
+        "role_oid": 1,
         "prior_status": "disabled",
         "resulting_status": "active",
         "prior_login_epoch": 1,
@@ -567,7 +567,7 @@
         "effective_at": "2026-11-20T00:00:00Z",
         "expires_at": null,
         "policy_id": "99999999-9999-4999-8999-999999999999",
-        "policy_version": 1,
+        "policy_version": "policy-v1",
         "grant_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
       "negative_fixtures": [
@@ -2147,7 +2147,7 @@
         "status": "active",
         "accepted_by_principal_id": "99999999-9999-4999-8999-999999999999",
         "policy_id": "99999999-9999-4999-8999-999999999999",
-        "policy_version": 1,
+        "policy_version": "policy-v1",
         "expires_at": null,
         "record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
@@ -2479,9 +2479,7 @@
         "resulting_version": 1,
         "superseded_by_id": "99999999-9999-4999-8999-999999999999",
         "superseded_by_version": 1,
-        "supersession_reason_code": "synthetic",
-        "prior_status": "active",
-        "resulting_status": "superseded"
+        "supersession_reason_code": "synthetic"
       },
       "negative_fixtures": [
         {
@@ -3229,14 +3227,12 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "policy_id": "99999999-9999-4999-8999-999999999999",
-        "policy_version": 1,
+        "policy_version": "policy-v1",
         "prior_active_policy_id": null,
-        "prior_active_policy_version": 1,
+        "prior_active_policy_version": null,
         "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": "2026-11-20T00:00:00Z",
-        "prior_status": "retired",
-        "resulting_status": "active"
+        "effective_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3314,7 +3310,7 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "policy_id": "99999999-9999-4999-8999-999999999999",
-        "policy_version": 1,
+        "policy_version": "policy-v1",
         "prior_status": "active",
         "resulting_status": "retired",
         "retirement_reason_code": "synthetic",
