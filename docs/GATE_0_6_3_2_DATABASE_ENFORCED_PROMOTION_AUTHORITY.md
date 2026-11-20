@@ -4,7 +4,7 @@
 
 Architecture/design gate only. This document does not implement the controls, close F-03/F-05, certify production readiness, or authorize merge/deployment. It is based on the independent review of PR #19 at `c61652fa155ca72e6035c0d97cb338ea0583afd0`.
 
-**Current normative amendment:** `docs/GATE_0_6_3_2_CONSOLIDATED_NORMATIVE_AMENDMENT.md` is the single authoritative consolidation for D-07.1, D-08.1, D-09.1 and D-10.1/D-10.2 and supersedes prior conflicting wording on those subjects. The earlier separate remediation addendum is retired. The original design and historical review baselines remain preserved; see the consolidated amendment for exact precedence, rollback-request v2, audit registry v2 and implementation authorization status.
+**Current normative closure:** `docs/GATE_0_6_3_2_FINAL_DESIGN_CLOSURE.md` is the controlling source for H-01–H-04 and M-01–M-04, including the complete lock hierarchy, trusted session-registration protocol, registry v2 schemas/fixtures, WAL commit-time ledger, quarantine and descriptor-digest semantics. `docs/GATE_0_6_3_2_CONSOLIDATED_NORMATIVE_AMENDMENT.md` remains in force for unaffected D-08 rollback-request v2 and evidence-byte rules, but is superseded where the final closure contract expressly states. The earlier separate remediation addendum is retired. All changes remain documentation-only; implementation is not authorized.
 
 ## Objective
 
