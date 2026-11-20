@@ -17818,6 +17818,945 @@
           }
         }
       ]
+    },
+    {
+      "mutation_type": "verifier_identity.activated",
+      "event_type": "trust.verifier-identity-activated",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+      "positive_fixture": {
+        "registry_token": "cephas.powerops.audit-payload-registry.v2",
+        "registry_version": 2,
+        "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+        "mutation_schema_version": "cephas.powerops.mutation.v1",
+        "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+        "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+        "event_type": "trust.verifier-identity-activated",
+        "mutation_type": "verifier_identity.activated",
+        "mutation_id": "11111111-1111-4111-8111-111111111111",
+        "operation_id": "22222222-2222-4222-8222-222222222222",
+        "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mutation_event_index": 0,
+        "mutation_event_count": 1,
+        "affected_mapping_ids": [],
+        "affected_scope_keys": [
+          {
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "affected_object_refs": [
+          {
+            "object_type": "synthetic_fixture",
+            "object_id": "55555555-5555-4555-8555-555555555555",
+            "version_id": "66666666-6666-4666-8666-666666666666"
+          }
+        ],
+        "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+        "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+        "actor_mapping_version": 1,
+        "reason_code": "TEST_FIXTURE",
+        "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "scope_kind": "tenant_business_unit",
+        "tenant_id": "33333333-3333-4333-8333-333333333333",
+        "business_unit_id": "44444444-4444-4444-8444-444444444444",
+        "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+        "prior_version": 1,
+        "resulting_version": 2,
+        "prior_status": "active",
+        "resulting_status": "active",
+        "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+        "effective_at": "2026-11-20T00:00:00Z",
+        "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "negative_payload_fixtures": [
+        {
+          "case_id": "additional-property",
+          "expected_failure": "additionalProperties",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+            "event_type": "trust.verifier-identity-activated",
+            "mutation_type": "verifier_identity.activated",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "active",
+            "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "effective_at": "2026-11-20T00:00:00Z",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "unauthorized_authority": true
+          }
+        },
+        {
+          "case_id": "missing-required",
+          "expected_failure": "required",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+            "event_type": "trust.verifier-identity-activated",
+            "mutation_type": "verifier_identity.activated",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "active",
+            "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "effective_at": "2026-11-20T00:00:00Z",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "unregistered-payload-token",
+          "expected_failure": "const",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
+            "event_type": "trust.verifier-identity-activated",
+            "mutation_type": "verifier_identity.activated",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "active",
+            "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "effective_at": "2026-11-20T00:00:00Z",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "malformed-digest",
+          "expected_failure": "pattern",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+            "event_type": "trust.verifier-identity-activated",
+            "mutation_type": "verifier_identity.activated",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "active",
+            "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "effective_at": "2026-11-20T00:00:00Z",
+            "trust_record_sha256": "bad"
+          }
+        },
+        {
+          "case_id": "invalid-prior-state",
+          "expected_failure": "state-transition",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+            "event_type": "trust.verifier-identity-activated",
+            "mutation_type": "verifier_identity.activated",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "revoked",
+            "resulting_status": "active",
+            "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "effective_at": "2026-11-20T00:00:00Z",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      ]
+    },
+    {
+      "mutation_type": "verifier_identity.suspended",
+      "event_type": "trust.verifier-identity-suspended",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+      "positive_fixture": {
+        "registry_token": "cephas.powerops.audit-payload-registry.v2",
+        "registry_version": 2,
+        "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+        "mutation_schema_version": "cephas.powerops.mutation.v1",
+        "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+        "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+        "event_type": "trust.verifier-identity-suspended",
+        "mutation_type": "verifier_identity.suspended",
+        "mutation_id": "11111111-1111-4111-8111-111111111111",
+        "operation_id": "22222222-2222-4222-8222-222222222222",
+        "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mutation_event_index": 0,
+        "mutation_event_count": 1,
+        "affected_mapping_ids": [],
+        "affected_scope_keys": [
+          {
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "affected_object_refs": [
+          {
+            "object_type": "synthetic_fixture",
+            "object_id": "55555555-5555-4555-8555-555555555555",
+            "version_id": "66666666-6666-4666-8666-666666666666"
+          }
+        ],
+        "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+        "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+        "actor_mapping_version": 1,
+        "reason_code": "TEST_FIXTURE",
+        "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "scope_kind": "tenant_business_unit",
+        "tenant_id": "33333333-3333-4333-8333-333333333333",
+        "business_unit_id": "44444444-4444-4444-8444-444444444444",
+        "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+        "prior_version": 1,
+        "resulting_version": 2,
+        "prior_status": "active",
+        "resulting_status": "suspended",
+        "suspension_reason_code": "SECURITY_REVIEW",
+        "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+        "incident_id": null,
+        "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "negative_payload_fixtures": [
+        {
+          "case_id": "additional-property",
+          "expected_failure": "additionalProperties",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+            "event_type": "trust.verifier-identity-suspended",
+            "mutation_type": "verifier_identity.suspended",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "suspended",
+            "suspension_reason_code": "SECURITY_REVIEW",
+            "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "incident_id": null,
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "unauthorized_authority": true
+          }
+        },
+        {
+          "case_id": "missing-required",
+          "expected_failure": "required",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+            "event_type": "trust.verifier-identity-suspended",
+            "mutation_type": "verifier_identity.suspended",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "suspended",
+            "suspension_reason_code": "SECURITY_REVIEW",
+            "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "incident_id": null,
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "unregistered-payload-token",
+          "expected_failure": "const",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
+            "event_type": "trust.verifier-identity-suspended",
+            "mutation_type": "verifier_identity.suspended",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "suspended",
+            "suspension_reason_code": "SECURITY_REVIEW",
+            "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "incident_id": null,
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "malformed-digest",
+          "expected_failure": "pattern",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+            "event_type": "trust.verifier-identity-suspended",
+            "mutation_type": "verifier_identity.suspended",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "suspended",
+            "suspension_reason_code": "SECURITY_REVIEW",
+            "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "incident_id": null,
+            "trust_record_sha256": "bad"
+          }
+        },
+        {
+          "case_id": "invalid-prior-state",
+          "expected_failure": "state-transition",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+            "event_type": "trust.verifier-identity-suspended",
+            "mutation_type": "verifier_identity.suspended",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "revoked",
+            "resulting_status": "suspended",
+            "suspension_reason_code": "SECURITY_REVIEW",
+            "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "incident_id": null,
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      ]
+    },
+    {
+      "mutation_type": "verifier_identity.revoked",
+      "event_type": "trust.verifier-identity-revoked",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+      "positive_fixture": {
+        "registry_token": "cephas.powerops.audit-payload-registry.v2",
+        "registry_version": 2,
+        "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+        "mutation_schema_version": "cephas.powerops.mutation.v1",
+        "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+        "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+        "event_type": "trust.verifier-identity-revoked",
+        "mutation_type": "verifier_identity.revoked",
+        "mutation_id": "11111111-1111-4111-8111-111111111111",
+        "operation_id": "22222222-2222-4222-8222-222222222222",
+        "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mutation_event_index": 0,
+        "mutation_event_count": 1,
+        "affected_mapping_ids": [],
+        "affected_scope_keys": [
+          {
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "affected_object_refs": [
+          {
+            "object_type": "synthetic_fixture",
+            "object_id": "55555555-5555-4555-8555-555555555555",
+            "version_id": "66666666-6666-4666-8666-666666666666"
+          }
+        ],
+        "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+        "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+        "actor_mapping_version": 1,
+        "reason_code": "TEST_FIXTURE",
+        "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "scope_kind": "tenant_business_unit",
+        "tenant_id": "33333333-3333-4333-8333-333333333333",
+        "business_unit_id": "44444444-4444-4444-8444-444444444444",
+        "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+        "prior_version": 1,
+        "resulting_version": 2,
+        "prior_status": "active",
+        "resulting_status": "revoked",
+        "affected_evidence_count": 0,
+        "revocation_reason_code": "KEY_COMPROMISE",
+        "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+        "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "negative_payload_fixtures": [
+        {
+          "case_id": "additional-property",
+          "expected_failure": "additionalProperties",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+            "event_type": "trust.verifier-identity-revoked",
+            "mutation_type": "verifier_identity.revoked",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "revoked",
+            "affected_evidence_count": 0,
+            "revocation_reason_code": "KEY_COMPROMISE",
+            "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "unauthorized_authority": true
+          }
+        },
+        {
+          "case_id": "missing-required",
+          "expected_failure": "required",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+            "event_type": "trust.verifier-identity-revoked",
+            "mutation_type": "verifier_identity.revoked",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "revoked",
+            "affected_evidence_count": 0,
+            "revocation_reason_code": "KEY_COMPROMISE",
+            "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "unregistered-payload-token",
+          "expected_failure": "const",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
+            "event_type": "trust.verifier-identity-revoked",
+            "mutation_type": "verifier_identity.revoked",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "revoked",
+            "affected_evidence_count": 0,
+            "revocation_reason_code": "KEY_COMPROMISE",
+            "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "case_id": "malformed-digest",
+          "expected_failure": "pattern",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+            "event_type": "trust.verifier-identity-revoked",
+            "mutation_type": "verifier_identity.revoked",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "active",
+            "resulting_status": "revoked",
+            "affected_evidence_count": 0,
+            "revocation_reason_code": "KEY_COMPROMISE",
+            "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "trust_record_sha256": "bad"
+          }
+        },
+        {
+          "case_id": "invalid-prior-state",
+          "expected_failure": "state-transition",
+          "payload": {
+            "registry_token": "cephas.powerops.audit-payload-registry.v2",
+            "registry_version": 2,
+            "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
+            "mutation_schema_version": "cephas.powerops.mutation.v1",
+            "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+            "event_type": "trust.verifier-identity-revoked",
+            "mutation_type": "verifier_identity.revoked",
+            "mutation_id": "11111111-1111-4111-8111-111111111111",
+            "operation_id": "22222222-2222-4222-8222-222222222222",
+            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_event_index": 0,
+            "mutation_event_count": 1,
+            "affected_mapping_ids": [],
+            "affected_scope_keys": [
+              {
+                "scope_kind": "tenant_business_unit",
+                "tenant_id": "33333333-3333-4333-8333-333333333333",
+                "business_unit_id": "44444444-4444-4444-8444-444444444444"
+              }
+            ],
+            "affected_object_refs": [
+              {
+                "object_type": "synthetic_fixture",
+                "object_id": "55555555-5555-4555-8555-555555555555",
+                "version_id": "66666666-6666-4666-8666-666666666666"
+              }
+            ],
+            "actor_principal_id": "77777777-7777-4777-8777-777777777777",
+            "actor_login_binding_id": "88888888-8888-4888-8888-888888888888",
+            "actor_mapping_version": 1,
+            "reason_code": "TEST_FIXTURE",
+            "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scope_kind": "tenant_business_unit",
+            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "business_unit_id": "44444444-4444-4444-8444-444444444444",
+            "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
+            "prior_version": 1,
+            "resulting_version": 2,
+            "prior_status": "revoked",
+            "resulting_status": "revoked",
+            "affected_evidence_count": 0,
+            "revocation_reason_code": "KEY_COMPROMISE",
+            "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      ]
     }
   ],
   "manifest_golden_fixtures": [
