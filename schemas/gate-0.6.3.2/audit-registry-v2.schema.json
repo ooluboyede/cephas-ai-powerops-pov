@@ -780,15 +780,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -929,6 +922,39 @@
             },
             "mutation_type": {
               "const": "login_binding.disabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "affected_session_count": {
+                "const": 0
+              }
+            },
+            "required": [
+              "affected_session_count"
+            ]
+          },
+          "then": {
+            "properties": {
+              "session_termination_state": {
+                "enum": [
+                  "no_active_sessions",
+                  "not_required"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "session_termination_state": {
+                "enum": [
+                  "pending",
+                  "completed",
+                  "failed"
+                ]
+              }
             }
           }
         }
@@ -1138,15 +1164,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -1487,15 +1506,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -1811,15 +1822,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -2169,15 +2173,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -2497,15 +2494,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -2780,15 +2770,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -3152,15 +3134,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -3494,15 +3469,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -3859,15 +3827,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -4194,15 +4155,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -4525,15 +4479,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -4898,15 +4845,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -5195,15 +5135,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -5518,15 +5451,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -5837,15 +5762,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -6171,15 +6089,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -6502,15 +6413,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -6831,15 +6735,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -7152,15 +7049,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -7478,15 +7368,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -7803,15 +7686,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -8128,15 +8004,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -8449,15 +8318,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -8775,15 +8637,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -9103,15 +8958,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -9435,15 +9282,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -9765,15 +9605,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -10091,15 +9924,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -10421,15 +10247,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -10709,15 +10528,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -11073,15 +10884,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -11368,15 +11172,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -11707,15 +11504,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -12025,15 +11814,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -12356,15 +12138,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -12686,15 +12461,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -13018,15 +12786,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -13352,15 +13113,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -13655,15 +13409,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -13991,15 +13738,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -14322,15 +14062,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -14688,15 +14421,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -15033,15 +14758,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -15363,15 +15081,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -15729,15 +15440,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -16034,15 +15738,7 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -16379,15 +16075,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -16709,15 +16398,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -17074,15 +16756,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -17367,15 +17042,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
@@ -17702,15 +17370,8 @@
           "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
         },
         "prior_state_digest": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "resulting_state_digest": {
           "type": "string",
