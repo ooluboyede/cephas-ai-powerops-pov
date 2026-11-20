@@ -1,0 +1,110 @@
+{
+  "schema_version": "cephas.powerops.lock-concurrency-fixtures.v1",
+  "fixture_type": "design-level two-session concurrency scenarios; not executed PostgreSQL tests",
+  "scenarios": [
+    {
+      "id": "mapping-reassignment-vs-promotion",
+      "session_a": [
+        "BEGIN",
+        "LOCK all login-binding rows rank 0",
+        "LOCK all mapping rows rank 1",
+        "LOCK affected scope mutexes rank 3 in canonical order",
+        "LOCK risk/roles/trust/evidence/candidate/request/grants/approvals/releases/audit in rank order",
+        "COMMIT"
+      ],
+      "session_b": [
+        "BEGIN",
+        "Attempt the same mapping and scope set in the same canonical order",
+        "Wait at the first conflicting row; do not acquire scope before identity rows",
+        "Re-read mapping versions and fail/retry whole transaction if stale",
+        "COMMIT or ROLLBACK"
+      ],
+      "expected": "No cycle; one serial order; stale mapping cannot authorize a promotion."
+    },
+    {
+      "id": "disablement-vs-approval",
+      "session_a": [
+        "BEGIN",
+        "LOCK login binding rank 0",
+        "LOCK mapping rank 1",
+        "LOCK session/epoch rank 2",
+        "Increment login epoch and revoke mapping",
+        "Append mutation manifest/events and audit head",
+        "COMMIT"
+      ],
+      "session_b": [
+        "BEGIN",
+        "LOCK same login binding, mapping and session rows in ranks 0–2",
+        "If session B wins first, validate old epoch and commit before disablement; otherwise observe new epoch and reject",
+        "COMMIT or ROLLBACK"
+      ],
+      "expected": "Revocation linearization is the disablement commit; no post-commit stale approval succeeds."
+    },
+    {
+      "id": "two-scope-reassignment",
+      "session_a": [
+        "BEGIN",
+        "Lock all identity rows first",
+        "Lock scope A then scope B by tenant UUID/BU UUID byte order",
+        "Acquire later classes in rank order",
+        "COMMIT"
+      ],
+      "session_b": [
+        "BEGIN",
+        "Lock same identity rows first",
+        "Request scope B then scope A but canonical acquisition normalizes to A then B",
+        "Acquire later classes in rank order",
+        "COMMIT"
+      ],
+      "expected": "Both transactions use identical scope ordering; no reverse-order deadlock."
+    },
+    {
+      "id": "foreign-key-trigger-implicit-locks",
+      "session_a": [
+        "BEGIN",
+        "Pre-lock all referenced parent rows at declared ranks",
+        "Perform child mutation",
+        "Run only triggers that validate pre-locked rows",
+        "COMMIT"
+      ],
+      "session_b": [
+        "BEGIN",
+        "Attempt competing parent mutation",
+        "Wait on same ranked row; no trigger may acquire a lower-rank lock",
+        "COMMIT or ROLLBACK"
+      ],
+      "expected": "FK KEY SHARE and trigger effects are represented in the declared plan; no hidden inversion."
+    },
+    {
+      "id": "rls-policy-side-effect-prohibition",
+      "session_a": [
+        "BEGIN",
+        "Run governed statement under RLS",
+        "RLS predicate reads authenticated scope without row/advisory locks"
+      ],
+      "session_b": [
+        "BEGIN",
+        "Run competing mapping or scope mutation",
+        "Acquire all locks only in the explicit function lock plan"
+      ],
+      "expected": "RLS cannot introduce a hidden lock or change lock order."
+    },
+    {
+      "id": "deadlock-abort-and-retry",
+      "session_a": [
+        "BEGIN",
+        "Acquire rank 0 through current rank",
+        "Inject test-only conflict at a later rank",
+        "Force PostgreSQL deadlock detection",
+        "ROLLBACK entire transaction"
+      ],
+      "session_b": [
+        "BEGIN",
+        "Acquire same classes in canonical order",
+        "Complete or wait until A aborts",
+        "COMMIT"
+      ],
+      "expected": "A bounded retry starts again at rank 0 and repeats authentication, epoch and eligibility checks; no partial writes survive."
+    }
+  ]
+}
