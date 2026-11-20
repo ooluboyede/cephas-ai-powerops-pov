@@ -849,7 +849,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -874,7 +875,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "prior_login_epoch": {
@@ -1233,7 +1235,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -1258,7 +1261,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "prior_login_epoch": {
@@ -1585,7 +1589,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         }
       },
@@ -1927,7 +1932,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -1952,7 +1958,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         }
       },
@@ -2246,7 +2253,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -2271,7 +2279,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "disable_reason_code": {
@@ -2845,7 +2854,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "role_code": {
@@ -3203,7 +3213,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -3228,7 +3239,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "activated_by_principal_id": {
@@ -3538,7 +3550,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -3563,7 +3576,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "prior_role_code": {
@@ -3896,7 +3910,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -3921,7 +3936,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "revocation_reason_code": {
@@ -4224,7 +4240,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -4249,7 +4266,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "expiry_at": {
@@ -4548,7 +4566,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -4573,7 +4592,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "invalidation_reason_code": {
@@ -5536,7 +5556,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "trust_record_sha256": {
@@ -5831,7 +5852,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -5856,7 +5878,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "prior_principal_id": {
@@ -6158,7 +6181,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -6183,7 +6207,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "disable_reason_code": {
@@ -6478,7 +6503,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -6503,7 +6529,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "algorithm": {
@@ -6796,7 +6823,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -6821,7 +6849,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "expiry_at": {
@@ -7110,7 +7139,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -7135,7 +7165,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "revocation_reason_code": {
@@ -7429,7 +7460,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -7454,7 +7486,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "incident_id": {
@@ -7747,7 +7780,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -7772,7 +7806,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "algorithm": {
@@ -8065,7 +8100,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -8090,7 +8126,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "expiry_at": {
@@ -8379,7 +8416,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -8404,7 +8442,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "revocation_reason_code": {
@@ -8698,7 +8737,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -8723,7 +8763,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "incident_id": {
@@ -9033,7 +9074,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "accepted_by_principal_id": {
@@ -9351,7 +9393,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -9376,7 +9419,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "amendment_reason_code": {
@@ -9674,7 +9718,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -9699,7 +9744,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "expiry_at": {
@@ -9993,7 +10039,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -10018,7 +10065,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "revocation_reason_code": {
@@ -10644,7 +10692,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "effective_at": {
@@ -11247,7 +11296,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -11272,7 +11322,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "removal_reason_code": {
@@ -11593,7 +11644,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         }
       },
@@ -11879,7 +11931,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -11904,7 +11957,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "quarantine_reason_code": {
@@ -12203,7 +12257,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -12228,7 +12283,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "release_assessment_sha256": {
@@ -12526,7 +12582,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -12551,7 +12608,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "superseding_object_id": {
@@ -12855,7 +12913,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -12880,7 +12939,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "new_verifier_identity_id": {
@@ -13475,7 +13535,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -13500,7 +13561,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "retirement_reason_code": {
@@ -14127,7 +14189,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -14152,7 +14215,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "invalidation_reason_code": {
@@ -14529,7 +14593,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "requestor_principal_id": {
@@ -14827,7 +14892,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -14852,7 +14918,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "approval_set_sha256": {
@@ -15150,7 +15217,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -15175,7 +15243,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "invalidation_reason_code": {
@@ -15846,7 +15915,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "requestor_principal_id": {
@@ -16144,7 +16214,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -16169,7 +16240,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "approval_set_sha256": {
@@ -16467,7 +16539,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -16492,7 +16565,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "invalidation_reason_code": {
@@ -17103,7 +17177,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -17128,7 +17203,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "provider_mode": {
@@ -17431,7 +17507,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_status": {
@@ -17456,7 +17533,8 @@
             "compromised",
             "retired",
             "rejected",
-            "accepted"
+            "accepted",
+            "suspended"
           ]
         },
         "retirement_reason_code": {
@@ -17484,6 +17562,1036 @@
             },
             "mutation_type": {
               "const": "anchor_contract.retired"
+            }
+          }
+        }
+      ]
+    },
+    "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_token",
+        "registry_version",
+        "event_envelope_schema_token",
+        "mutation_schema_version",
+        "manifest_schema_token",
+        "event_payload_schema_token",
+        "event_type",
+        "mutation_type",
+        "mutation_id",
+        "operation_id",
+        "mutation_payload_sha256",
+        "mutation_event_index",
+        "mutation_event_count",
+        "affected_mapping_ids",
+        "affected_scope_keys",
+        "affected_object_refs",
+        "actor_principal_id",
+        "actor_login_binding_id",
+        "actor_mapping_version",
+        "reason_code",
+        "prior_state_digest",
+        "resulting_state_digest",
+        "scope_kind",
+        "tenant_id",
+        "business_unit_id",
+        "verifier_identity_id",
+        "prior_version",
+        "resulting_version",
+        "prior_status",
+        "resulting_status",
+        "activated_by_principal_id",
+        "effective_at",
+        "trust_record_sha256"
+      ],
+      "properties": {
+        "registry_token": {
+          "const": "cephas.powerops.audit-payload-registry.v2"
+        },
+        "registry_version": {
+          "const": 2
+        },
+        "event_envelope_schema_token": {
+          "const": "cephas.powerops.audit-event-envelope.v2"
+        },
+        "mutation_schema_version": {
+          "const": "cephas.powerops.mutation.v1"
+        },
+        "manifest_schema_token": {
+          "const": "cephas.powerops.mutation-manifest.v1"
+        },
+        "event_payload_schema_token": {
+          "type": "string",
+          "pattern": "^cephas\\.powerops\\.audit-payload\\.[a-z0-9.-]+\\.v2$"
+        },
+        "event_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mutation_payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mutation_event_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mutation_event_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "affected_mapping_ids": {
+          "type": "array",
+          "maxItems": 10000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "affected_scope_keys": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "tenant_business_unit"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "business_unit_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "global"
+                  },
+                  "tenant_id": {
+                    "type": "null"
+                  },
+                  "business_unit_id": {
+                    "type": "null"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "affected_object_refs": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_type",
+              "object_id",
+              "version_id"
+            ],
+            "properties": {
+              "object_type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "version_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "actor_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_login_binding_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_mapping_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
+        },
+        "prior_state_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resulting_state_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scope_kind": {
+          "enum": [
+            "tenant_business_unit",
+            "global"
+          ]
+        },
+        "tenant_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "business_unit_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verifier_identity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "prior_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resulting_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "activated_by_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "effective_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "trust_record_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "event_payload_schema_token": {
+              "const": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2"
+            },
+            "event_type": {
+              "const": "trust.verifier-identity-activated"
+            },
+            "mutation_type": {
+              "const": "verifier_identity.activated"
+            }
+          }
+        }
+      ]
+    },
+    "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_token",
+        "registry_version",
+        "event_envelope_schema_token",
+        "mutation_schema_version",
+        "manifest_schema_token",
+        "event_payload_schema_token",
+        "event_type",
+        "mutation_type",
+        "mutation_id",
+        "operation_id",
+        "mutation_payload_sha256",
+        "mutation_event_index",
+        "mutation_event_count",
+        "affected_mapping_ids",
+        "affected_scope_keys",
+        "affected_object_refs",
+        "actor_principal_id",
+        "actor_login_binding_id",
+        "actor_mapping_version",
+        "reason_code",
+        "prior_state_digest",
+        "resulting_state_digest",
+        "scope_kind",
+        "tenant_id",
+        "business_unit_id",
+        "verifier_identity_id",
+        "prior_version",
+        "resulting_version",
+        "prior_status",
+        "resulting_status",
+        "suspension_reason_code",
+        "suspended_by_principal_id",
+        "incident_id",
+        "trust_record_sha256"
+      ],
+      "properties": {
+        "registry_token": {
+          "const": "cephas.powerops.audit-payload-registry.v2"
+        },
+        "registry_version": {
+          "const": 2
+        },
+        "event_envelope_schema_token": {
+          "const": "cephas.powerops.audit-event-envelope.v2"
+        },
+        "mutation_schema_version": {
+          "const": "cephas.powerops.mutation.v1"
+        },
+        "manifest_schema_token": {
+          "const": "cephas.powerops.mutation-manifest.v1"
+        },
+        "event_payload_schema_token": {
+          "type": "string",
+          "pattern": "^cephas\\.powerops\\.audit-payload\\.[a-z0-9.-]+\\.v2$"
+        },
+        "event_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mutation_payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mutation_event_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mutation_event_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "affected_mapping_ids": {
+          "type": "array",
+          "maxItems": 10000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "affected_scope_keys": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "tenant_business_unit"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "business_unit_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "global"
+                  },
+                  "tenant_id": {
+                    "type": "null"
+                  },
+                  "business_unit_id": {
+                    "type": "null"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "affected_object_refs": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_type",
+              "object_id",
+              "version_id"
+            ],
+            "properties": {
+              "object_type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "version_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "actor_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_login_binding_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_mapping_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
+        },
+        "prior_state_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resulting_state_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scope_kind": {
+          "enum": [
+            "tenant_business_unit",
+            "global"
+          ]
+        },
+        "tenant_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "business_unit_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verifier_identity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "prior_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resulting_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "suspension_reason_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "suspended_by_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "incident_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trust_record_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "event_payload_schema_token": {
+              "const": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2"
+            },
+            "event_type": {
+              "const": "trust.verifier-identity-suspended"
+            },
+            "mutation_type": {
+              "const": "verifier_identity.suspended"
+            }
+          }
+        }
+      ]
+    },
+    "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_token",
+        "registry_version",
+        "event_envelope_schema_token",
+        "mutation_schema_version",
+        "manifest_schema_token",
+        "event_payload_schema_token",
+        "event_type",
+        "mutation_type",
+        "mutation_id",
+        "operation_id",
+        "mutation_payload_sha256",
+        "mutation_event_index",
+        "mutation_event_count",
+        "affected_mapping_ids",
+        "affected_scope_keys",
+        "affected_object_refs",
+        "actor_principal_id",
+        "actor_login_binding_id",
+        "actor_mapping_version",
+        "reason_code",
+        "prior_state_digest",
+        "resulting_state_digest",
+        "scope_kind",
+        "tenant_id",
+        "business_unit_id",
+        "verifier_identity_id",
+        "prior_version",
+        "resulting_version",
+        "prior_status",
+        "resulting_status",
+        "revocation_reason_code",
+        "revoked_by_principal_id",
+        "affected_evidence_count",
+        "trust_record_sha256"
+      ],
+      "properties": {
+        "registry_token": {
+          "const": "cephas.powerops.audit-payload-registry.v2"
+        },
+        "registry_version": {
+          "const": 2
+        },
+        "event_envelope_schema_token": {
+          "const": "cephas.powerops.audit-event-envelope.v2"
+        },
+        "mutation_schema_version": {
+          "const": "cephas.powerops.mutation.v1"
+        },
+        "manifest_schema_token": {
+          "const": "cephas.powerops.mutation-manifest.v1"
+        },
+        "event_payload_schema_token": {
+          "type": "string",
+          "pattern": "^cephas\\.powerops\\.audit-payload\\.[a-z0-9.-]+\\.v2$"
+        },
+        "event_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "mutation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mutation_payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mutation_event_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mutation_event_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "affected_mapping_ids": {
+          "type": "array",
+          "maxItems": 10000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "affected_scope_keys": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "tenant_business_unit"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "business_unit_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope_kind",
+                  "tenant_id",
+                  "business_unit_id"
+                ],
+                "properties": {
+                  "scope_kind": {
+                    "const": "global"
+                  },
+                  "tenant_id": {
+                    "type": "null"
+                  },
+                  "business_unit_id": {
+                    "type": "null"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "affected_object_refs": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_type",
+              "object_id",
+              "version_id"
+            ],
+            "properties": {
+              "object_type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "object_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "version_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "actor_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_login_binding_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor_mapping_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_.-]{0,63}$"
+        },
+        "prior_state_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resulting_state_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scope_kind": {
+          "enum": [
+            "tenant_business_unit",
+            "global"
+          ]
+        },
+        "tenant_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "business_unit_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verifier_identity_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "prior_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resulting_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "revocation_reason_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "revoked_by_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "affected_evidence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trust_record_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "event_payload_schema_token": {
+              "const": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2"
+            },
+            "event_type": {
+              "const": "trust.verifier-identity-revoked"
+            },
+            "mutation_type": {
+              "const": "verifier_identity.revoked"
             }
           }
         }
@@ -17803,6 +18911,24 @@
       "event_type": "anchor.contract-retired",
       "event_payload_schema_token": "cephas.powerops.audit-payload.anchor-contract-retired.v2",
       "definition_ref": "#/$defs/cephas.powerops.audit-payload.anchor-contract-retired.v2"
+    },
+    {
+      "mutation_type": "verifier_identity.activated",
+      "event_type": "trust.verifier-identity-activated",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-activated.v2",
+      "definition_ref": "#/$defs/cephas.powerops.audit-payload.trust-verifier-identity-activated.v2"
+    },
+    {
+      "mutation_type": "verifier_identity.suspended",
+      "event_type": "trust.verifier-identity-suspended",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2",
+      "definition_ref": "#/$defs/cephas.powerops.audit-payload.trust-verifier-identity-suspended.v2"
+    },
+    {
+      "mutation_type": "verifier_identity.revoked",
+      "event_type": "trust.verifier-identity-revoked",
+      "event_payload_schema_token": "cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2",
+      "definition_ref": "#/$defs/cephas.powerops.audit-payload.trust-verifier-identity-revoked.v2"
     }
   ]
 }
