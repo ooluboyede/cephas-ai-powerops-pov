@@ -3305,7 +3305,7 @@
         "grant_id": "99999999-9999-4999-8999-999999999999",
         "prior_grant_version": 1,
         "resulting_grant_version": 1,
-        "prior_status": "active",
+        "prior_status": "pending",
         "resulting_status": "revoked",
         "revocation_reason_code": "synthetic",
         "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3388,7 +3388,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "revoked",
             "revocation_reason_code": "synthetic",
             "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3439,7 +3439,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "revoked",
             "revocation_reason_code": "synthetic",
             "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3490,7 +3490,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "revoked",
             "revocation_reason_code": "synthetic",
             "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3541,7 +3541,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "revoked",
             "revocation_reason_code": "synthetic",
             "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3592,7 +3592,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "revoked",
             "revocation_reason_code": "synthetic",
             "revoked_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -3646,7 +3646,7 @@
         "grant_id": "99999999-9999-4999-8999-999999999999",
         "prior_grant_version": 1,
         "resulting_grant_version": 1,
-        "prior_status": "active",
+        "prior_status": "pending",
         "resulting_status": "expired",
         "expiry_at": "2026-11-20T00:00:00Z",
         "affected_request_count": 0
@@ -3728,7 +3728,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_request_count": 0,
@@ -3778,7 +3778,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_request_count": 0
@@ -3828,7 +3828,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_request_count": 0
@@ -3878,7 +3878,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_request_count": 0
@@ -3928,7 +3928,7 @@
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
             "resulting_grant_version": 1,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_request_count": 0
@@ -4325,7 +4325,9 @@
         "quarantined_object_count": 0,
         "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "prior_stream_condition": "healthy",
-        "resulting_stream_condition": "quarantined"
+        "resulting_stream_condition": "quarantined",
+        "prior_status": "healthy",
+        "resulting_status": "quarantined"
       },
       "negative_fixtures": [
         {
@@ -4408,6 +4410,8 @@
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
             "resulting_stream_condition": "quarantined",
+            "prior_status": "healthy",
+            "resulting_status": "quarantined",
             "unauthorized_authority": true
           }
         },
@@ -4457,7 +4461,9 @@
             "quarantined_object_count": 0,
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "healthy",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4507,7 +4513,9 @@
             "quarantined_object_count": 0,
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "healthy",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4557,7 +4565,9 @@
             "quarantined_object_count": 0,
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "healthy",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4607,7 +4617,9 @@
             "quarantined_object_count": 0,
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "healthy",
+            "resulting_status": "quarantined"
           }
         }
       ]
@@ -4662,7 +4674,9 @@
         "reconciled_object_count": 0,
         "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "prior_stream_condition": "quarantined",
-        "resulting_stream_condition": "quarantined"
+        "resulting_stream_condition": "quarantined",
+        "prior_status": "quarantined",
+        "resulting_status": "quarantined"
       },
       "negative_fixtures": [
         {
@@ -4747,6 +4761,8 @@
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
             "resulting_stream_condition": "quarantined",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined",
             "unauthorized_authority": true
           }
         },
@@ -4798,7 +4814,9 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4850,7 +4868,9 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4902,7 +4922,9 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -4954,7 +4976,9 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "quarantined"
+            "resulting_stream_condition": "quarantined",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined"
           }
         },
         {
@@ -5006,7 +5030,9 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "healthy"
+            "resulting_stream_condition": "healthy",
+            "prior_status": "quarantined",
+            "resulting_status": "quarantined"
           }
         }
       ]
@@ -5739,7 +5765,7 @@
         "prior_version": 1,
         "resulting_version": 1,
         "prior_status": "active",
-        "resulting_status": "active",
+        "resulting_status": "disabled",
         "disable_reason_code": "synthetic",
         "affected_evidence_count": 0
       },
@@ -5821,7 +5847,7 @@
             "prior_version": 1,
             "resulting_version": 1,
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "disabled",
             "disable_reason_code": "synthetic",
             "affected_evidence_count": 0,
             "unauthorized_authority": true
@@ -5871,7 +5897,7 @@
             "prior_version": 1,
             "resulting_version": 1,
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "disabled",
             "disable_reason_code": "synthetic",
             "affected_evidence_count": 0
           }
@@ -5921,7 +5947,7 @@
             "prior_version": 1,
             "resulting_version": 1,
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "disabled",
             "disable_reason_code": "synthetic",
             "affected_evidence_count": 0
           }
@@ -5971,7 +5997,7 @@
             "prior_version": 1,
             "resulting_version": 1,
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "disabled",
             "disable_reason_code": "synthetic",
             "affected_evidence_count": 0
           }
@@ -6021,7 +6047,7 @@
             "prior_version": 1,
             "resulting_version": 1,
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "disabled",
             "disable_reason_code": "synthetic",
             "affected_evidence_count": 0
           }
@@ -6072,7 +6098,7 @@
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "verifier_key_id": "99999999-9999-4999-8999-999999999999",
         "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-        "prior_status": "active",
+        "prior_status": "pending",
         "resulting_status": "active",
         "algorithm": "Ed25519",
         "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6154,7 +6180,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6204,7 +6230,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6254,7 +6280,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6304,7 +6330,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6354,7 +6380,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -6407,7 +6433,7 @@
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "verifier_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
-        "resulting_status": "active",
+        "resulting_status": "expired",
         "expiry_at": "2026-11-20T00:00:00Z",
         "affected_evidence_count": 0
       },
@@ -6487,7 +6513,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_evidence_count": 0,
             "unauthorized_authority": true
@@ -6535,7 +6561,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_evidence_count": 0
           }
@@ -6583,7 +6609,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_evidence_count": 0
           }
@@ -6631,7 +6657,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_evidence_count": 0
           }
@@ -6679,7 +6705,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_evidence_count": 0
           }
@@ -7387,7 +7413,7 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "publisher_key_id": "99999999-9999-4999-8999-999999999999",
-        "prior_status": "active",
+        "prior_status": "pending",
         "resulting_status": "active",
         "algorithm": "Ed25519",
         "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7468,7 +7494,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7517,7 +7543,7 @@
             "scope_kind": "tenant_business_unit",
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7566,7 +7592,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7615,7 +7641,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7664,7 +7690,7 @@
             "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "algorithm": "Ed25519",
             "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -7717,7 +7743,7 @@
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "publisher_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
-        "resulting_status": "active",
+        "resulting_status": "expired",
         "expiry_at": "2026-11-20T00:00:00Z",
         "affected_candidate_count": 0
       },
@@ -7797,7 +7823,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_candidate_count": 0,
             "unauthorized_authority": true
@@ -7845,7 +7871,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_candidate_count": 0
           }
@@ -7893,7 +7919,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_candidate_count": 0
           }
@@ -7941,7 +7967,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_candidate_count": 0
           }
@@ -7989,7 +8015,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "publisher_key_id": "99999999-9999-4999-8999-999999999999",
             "prior_status": "active",
-            "resulting_status": "active",
+            "resulting_status": "expired",
             "expiry_at": "2026-11-20T00:00:00Z",
             "affected_candidate_count": 0
           }
@@ -13118,7 +13144,7 @@
         "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
         "effective_at": "2026-11-20T00:00:00Z",
-        "prior_status": "retired",
+        "prior_status": "pending",
         "resulting_status": "active"
       },
       "negative_fixtures": [
@@ -13202,7 +13228,7 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "unauthorized_authority": true
           }
@@ -13254,7 +13280,7 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active"
           }
         },
@@ -13306,7 +13332,7 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active"
           }
         },
@@ -13358,7 +13384,7 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active"
           }
         },
@@ -13410,7 +13436,7 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active"
           }
         }
@@ -14172,8 +14198,8 @@
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "approval_id": "99999999-9999-4999-8999-999999999999",
         "request_id": "99999999-9999-4999-8999-999999999999",
-        "prior_status": "active",
-        "resulting_status": "active",
+        "prior_status": "accepted",
+        "resulting_status": "invalidated",
         "invalidation_reason_code": "synthetic",
         "invalidating_object_ref": null,
         "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999"
@@ -14254,8 +14280,8 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "approval_id": "99999999-9999-4999-8999-999999999999",
             "request_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "accepted",
+            "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
             "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -14304,8 +14330,8 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "request_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "accepted",
+            "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
             "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999"
@@ -14354,8 +14380,8 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "approval_id": "99999999-9999-4999-8999-999999999999",
             "request_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "accepted",
+            "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
             "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999"
@@ -14404,8 +14430,8 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "approval_id": "99999999-9999-4999-8999-999999999999",
             "request_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "accepted",
+            "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
             "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999"
@@ -14454,8 +14480,8 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "approval_id": "99999999-9999-4999-8999-999999999999",
             "request_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "accepted",
+            "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
             "invalidated_by_principal_id": "99999999-9999-4999-8999-999999999999"
@@ -15190,7 +15216,7 @@
         "request_id": "99999999-9999-4999-8999-999999999999",
         "request_version": 1,
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "prior_status": "submitted",
+        "prior_status": "draft",
         "resulting_status": "invalidated",
         "invalidation_reason_code": "synthetic",
         "invalidating_object_ref": null
@@ -15272,7 +15298,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
@@ -15322,7 +15348,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -15372,7 +15398,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -15422,7 +15448,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -15472,7 +15498,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -15530,7 +15556,9 @@
         "prior_active_release_id": null,
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": "2026-11-20T00:00:00Z"
+        "executed_at": "2026-11-20T00:00:00Z",
+        "prior_request_status": "approved",
+        "resulting_request_status": "executed"
       },
       "negative_fixtures": [
         {
@@ -15615,6 +15643,8 @@
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed",
             "unauthorized_authority": true
           }
         },
@@ -15666,7 +15696,9 @@
             "prior_active_release_id": null,
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -15718,7 +15750,9 @@
             "prior_active_release_id": null,
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -15770,7 +15804,9 @@
             "prior_active_release_id": null,
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -15822,7 +15858,9 @@
             "prior_active_release_id": null,
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         }
       ]
@@ -16554,7 +16592,7 @@
         "request_id": "99999999-9999-4999-8999-999999999999",
         "request_version": 1,
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "prior_status": "submitted",
+        "prior_status": "draft",
         "resulting_status": "invalidated",
         "invalidation_reason_code": "synthetic",
         "invalidating_object_ref": null
@@ -16636,7 +16674,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null,
@@ -16686,7 +16724,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -16736,7 +16774,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -16786,7 +16824,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -16836,7 +16874,7 @@
             "request_id": "99999999-9999-4999-8999-999999999999",
             "request_version": 1,
             "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "prior_status": "submitted",
+            "prior_status": "draft",
             "resulting_status": "invalidated",
             "invalidation_reason_code": "synthetic",
             "invalidating_object_ref": null
@@ -16893,7 +16931,9 @@
         "target_release_id": "99999999-9999-4999-8999-999999999999",
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": "2026-11-20T00:00:00Z"
+        "executed_at": "2026-11-20T00:00:00Z",
+        "prior_request_status": "approved",
+        "resulting_request_status": "executed"
       },
       "negative_fixtures": [
         {
@@ -16977,6 +17017,8 @@
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed",
             "unauthorized_authority": true
           }
         },
@@ -17027,7 +17069,9 @@
             "target_release_id": "99999999-9999-4999-8999-999999999999",
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -17078,7 +17122,9 @@
             "target_release_id": "99999999-9999-4999-8999-999999999999",
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -17129,7 +17175,9 @@
             "target_release_id": "99999999-9999-4999-8999-999999999999",
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         },
         {
@@ -17180,7 +17228,9 @@
             "target_release_id": "99999999-9999-4999-8999-999999999999",
             "resulting_release_id": "99999999-9999-4999-8999-999999999999",
             "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "executed_at": "2026-11-20T00:00:00Z"
+            "executed_at": "2026-11-20T00:00:00Z",
+            "prior_request_status": "approved",
+            "resulting_request_status": "executed"
           }
         }
       ]
@@ -17228,7 +17278,7 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "anchor_contract_id": "99999999-9999-4999-8999-999999999999",
-        "prior_status": "retired",
+        "prior_status": "pending",
         "resulting_status": "active",
         "provider_mode": "mode_a_idempotent",
         "maximum_unanchored_seconds": 0,
@@ -17311,7 +17361,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "anchor_contract_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "provider_mode": "mode_a_idempotent",
             "maximum_unanchored_seconds": 0,
@@ -17362,7 +17412,7 @@
             "scope_kind": "tenant_business_unit",
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "provider_mode": "mode_a_idempotent",
             "maximum_unanchored_seconds": 0,
@@ -17413,7 +17463,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "anchor_contract_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "provider_mode": "mode_a_idempotent",
             "maximum_unanchored_seconds": 0,
@@ -17464,7 +17514,7 @@
             "tenant_id": "33333333-3333-4333-8333-333333333333",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "anchor_contract_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "provider_mode": "mode_a_idempotent",
             "maximum_unanchored_seconds": 0,
@@ -17515,7 +17565,7 @@
             "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "anchor_contract_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "retired",
+            "prior_status": "pending",
             "resulting_status": "active",
             "provider_mode": "mode_a_idempotent",
             "maximum_unanchored_seconds": 0,
