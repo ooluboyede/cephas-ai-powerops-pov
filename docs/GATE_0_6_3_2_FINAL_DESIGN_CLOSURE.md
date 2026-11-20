@@ -72,7 +72,7 @@ The machine-readable rank map is normative. Independent acceptance requires two-
 
 ### 2.1 Selected mechanism
 
-The only acceptable path is a customer-controlled authentication broker plus a trusted PostgreSQL authentication extension. The extension registers a session as part of successful authentication completion. No SQL-callable registration API exists for application, runtime, verifier, approver or broker roles. The broker MUST NOT authenticate a user and then ask that user's SQL session to call a registration function.
+The only acceptable path is a customer-controlled authentication broker plus a trusted PostgreSQL authentication extension. The extension validates the assertion during authentication and retains a backend-local, non-SQL-mutable pending-authentication context. A trusted pre-execution hook then materializes the protected registration before the first user SQL command is allowed to execute. No SQL-callable registration API exists for application, runtime, verifier, approver or broker roles. The broker MUST NOT authenticate a user and then ask that user's SQL session to call a registration function.
 
 The broker creates one dedicated physical PostgreSQL backend per authenticated principal session. Transaction pooling is prohibited. Session pooling is permitted only while the same authenticated client remains bound to the same physical backend; a backend is never reassigned to another principal.
 
@@ -88,16 +88,16 @@ Assertion lifetime is at most 30 seconds. It is bound to one PostgreSQL cluster 
 
 ### 2.3 Extension verification and atomic one-time consumption
 
-During authentication completion, the extension independently derives live database OID, SESSION_USER role OID, PID and backend start from PostgreSQL server state. It verifies exact equality with the assertion and verifies the challenge is outstanding, unexpired and issued for this backend.
+During authentication completion, the extension independently derives live database OID, SESSION_USER role OID, PID and backend start from PostgreSQL server state. It verifies exact equality with the assertion and verifies the challenge is outstanding, unexpired and issued for this backend. It stores the verified assertion only in backend-local extension memory; it MUST NOT expose or accept that context through GUCs, startup parameters, temporary tables or caller-controlled SQL arguments.
 
-The extension then executes one protected registration transaction:
+Before the first user SQL command executes, an extension-owned pre-execution hook covering both executor and utility-command paths MUST run one protected registration transaction in the same transaction context as that first command:
 - locks login binding and mapping at ranks 0–1 and session/epoch state at rank 2;
 - rechecks active status, current login epoch, mapping version and credential generation;
 - inserts assertion_jti and idp_jti into protected replay tables with unique constraints;
 - inserts exactly one active session-registration row;
-- commits replay consumption and registration atomically.
+- commits replay consumption and registration atomically with the first command.
 
-This transaction is initiated only by the authentication extension's trusted server-side path, not by a SQL function exposed to the client. If validation, a unique constraint, insert or commit fails, authentication fails and the extension terminates the backend. Failed registration MUST NOT leave a reusable assertion or active registration.
+No user command may execute if the hook cannot complete the registration write. If the first command's transaction aborts, the registration and replay inserts roll back together; the backend-local assertion remains bound to that same backend only and the hook may retry on a later command after rechecking current epochs. It cannot be transferred to another backend or re-issued to an already authenticated backend. If validation, a unique constraint, insert or commit fails, the command is rejected and the extension terminates the backend. Failed registration MUST NOT leave a reusable assertion or active registration.
 
 The session-registration key is database_oid, role_oid, backend_pid, backend_start and session_nonce. A separate partial unique constraint MUST enforce at most one active registration for database_oid, role_oid, backend_pid and backend_start regardless of nonce. Unique constraints also cover assertion_jti and (idp_issuer,idp_jti) for the replay-retention window.
 
@@ -112,7 +112,7 @@ The session-registration key is database_oid, role_oid, backend_pid, backend_sta
 - PID reuse cannot match because backend start and nonce are bound. An old backend cannot re-register after re-enablement because registration is possible only during a new authentication handshake for a new backend.
 - If the PostgreSQL 16 extension cannot demonstrate trusted assertion validation, atomic replay consumption and active-backend uniqueness, the gate remains rejected. There is no fallback to application-callable SQL registration.
 
-Required tests: valid, expired, wrong-cluster/database/role/PID/backend-start, challenge replay, assertion-JTI replay, IdP-JTI replay, wrong issuer/subject, stale auth_time, old credential generation, revoked IdP token, revoked broker key, mapping/epoch race, concurrent duplicate assertion, failed registration commit, backend termination, PID reuse and attempted registration from an already authenticated stale backend. The last test must prove no SQL-callable stale-session path exists.
+Required tests: valid, expired, wrong-cluster/database/role/PID/backend-start, challenge replay, assertion-JTI replay, IdP-JTI replay, wrong issuer/subject, stale auth_time, old credential generation, revoked IdP token, revoked broker key, mapping/epoch race, concurrent duplicate assertion, first-command hook on SELECT and utility commands, first-command transaction abort/retry, failed registration commit, backend termination, PID reuse and attempted registration from an already authenticated stale backend. The last test must prove no SQL-callable stale-session path exists. The PostgreSQL 16 prototype must demonstrate that the chosen pre-execution hooks can enforce this ordering without permitting a command to run before registration.
 
 ## 3. H-03 / M-02 / M-04 — Complete authority mutation registry v2
 
