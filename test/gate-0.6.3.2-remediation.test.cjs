@@ -1,6 +1,6 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),crypto=require("node:crypto");
-const Ajv2020=require("ajv/dist/2020"),addFormats=require("ajv-formats"),canonicalizeA=require("canonicalize"),jcs=require("json-canonicalize"),canonicalizeB=jcs.canonicalize||jcs.default||jcs;
+const Ajv2020=require("ajv/dist/2020"),addFormats=require("ajv-formats"),canonicalizeA=require("canonicalize"),jcs=require("json-canonicalize"),canonicalizeB=jcs.canonicalize||jcs.default||jcs;\nconst semanticVerifier=require("../src/gate-0.6.3.2-semantic-verifier");
 const base=path.join(__dirname,"..","schemas","gate-0.6.3.2");
 const schema=JSON.parse(fs.readFileSync(path.join(base,"audit-registry-v2.schema.json"),"utf8"));
 const catalog=JSON.parse(fs.readFileSync(path.join(base,"fixture-catalog.v1.json"),"utf8"));
@@ -12,38 +12,46 @@ const validators=new Map();
 function validatorFor(token){if(!validators.has(token))validators.set(token,ajv.compile({$schema:schema.$schema,$defs:schema.$defs,$ref:"#/$defs/"+token}));return validators.get(token);}
 const validateManifest=ajv.compile({$schema:schema.$schema,$defs:schema.$defs,$ref:"#/$defs/mutationManifest"});
 const semanticAssertions=schema["x-semanticAssertions"]||[];
-function scopeKey(x){return JSON.stringify([x.scope_kind,x.tenant_id,x.business_unit_id]);}
-function eventMatchesManifest(e,m){
- const x=m.expected_events[e.mutation_event_index];if(!x)return false;
- if(e.registry_version!==2||e.registry_token!=="cephas.powerops.audit-payload-registry.v2"||e.event_envelope_schema_token!=="cephas.powerops.audit-event-envelope.v2"||e.mutation_schema_version!=="cephas.powerops.mutation.v1"||e.manifest_schema_token!=="cephas.powerops.mutation-manifest.v1")return false;
- for(const k of ["mutation_id","operation_id","mutation_type","actor_principal_id","actor_login_binding_id","actor_mapping_version","reason_code"])if(e[k]!==m[k])return false;
- if(e.mutation_event_count!==m.expected_event_count||e.mutation_event_index!==x.mutation_event_index||e.event_type!==x.event_type||e.event_payload_schema_token!==x.event_payload_schema_token)return false;
- if(scopeKey(e)!==scopeKey(x)||!(m.affected_scope_keys||[]).some(y=>scopeKey(y)===scopeKey(x)))return false;
- for(const k of ["affected_mapping_ids","affected_scope_keys","affected_object_refs"])if(JSON.stringify(e[k])!==JSON.stringify(m[k]))return false;
- return true;
+const registry = semanticVerifier.createRegistry(schema["x-event-catalog"]);
+const semanticAccepts = (mutation, payload) =>
+  semanticVerifier.validateSemanticAssertions(mutation, payload, semanticAssertions);
+const lifecycleAccepts = (mutation, payload) =>
+  semanticVerifier.validateLifecycleTransition(mutation, payload);
+const eventMatchesManifest = (event, manifest) =>
+  semanticVerifier.eventMatchesManifest(event, manifest);
+const reconstructs = (manifest, events) =>
+  semanticVerifier.reconstructMutationEvents(manifest, events, {
+    validateManifest,
+    canonicalize: canonicalizeA
+  });
+function manifestForEvent(event) {
+  return {
+    mutation_id: event.mutation_id,
+    operation_id: event.operation_id,
+    mutation_type: event.mutation_type,
+    actor_principal_id: event.actor_principal_id,
+    actor_login_binding_id: event.actor_login_binding_id,
+    actor_mapping_version: event.actor_mapping_version,
+    reason_code: event.reason_code,
+    affected_mapping_ids: event.affected_mapping_ids,
+    affected_scope_keys: event.affected_scope_keys,
+    affected_object_refs: event.affected_object_refs,
+    expected_event_count: event.mutation_event_count,
+    expected_events: [{
+      tenant_id: event.tenant_id,
+      business_unit_id: event.business_unit_id,
+      scope_kind: event.scope_kind,
+      event_type: event.event_type,
+      event_payload_schema_token: event.event_payload_schema_token,
+      mutation_event_index: event.mutation_event_index
+    }]
+  };
 }
-function semanticAccepts(mutation,p){
- const a=semanticAssertions.find(x=>x.mutation_type===mutation);if(!a)return true;
- const prior=p[a.prior_field],next=p[a.resulting_field];
- if(!Number.isSafeInteger(prior)||!Number.isSafeInteger(next)||next<=prior)return false;
- if(a.status_rule==="same_active_or_pending")return p.prior_status===p.resulting_status&&["active","pending"].includes(p.prior_status);
- if(a.status_rule==="active_or_pending_to_suspended")return ["active","pending"].includes(p.prior_status)&&p.resulting_status==="suspended";
- return true;
-}
-function lifecycleAccepts(mutation,p){return !(mutation==="security_incident.reconciled"&&p.prior_stream_condition==="quarantined"&&p.resulting_stream_condition!=="quarantined");}
-function digest(m){return crypto.createHash("sha256").update(canonicalizeA(m),"utf8").digest("hex");}
-function reconstructs(m,events){
- if(!validateManifest(m)||m.expected_event_count!==m.expected_events.length||events.length!==m.expected_event_count)return false;
- const d=digest(m);
- for(let i=0;i<events.length;i++){const e=events[i];if(e.mutation_event_index!==i||m.expected_events[i].mutation_event_index!==i||e.mutation_event_count!==events.length||e.mutation_payload_sha256!==d||!eventMatchesManifest(e,m))return false;}
- return true;
-}
-function manifestForEvent(e){return {mutation_id:e.mutation_id,operation_id:e.operation_id,mutation_type:e.mutation_type,actor_principal_id:e.actor_principal_id,actor_login_binding_id:e.actor_login_binding_id,actor_mapping_version:e.actor_mapping_version,reason_code:e.reason_code,affected_mapping_ids:e.affected_mapping_ids,affected_scope_keys:e.affected_scope_keys,affected_object_refs:e.affected_object_refs,expected_event_count:e.mutation_event_count,expected_events:[{tenant_id:e.tenant_id,business_unit_id:e.business_unit_id,scope_kind:e.scope_kind,event_type:e.event_type,event_payload_schema_token:e.event_payload_schema_token,mutation_event_index:e.mutation_event_index}]};}
 
 test("registry, schemas and positive fixture catalogue are one-to-one",()=>{
  assert.equal(eventCatalog.size,eventFixtures.size);assert.equal(eventCatalog.size,schema["x-event-catalog"].length);
  for(const [mutation,entry] of eventCatalog){const f=eventFixtures.get(mutation);assert.ok(f,"missing "+mutation);assert.equal(f.event_type,entry.event_type);assert.equal(f.event_payload_schema_token,entry.event_payload_schema_token);const def=schema.$defs[entry.event_payload_schema_token];assert.ok(def);assert.ok((def.allOf||[]).some(x=>x.$ref==="#/$defs/commonScopeConstraints"));}
- assert.ok(eventCatalog.has("accountable_role.granted"));assert.equal(eventCatalog.get("accountable_role.granted").event_type,"authority.accountable-role-granted");
+ assert.ok(eventCatalog.has("accountable_role.granted"));assert.equal(eventCatalog.get("accountable_role.granted").event_type,"authority.accountable-role-granted");const granted=registry.resolve("accountable_role.granted");assert.equal(granted.event_type,"authority.accountable-role-granted");assert.throws(()=>registry.resolve("accountable_role.unregistered"));assert.throws(()=>registry.assertPair("accountable_role.granted","authority.accountable-role-appointed","cephas.powerops.audit-payload.accountable-role-granted.v2"));
 });
 test("every positive event fixture validates",()=>{for(const f of catalog.event_fixtures){const v=validatorFor(f.event_payload_schema_token);assert.equal(v(f.positive_fixture),true,f.mutation_type+": "+JSON.stringify(v.errors));}});
 test("every negative payload fixture reaches its declared rejecting validator",()=>{

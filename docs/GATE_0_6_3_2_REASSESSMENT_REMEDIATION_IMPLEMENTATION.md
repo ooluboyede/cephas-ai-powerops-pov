@@ -11,11 +11,11 @@
 - F-04: applies common global-vs-tenant scope constraints to every manifest expected-event item.
 - M-02: adds a strict harness for every positive/negative event fixture, manifest golden fixture and mutation-reconstruction negative descriptor.
 - M-04: declares four semantic assertions and executes them against positive and schema-valid negative fixtures; quarantine terminality is tested.
-- Adds a reference protocol state-machine test for pre-command registration ordering.
+- Adds a shared application-level registry/semantic/reconstruction verifier module and a reference protocol state-machine test for pre-command registration ordering.
 
 ## Evidence boundary
 
-The reference protocol test is a contract model, **not** a PostgreSQL implementation. This commit does not contain the customer-maintained source-pinned PostgreSQL 16 C patch, broker service, live SASL wire implementation, protocol dispatcher guard or real PostgreSQL protocol-client tests. Therefore F-02 runtime enforcement remains unimplemented and Gate 0.6.3.2 is not implementation-accepted or production-ready. The WAL consumer/failover prototype also remains outstanding.
+The semantic verifier is a reusable application-level validation component; it is not yet wired into a PostgreSQL authority-mutation dispatcher. The reference protocol test is a contract model, **not** a PostgreSQL implementation. This commit does not contain the customer-maintained source-pinned PostgreSQL 16 C patch, broker service, live SASL wire implementation, protocol dispatcher guard or real PostgreSQL protocol-client tests. Therefore F-02 runtime enforcement remains unimplemented and Gate 0.6.3.2 is not implementation-accepted or production-ready. The WAL consumer/failover prototype also remains outstanding.
 
 ## Next runtime unit
 
