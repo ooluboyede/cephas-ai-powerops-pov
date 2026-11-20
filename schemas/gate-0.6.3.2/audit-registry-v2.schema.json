@@ -828,56 +828,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "disabled"
         },
         "prior_login_epoch": {
           "type": "integer",
@@ -1214,56 +1168,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "disabled"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "prior_login_epoch": {
           "type": "integer",
@@ -1568,30 +1476,7 @@
           "format": "uuid"
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         }
       },
       "allOf": [
@@ -1911,56 +1796,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         }
       },
       "allOf": [
@@ -2232,56 +2071,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "disabled"
         },
         "disable_reason_code": {
           "type": "string",
@@ -3192,56 +2985,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "pending"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "activated_by_principal_id": {
           "type": "string",
@@ -3967,6 +3714,30 @@
               "const": "approval_grant.revoked"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "pending"
+                },
+                "resulting_status": {
+                  "const": "revoked"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "active"
+                },
+                "resulting_status": {
+                  "const": "revoked"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -4292,6 +4063,30 @@
               "const": "approval_grant.expired"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "pending"
+                },
+                "resulting_status": {
+                  "const": "expired"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "active"
+                },
+                "resulting_status": {
+                  "const": "expired"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -5920,6 +5715,30 @@
               "const": "verifier_identity.changed"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "active"
+                },
+                "resulting_status": {
+                  "const": "active"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "suspended"
+                },
+                "resulting_status": {
+                  "const": "suspended"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -6246,6 +6065,30 @@
               "const": "verifier_identity.disabled"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "active"
+                },
+                "resulting_status": {
+                  "const": "disabled"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "suspended"
+                },
+                "resulting_status": {
+                  "const": "disabled"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -6494,56 +6337,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "pending"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "algorithm": {
           "enum": [
@@ -6814,56 +6611,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "expired"
         },
         "expiry_at": {
           "type": "string",
@@ -7130,56 +6881,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "revoked"
         },
         "revocation_reason_code": {
           "type": "string",
@@ -7451,56 +7156,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "compromised"
         },
         "incident_id": {
           "type": "string",
@@ -7771,56 +7430,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "pending"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "algorithm": {
           "enum": [
@@ -8091,56 +7704,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "expired"
         },
         "expiry_at": {
           "type": "string",
@@ -8407,56 +7974,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "revoked"
         },
         "revocation_reason_code": {
           "type": "string",
@@ -8728,56 +8249,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "compromised"
         },
         "incident_id": {
           "type": "string",
@@ -9065,30 +8540,7 @@
           "minimum": 1
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "accepted_by_principal_id": {
           "type": "string",
@@ -10232,30 +9684,7 @@
           "maxLength": 2048
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
           "const": "superseded"
@@ -10576,30 +10005,7 @@
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "effective_at": {
           "type": "string",
@@ -10911,30 +10317,7 @@
           "maxLength": 2048
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
           "const": "superseded"
@@ -11814,6 +11197,40 @@
               "const": "evidence.quarantined"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "verified"
+                },
+                "resulting_status": {
+                  "const": "quarantined"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "unverified"
+                },
+                "resulting_status": {
+                  "const": "quarantined"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "released"
+                },
+                "resulting_status": {
+                  "const": "quarantined"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -12377,6 +11794,30 @@
               "const": "evidence.superseded"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "verified"
+                },
+                "resulting_status": {
+                  "const": "superseded"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "released"
+                },
+                "resulting_status": {
+                  "const": "superseded"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -12989,6 +12430,30 @@
               "const": "promotion_policy.activated"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "pending"
+                },
+                "resulting_status": {
+                  "const": "active"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "retired"
+                },
+                "resulting_status": {
+                  "const": "active"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -13914,6 +13379,30 @@
               "const": "approval.invalidated"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "accepted"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "rejected"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -14799,6 +14288,40 @@
               "const": "promotion_request.invalidated"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "draft"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "submitted"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "approved"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -15990,6 +15513,40 @@
               "const": "rollback_request.invalidated"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "draft"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "submitted"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "approved"
+                },
+                "resulting_status": {
+                  "const": "invalidated"
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -16574,6 +16131,30 @@
               "const": "anchor_contract.activated"
             }
           }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "pending"
+                },
+                "resulting_status": {
+                  "const": "active"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "retired"
+                },
+                "resulting_status": {
+                  "const": "active"
+                }
+              }
+            }
+          ]
         }
       ]
     },
