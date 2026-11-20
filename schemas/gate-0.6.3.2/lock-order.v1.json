@@ -1,0 +1,103 @@
+{
+  "schema_version": "cephas.powerops.lock-order.v1",
+  "supersedes": "D-02.2 scope-mutex-first order where it conflicts with D-07 identity-first bootstrap",
+  "transaction_rules": {
+    "isolation": "READ COMMITTED",
+    "acquire_all_rows_in_class_before_next_class": true,
+    "sort": "UUID byte order; composite scope tenant UUID then business-unit UUID",
+    "retry": "abort whole transaction; bounded retry from rank 0 only",
+    "advisory_locks": "prohibited for authority serialization",
+    "triggers_and_rls": "must not acquire out-of-order locks",
+    "implicit_fk_locks": "pre-lock referenced rows at their declared rank"
+  },
+  "ranks": [
+    {
+      "rank": 0,
+      "lock_class": "login_binding"
+    },
+    {
+      "rank": 1,
+      "lock_class": "identity_mapping"
+    },
+    {
+      "rank": 2,
+      "lock_class": "session_registration_epoch"
+    },
+    {
+      "rank": 3,
+      "lock_class": "scope_mutex"
+    },
+    {
+      "rank": 4,
+      "lock_class": "risk_acceptance"
+    },
+    {
+      "rank": 5,
+      "lock_class": "accountable_role_assignment"
+    },
+    {
+      "rank": 6,
+      "lock_class": "verifier_identity"
+    },
+    {
+      "rank": 7,
+      "lock_class": "verifier_key"
+    },
+    {
+      "rank": 8,
+      "lock_class": "publisher_key"
+    },
+    {
+      "rank": 9,
+      "lock_class": "promotion_rollback_policy"
+    },
+    {
+      "rank": 10,
+      "lock_class": "evidence_registry_quarantine"
+    },
+    {
+      "rank": 11,
+      "lock_class": "candidate"
+    },
+    {
+      "rank": 12,
+      "lock_class": "governed_request"
+    },
+    {
+      "rank": 13,
+      "lock_class": "approval_grant"
+    },
+    {
+      "rank": 14,
+      "lock_class": "approval_decision"
+    },
+    {
+      "rank": 15,
+      "lock_class": "release_active_pointer"
+    },
+    {
+      "rank": 16,
+      "lock_class": "anchor_contract_stream"
+    },
+    {
+      "rank": 17,
+      "lock_class": "audit_chain_head"
+    },
+    {
+      "rank": 18,
+      "lock_class": "mutation_manifest_idempotency"
+    },
+    {
+      "rank": 19,
+      "lock_class": "transactional_outbox"
+    }
+  ],
+  "prohibited": [
+    "mapping/login/session lock after scope mutex",
+    "scope interleaving across lock classes",
+    "trigger-initiated lock acquisition outside plan",
+    "RLS side-effecting lock acquisition",
+    "transaction pooling on governed sessions",
+    "authority DML outside reviewed functions"
+  ]
+}
