@@ -907,15 +907,8 @@
           ]
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         }
       },
       "allOf": [
@@ -929,6 +922,24 @@
             },
             "mutation_type": {
               "const": "login_binding.disabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -1318,6 +1329,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -1648,6 +1677,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -1913,31 +1960,17 @@
           "minimum": 1
         },
         "prior_login_binding_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_login_binding_id": {
           "type": "string",
           "format": "uuid"
         },
         "prior_issuer": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
         },
         "resulting_issuer": {
           "type": "string",
@@ -1945,16 +1978,9 @@
           "maxLength": 2048
         },
         "prior_subject": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
         },
         "resulting_subject": {
           "type": "string",
@@ -1962,15 +1988,8 @@
           "maxLength": 2048
         },
         "prior_principal_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_principal_id": {
           "type": "string",
@@ -2038,6 +2057,24 @@
             },
             "mutation_type": {
               "const": "identity_mapping.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -2407,6 +2444,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -2678,6 +2733,24 @@
             },
             "mutation_type": {
               "const": "identity_mapping.reassigned"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -3017,15 +3090,8 @@
           "format": "uuid"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "expires_at": {
           "anyOf": [
@@ -3073,6 +3139,24 @@
             },
             "prior_grant_version": {
               "type": "null"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -3452,6 +3536,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -3764,21 +3866,14 @@
           ]
         },
         "prior_role_code": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "model-risk",
-                "security",
-                "operations-owner",
-                "security-administrator",
-                "evidence-verifier",
-                "other-approved"
-              ]
-            },
-            {
-              "type": "null"
-            }
+          "type": "string",
+          "enum": [
+            "model-risk",
+            "security",
+            "operations-owner",
+            "security-administrator",
+            "evidence-verifier",
+            "other-approved"
           ]
         },
         "resulting_role_code": {
@@ -3824,6 +3919,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -4198,6 +4311,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -4507,15 +4638,8 @@
           ]
         },
         "expiry_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "affected_request_count": {
           "type": "integer",
@@ -4533,6 +4657,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -4868,41 +5010,34 @@
           "maxLength": 2048
         },
         "invalidating_object_ref": {
-          "anyOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "object_type",
-                "object_id",
-                "version_id"
-              ],
-              "properties": {
-                "object_type": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "object_id": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_type",
+            "object_id",
+            "version_id"
+          ],
+          "properties": {
+            "object_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version_id": {
+              "anyOf": [
+                {
                   "type": "string",
                   "format": "uuid"
                 },
-                "version_id": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                {
+                  "type": "null"
                 }
-              }
-            },
-            {
-              "type": "null"
+              ]
             }
-          ]
+          }
         },
         "affected_approval_ids": {
           "type": "array",
@@ -4925,6 +5060,24 @@
             },
             "mutation_type": {
               "const": "governed_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -5192,15 +5345,8 @@
           ]
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "quarantine_reason_code": {
           "type": "string",
@@ -5281,6 +5427,24 @@
             },
             "mutation_type": {
               "const": "security_incident.quarantined"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -5550,15 +5714,8 @@
           ]
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "disposition_code": {
           "type": "string",
@@ -5665,6 +5822,24 @@
             "properties": {
               "resulting_stream_condition": {
                 "const": "quarantined"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
               }
             }
           }
@@ -6023,6 +6198,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -6333,15 +6526,8 @@
           ]
         },
         "prior_principal_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_principal_id": {
           "type": "string",
@@ -6363,6 +6549,24 @@
             },
             "mutation_type": {
               "const": "verifier_identity.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -6732,6 +6936,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -7046,15 +7268,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -7068,6 +7283,24 @@
             },
             "mutation_type": {
               "const": "verifier_key.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -7387,15 +7620,8 @@
           ]
         },
         "expiry_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "affected_evidence_count": {
           "type": "integer",
@@ -7413,6 +7639,24 @@
             },
             "mutation_type": {
               "const": "verifier_key.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -7777,6 +8021,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -8077,26 +8339,12 @@
           ]
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "compromise_detected_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "affected_evidence_count": {
           "type": "integer",
@@ -8114,6 +8362,24 @@
             },
             "mutation_type": {
               "const": "verifier_key.compromised"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -8443,15 +8709,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -8465,6 +8724,24 @@
             },
             "mutation_type": {
               "const": "publisher_key.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -8784,15 +9061,8 @@
           ]
         },
         "expiry_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "affected_candidate_count": {
           "type": "integer",
@@ -8810,6 +9080,24 @@
             },
             "mutation_type": {
               "const": "publisher_key.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -9174,6 +9462,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -9474,26 +9780,12 @@
           ]
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "compromise_detected_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "affected_candidate_count": {
           "type": "integer",
@@ -9511,6 +9803,24 @@
             },
             "mutation_type": {
               "const": "publisher_key.compromised"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -9856,6 +10166,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.created"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -10225,6 +10553,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -10533,15 +10879,8 @@
           ]
         },
         "expiry_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -10555,6 +10894,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -10924,6 +11281,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -11182,15 +11557,8 @@
           "minimum": 1
         },
         "superseded_by_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "superseded_by_version": {
           "type": "integer",
@@ -11213,6 +11581,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.superseded"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -11561,15 +11947,8 @@
           ]
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "expires_at": {
           "anyOf": [
@@ -11598,6 +11977,24 @@
             },
             "mutation_type": {
               "const": "accountable_role.appointed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -11865,26 +12262,12 @@
           ]
         },
         "prior_role_assignment_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "replacement_role_assignment_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "role_code": {
           "enum": [
@@ -11897,30 +12280,16 @@
           ]
         },
         "prior_principal_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_principal_id": {
           "type": "string",
           "format": "uuid"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "replacement_reason_code": {
           "type": "string",
@@ -11939,6 +12308,24 @@
             },
             "mutation_type": {
               "const": "accountable_role.replaced"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -12314,6 +12701,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -12652,6 +13057,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -12962,15 +13385,8 @@
           "maxLength": 2048
         },
         "incident_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "quarantined_by_principal_id": {
           "type": "string",
@@ -12988,6 +13404,24 @@
             },
             "mutation_type": {
               "const": "evidence.quarantined"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -13356,6 +13790,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -13661,15 +14113,8 @@
           ]
         },
         "superseding_object_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "superseding_version_id": {
           "type": "string",
@@ -13692,6 +14137,24 @@
             },
             "mutation_type": {
               "const": "evidence.superseded"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -13964,16 +14427,8 @@
           "format": "uuid"
         },
         "prior_version_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_version_id": {
           "type": "string",
@@ -14030,15 +14485,8 @@
           ]
         },
         "new_verifier_identity_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "new_verifier_key_id": {
           "type": "string",
@@ -14060,6 +14508,24 @@
             },
             "mutation_type": {
               "const": "evidence.reverified"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -14347,9 +14813,16 @@
           ]
         },
         "prior_active_policy_version": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "policy_sha256": {
           "type": "string",
@@ -14360,15 +14833,8 @@
           "format": "uuid"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -14382,6 +14848,24 @@
             },
             "mutation_type": {
               "const": "promotion_policy.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -14747,6 +15231,24 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -15060,15 +15562,8 @@
           "maxLength": 2048
         },
         "decided_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         },
         "decision_reason_code": {
           "type": "string",
@@ -15091,6 +15586,24 @@
             },
             "mutation_type": {
               "const": "approval.recorded"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -15421,52 +15934,38 @@
           "maxLength": 2048
         },
         "invalidating_object_ref": {
-          "anyOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "object_type",
-                "object_id",
-                "version_id"
-              ],
-              "properties": {
-                "object_type": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "object_id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "version_id": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                }
-              }
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_type",
+            "object_id",
+            "version_id"
+          ],
+          "properties": {
+            "object_type": {
+              "type": "string",
+              "minLength": 1
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "invalidated_by_principal_id": {
-          "anyOf": [
-            {
+            "object_id": {
               "type": "string",
               "format": "uuid"
             },
-            {
-              "type": "null"
+            "version_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
-          ]
+          }
+        },
+        "invalidated_by_principal_id": {
+          "type": "string",
+          "format": "uuid"
         }
       },
       "allOf": [
@@ -15480,6 +15979,24 @@
             },
             "mutation_type": {
               "const": "approval.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -15823,15 +16340,8 @@
           "format": "uuid"
         },
         "created_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -15845,6 +16355,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.created"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -16178,15 +16706,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "approved_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -16200,6 +16721,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.approved"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -16534,41 +17073,34 @@
           "maxLength": 2048
         },
         "invalidating_object_ref": {
-          "anyOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "object_type",
-                "object_id",
-                "version_id"
-              ],
-              "properties": {
-                "object_type": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "object_id": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_type",
+            "object_id",
+            "version_id"
+          ],
+          "properties": {
+            "object_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version_id": {
+              "anyOf": [
+                {
                   "type": "string",
                   "format": "uuid"
                 },
-                "version_id": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                {
+                  "type": "null"
                 }
-              }
-            },
-            {
-              "type": "null"
+              ]
             }
-          ]
+          }
         }
       },
       "allOf": [
@@ -16582,6 +17114,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -16882,30 +17432,16 @@
           ]
         },
         "resulting_release_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "release_transition_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
         },
         "executed_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -16919,6 +17455,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.executed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -17200,15 +17754,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "target_release_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "target_release_transition_sha256": {
           "type": "string",
@@ -17269,15 +17816,8 @@
           "format": "uuid"
         },
         "created_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -17291,6 +17831,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.created"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -17624,15 +18182,8 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "approved_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -17646,6 +18197,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.approved"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -17980,41 +18549,34 @@
           "maxLength": 2048
         },
         "invalidating_object_ref": {
-          "anyOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "object_type",
-                "object_id",
-                "version_id"
-              ],
-              "properties": {
-                "object_type": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "object_id": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_type",
+            "object_id",
+            "version_id"
+          ],
+          "properties": {
+            "object_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version_id": {
+              "anyOf": [
+                {
                   "type": "string",
                   "format": "uuid"
                 },
-                "version_id": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                {
+                  "type": "null"
                 }
-              }
-            },
-            {
-              "type": "null"
+              ]
             }
-          ]
+          }
         }
       },
       "allOf": [
@@ -18028,6 +18590,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -18319,41 +18899,20 @@
           ]
         },
         "target_release_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "resulting_release_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "uuid"
         },
         "release_transition_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
         },
         "executed_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -18367,6 +18926,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.executed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -18707,15 +19284,8 @@
           "format": "uuid"
         },
         "effective_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -18729,6 +19299,24 @@
             },
             "mutation_type": {
               "const": "anchor_contract.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
@@ -19058,15 +19646,8 @@
           "format": "uuid"
         },
         "retired_at": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "format": "date-time"
         }
       },
       "allOf": [
@@ -19080,6 +19661,24 @@
             },
             "mutation_type": {
               "const": "anchor_contract.retired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         },
