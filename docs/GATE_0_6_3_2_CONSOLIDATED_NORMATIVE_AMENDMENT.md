@@ -256,28 +256,30 @@ The canonical ordering is:
 
 The manifest contains the expected scope-to-event-type mapping before any event is appended. Therefore an independent verifier can distinguish a missing expected event from an event that was never expected. Multiple changed objects in one scope are represented in the same scope event and complete manifest; they do not create additional events. If a future mutation genuinely requires multiple events per scope, it requires a new registry version and a revised deterministic assignment algorithm before implementation.
 
-### 3.4 Mutation-to-event coverage matrix
+### 3.4 Closed mutation-to-event registry v2
 
-Registry v2 MUST include at least this closed mapping:
+Every event below has exactly one event-specific payload schema token. Its payload is the common envelope in §3.2 plus exactly the event-specific fields listed below. No unlisted property, implicit default, arbitrary map or free-text authority field is permitted. All status and reason fields use registry-defined enums; all UUIDs and digests use the canonical formats defined above.
 
-| Mutation type | Event type | Required affected objects |
-|---|---|---|
-| login_binding.disabled | `identity.login-binding-disabled` | login binding, all impacted mappings, scopes |
-| login_binding.reenabled | `identity.login-binding-reenabled` | login binding, credential generation, mappings, scopes |
-| identity_mapping.created | `identity.mapping-created` | new mapping and login binding |
-| identity_mapping.changed | `identity.mapping-changed` | every prior/resulting mapping and login binding |
-| identity_mapping.disabled | `identity.mapping-disabled` | mapping and login binding |
-| identity_mapping.reassigned | `identity.mapping-reassigned` | all old/new mappings, old/new scopes and login bindings |
-| approval_grant.created | `approval.grant-created` | grant and governing request/risk acceptance |
-| approval_grant.activated | `approval.grant-activated` | grant and activation authority |
-| approval_grant.changed | `approval.grant-changed` | grant and all changed bindings |
-| approval_grant.revoked | `approval.grant-revoked` | grant and affected requests |
-| approval_grant.expired | `approval.grant-expired` | grant and affected requests |
-| governed_request.invalidated | `governed-request.invalidated` | request, approvals and invalidating evidence/grant |
-| security_incident.quarantined | `security.incident-quarantined` | incident, login/mapping/grant/stream objects and scopes |
-| security_incident.reconciled | `security.incident-reconciled` | incident, reconciled objects and scopes |
+| Mutation type | Event type | Exact payload schema token | Event-specific fields |
+|---|---|---|---|
+| login_binding.disabled | `identity.login-binding-disabled` | `cephas.powerops.audit-payload.identity-login-binding-disabled.v2` | login_binding_id, database_oid, role_oid, prior_status, resulting_status, prior_login_epoch, resulting_login_epoch, affected_session_count, session_termination_state, incident_id |
+| login_binding.reenabled | `identity.login-binding-reenabled` | `cephas.powerops.audit-payload.identity-login-binding-reenabled.v2` | login_binding_id, database_oid, role_oid, prior_status, resulting_status, prior_login_epoch, resulting_login_epoch, credential_generation, credential_rotation_evidence_sha256, mapping_ids |
+| identity_mapping.created | `identity.mapping-created` | `cephas.powerops.audit-payload.identity-mapping-created.v2` | mapping_id, prior_mapping_version, resulting_mapping_version, login_binding_id, issuer, subject, principal_id, tenant_id, business_unit_id, status |
+| identity_mapping.changed | `identity.mapping-changed` | `cephas.powerops.audit-payload.identity-mapping-changed.v2` | mapping_id, prior_mapping_version, resulting_mapping_version, prior_login_binding_id, resulting_login_binding_id, prior_issuer, resulting_issuer, prior_subject, resulting_subject, prior_principal_id, resulting_principal_id, prior_status, resulting_status |
+| identity_mapping.disabled | `identity.mapping-disabled` | `cephas.powerops.audit-payload.identity-mapping-disabled.v2` | mapping_id, prior_mapping_version, resulting_mapping_version, login_binding_id, prior_status, resulting_status, disable_reason_code |
+| identity_mapping.reassigned | `identity.mapping-reassigned` | `cephas.powerops.audit-payload.identity-mapping-reassigned.v2` | change_set_sha256, changed_mapping_count, prior_scope_count, resulting_scope_count |
+| approval_grant.created | `approval.grant-created` | `cephas.powerops.audit-payload.approval-grant-created.v2` | grant_id, prior_grant_version, resulting_grant_version, status, role_code, principal_id, issuer, subject, granted_by_principal_id, effective_at, expires_at, policy_id, policy_version, grant_record_sha256 |
+| approval_grant.activated | `approval.grant-activated` | `cephas.powerops.audit-payload.approval-grant-activated.v2` | grant_id, prior_grant_version, resulting_grant_version, prior_status, resulting_status, activated_by_principal_id, activation_policy_id, activation_policy_version, grant_record_sha256 |
+| approval_grant.changed | `approval.grant-changed` | `cephas.powerops.audit-payload.approval-grant-changed.v2` | grant_id, prior_grant_version, resulting_grant_version, prior_status, resulting_status, prior_role_code, resulting_role_code, prior_expires_at, resulting_expires_at, grant_record_sha256 |
+| approval_grant.revoked | `approval.grant-revoked` | `cephas.powerops.audit-payload.approval-grant-revoked.v2` | grant_id, prior_grant_version, resulting_grant_version, prior_status, resulting_status, revocation_reason_code, revoked_by_principal_id, affected_request_count |
+| approval_grant.expired | `approval.grant-expired` | `cephas.powerops.audit-payload.approval-grant-expired.v2` | grant_id, prior_grant_version, resulting_grant_version, prior_status, resulting_status, expiry_at, affected_request_count |
+| governed_request.invalidated | `governed-request.invalidated` | `cephas.powerops.audit-payload.governed-request-invalidated.v2` | request_id, request_version, request_digest, prior_status, resulting_status, invalidation_reason_code, invalidating_object_ref, affected_approval_ids |
+| security_incident.quarantined | `security.incident-quarantined` | `cephas.powerops.audit-payload.security-incident-quarantined.v2` | incident_id, quarantine_reason_code, quarantine_actor_principal_id, quarantined_object_count, quarantined_object_refs_sha256, prior_stream_condition, resulting_stream_condition |
+| security_incident.reconciled | `security.incident-reconciled` | `cephas.powerops.audit-payload.security-incident-reconciled.v2` | incident_id, disposition_code, disposition_record_sha256, incident_commander_principal_id, independent_reviewer_principal_id, reconciled_object_count, reconciled_object_refs_sha256, prior_stream_condition, resulting_stream_condition |
 
-The registry MUST define each event's complete event-specific fields, state enums, actor classes, reason codes, scope rules and prior/resulting-state constraints. This table is the minimum mutation coverage, not permission to emit unregistered events.
+The mutation manifest uses exact schema token `cephas.powerops.mutation-manifest.v1` and contains exactly: schema_token, schema_version, mutation_id, operation_id, mutation_type, actor_principal_id, actor_login_binding_id, actor_mapping_version, reason_code, created_at, affected_mapping_ids, affected_scope_keys, affected_object_refs, changed_objects, expected_events, expected_event_count. Each `changed_objects` entry contains exactly object_type, object_id, prior_version, resulting_version, prior_state_sha256, resulting_state_sha256. Each `expected_events` entry contains exactly tenant_id, business_unit_id, event_type, event_payload_schema_token and mutation_event_index. The expected event array is sorted by the canonical scope ordering in §3.3. The manifest bytes are RFC 8785 UTF-8 and its SHA-256 is the common `mutation_payload_sha256`.
+
+The registry v2 release artifact MUST publish machine-readable JSON Schemas for the common envelope, manifest and every event-specific payload above, including exact types, nullability, enums, maximum array lengths, cross-field constraints and examples. A row in this table is not implementation-closed until its corresponding machine-readable schema and positive/negative golden fixtures exist. Any future field change requires a new payload schema token and registry version.
 
 ### 3.5 Grant and actor semantics
 
