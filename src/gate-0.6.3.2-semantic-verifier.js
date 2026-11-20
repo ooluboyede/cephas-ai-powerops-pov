@@ -113,7 +113,13 @@ function eventMatchesManifest(event, manifest) {
   return true;
 }
 
-function canonicalManifestDigest(manifest, canonicalize) {\n  if (typeof canonicalize !== "function") throw new TypeError("Canonicalizer is required");\n  const canonicalBytes = canonicalize(manifest);\n  return crypto.createHash("sha256").update(canonicalBytes, "utf8").digest("hex");\n}\n\nfunction reconstructMutationEvents(manifest, events, options) {
+function canonicalManifestDigest(manifest, canonicalize) {
+  if (typeof canonicalize !== "function") throw new TypeError("Canonicalizer is required");
+  const canonicalBytes = canonicalize(manifest);
+  return crypto.createHash("sha256").update(canonicalBytes, "utf8").digest("hex");
+}
+
+function reconstructMutationEvents(manifest, events, options) {
   if (!options || typeof options.validateManifest !== "function" ||
       typeof options.canonicalize !== "function") {
     throw new TypeError("Manifest validator and canonicalizer are required");
