@@ -4,7 +4,7 @@
 **Status:** Design-only. Implementation is NOT AUTHORIZED.
 **Scope:** H-01–H-04 and M-01–M-04.
 **Precedence:** This document supersedes conflicting D-02, D-07, D-09 and D-10 wording for lock ordering, session registration, mutation registry, commit-time capture, incident reconciliation and descriptor verification. Unaffected D-02/D-05/D-06 requirements remain in force.
-**Artifacts:** schemas/gate-0.6.3.2/lock-order.v1.json, audit-registry-v2.schema.json and fixture-catalog.v1.json.
+**Artifacts:** schemas/gate-0.6.3.2/lock-order.v1.json, lock-concurrency-fixtures.v1.json, audit-registry-v2.schema.json and fixture-catalog.v1.json.
 
 ## 0. Binding decisions
 
