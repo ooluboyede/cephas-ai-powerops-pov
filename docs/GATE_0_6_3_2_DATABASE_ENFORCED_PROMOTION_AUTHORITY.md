@@ -1485,3 +1485,178 @@ Tampering with any event byte, digest, stream ID, object version, acknowledgemen
 This amendment resolves the four identified design ambiguities at the specification level only. It does not close D-07 through D-10, earlier F/N findings, or any implementation acceptance criterion. D-01 and D-03 remain design-contract resolved only, subject to implementation evidence and independent acceptance. All other findings remain open until their stated evidence is delivered and independently reviewed.
 
 This is documentation-only. No database schema, PostgreSQL function, migration, identity service, serializer, audit registry implementation, outbox worker, external anchor integration, customer risk acceptance or adversarial test implementation is claimed. Implementation authorization remains NOT GRANTED. PR #20 must remain Draft, open and unmerged. Product and operational boundaries remain unchanged.
+
+
+---
+
+### Independent reassessment amendment — D-07.1 through D-10.2
+
+#### Status and scope
+
+This is an additive, documentation-only amendment responding to independent reassessment of commit `3fb64cf277eab3d6ed333bc13a2f95aca138caf8`. It specifies the four outstanding conditions below. It does not claim implementation, test execution, customer acceptance, WORM compliance, production readiness or implementation authorization. It does not supersede earlier requirements except where it explicitly makes a previously ambiguous requirement more precise. In any conflict, the stricter fail-closed requirement applies pending independent resolution.
+
+### D-07.1 — Database-login disablement and existing-session invalidation
+
+##### Distinct security objects
+
+The implementation must distinguish and independently track:
+
+1. PostgreSQL role login capability (`pg_roles.rolcanlogin`);
+2. the protected identity-mapping record and its enabled/disabled state;
+3. the authenticated database session, identified from server-derived `SESSION_USER`, `pg_backend_pid()` and `pg_stat_activity.backend_start`;
+4. a monotonically increasing protected authentication/session epoch for the login binding and mapping; and
+5. any upstream federated credential state, where federated authentication is used.
+
+A PostgreSQL `ALTER ROLE ... NOLOGIN` prevents new logins; it does not, by itself, invalidate sessions already authenticated. It must never be treated as sufficient revocation of existing sessions.
+
+##### Authoritative disablement protocol
+
+All application identity disablement and credential retirement must use a separately governed customer-administration procedure. The procedure must:
+
+- acquire the identity-mapping row's exclusive lock first, then its current scope mutex and remaining D-02 locks;
+- increment the protected login-binding/session epoch and mapping version;
+- persist the mapping/credential disabled state, reason, actor and database timestamp;
+- append the required D-09 lifecycle audit event in the same transaction;
+- commit the protected disabled state and epoch as the authorization revocation linearization point;
+- request PostgreSQL role `NOLOGIN` and terminate matching existing sessions using a separately controlled administrative capability; and
+- record the result of role disablement and session termination as linked administrative outcome evidence.
+
+Where PostgreSQL role alteration or session termination cannot participate in the same transaction as the protected mapping mutation, the protected mapping state and epoch remain authoritative for governed operations. The administrative procedure must retry and reconcile the external PostgreSQL actions. It must not report the login-disablement workflow complete until role state and session inventory have been reconciled. A failed or delayed termination does not restore authorization.
+
+Every governed SECURITY DEFINER function must, at its final authorization check, derive the current database login from `SESSION_USER`, derive the current backend identity from PostgreSQL, resolve the protected mapping, and compare the session's registered epoch with the current protected login-binding and mapping epochs. The session registration must be server-bound to the actual login, backend PID and backend start time; callers must not be able to supply or change these values as authority. A missing, stale, ambiguous, disabled or mismatched session registration fails closed.
+
+The epoch check is mandatory on every privileged operation, not only at connection establishment. A connection authenticated before disablement may remain open for non-privileged diagnostic or cleanup activity if customer policy permits, but it cannot invoke approval, evidence registration, promotion, rollback, grant mutation, mapping mutation or other governed authority after the disablement transaction commits. Connection termination is defence-in-depth; epoch and mapping validation are the authorization control.
+
+For federated credentials, upstream revocation alone is not considered visible to an existing database session. The customer-controlled credential lifecycle must publish the revocation into protected database state and increment the same epoch. Until that state is committed, the system cannot claim that the database has observed upstream revocation.
+
+##### Required race outcomes
+
+- If disablement commits before the privileged operation reaches its final authorization linearization point, the operation must fail.
+- If the privileged operation reaches its linearization point first while holding the required locks, it may complete under the still-valid epoch; disablement then proceeds and is audited afterward.
+- A role changed to `NOLOGIN` while an old session remains connected must not allow that session to perform a governed operation after the protected epoch changes.
+- Session PID reuse must not match an old registration; backend start time is part of the binding.
+- Re-enablement requires a new authorized lifecycle transition and a new epoch. It must not restore old session registrations or stale grants automatically.
+
+##### Closure fixtures
+
+Provide PostgreSQL 16 tests using two or more real database sessions for both lock orderings of disablement versus approval/promotion; `NOLOGIN` with an already-authenticated session; delayed `pg_terminate_backend`; failed termination; stale and missing session registration; PID reuse/backend-start mismatch; mapping-only disablement; federated credential revocation propagation; epoch increment; re-enablement; and audit failure. Demonstrate that no pre-existing session can authorize after the committed revocation linearization point. Capture database role state, session inventory, mapping version, epoch, transaction outcome and audit chain evidence.
+
+### D-08.1 — Canonical target-evidence object and digest preimage contract
+
+##### Exact evidence objects
+
+Rollback request v1 must bind the immutable identity and version of each target evidence object in addition to the three mandatory digest fields already specified:
+
+- dataset snapshot object ID, immutable object version and `target_dataset_snapshot_sha256`;
+- provenance object ID, immutable object version and `target_provenance_sha256`; and
+- assessment object ID, immutable object version and `target_assessment_sha256`.
+
+The identifiers and versions are protected database-derived values. Caller-supplied identifiers or digests are assertions only. All objects must be tenant/business-unit scoped, immutable, retrievable and non-quarantined at request creation, approval and execution.
+
+##### Normative digest preimages
+
+The digest field names in rollback request v1 have the following exact meanings:
+
+1. `target_dataset_snapshot_sha256` is lowercase hexadecimal SHA-256 of the exact raw dataset snapshot bytes retrieved from the immutable, content-addressed object version. No text decoding, newline conversion, compression transformation, row reordering or reserialization is permitted before hashing. If the stored object is a defined compressed artifact, the digest covers the exact stored object bytes; any logical/uncompressed dataset digest is a separate explicitly named field and cannot substitute for this digest.
+2. `target_provenance_sha256` is lowercase hexadecimal SHA-256 of the exact UTF-8 bytes of the complete canonical provenance object. The object schema is closed and versioned as `cephas.powerops.target-provenance.v1`; canonicalization is RFC 8785. It includes immutable provenance object ID/version, tenant and business-unit UUIDs, source snapshot digest, lineage edges in deterministic order, transformation identifiers/versions, preparation code/build digest, creation timestamp and applicable source references. Unknown fields, duplicate JSON keys, invalid Unicode, non-canonical bytes and missing required fields are rejected.
+3. `target_assessment_sha256` is lowercase hexadecimal SHA-256 of the exact UTF-8 bytes of the complete canonical assessment object. The object schema is closed and versioned as `cephas.powerops.target-assessment.v1`; canonicalization is RFC 8785. It includes immutable assessment ID/version, tenant and business-unit UUIDs, candidate/model version, dataset snapshot digest, provenance digest, policy ID/version/digest, assessor identity and implementation version, result, reason codes and assessment timestamp. Unknown fields, duplicate JSON keys, invalid Unicode, non-canonical bytes and missing required fields are rejected.
+
+For all three fields the digest is exactly `SHA-256(preimage_bytes)`; no implicit prefix, suffix, JSON wrapper or transport encoding is added. Domain separation and object typing are supplied by the closed object schema/version and the request's explicit object type, ID and version. Any future change to these preimage rules requires a new evidence schema version and new request schema version; version 1 must never be reinterpreted.
+
+The canonical provenance and assessment objects must be persisted as the exact canonical UTF-8 bytes that were hashed. The dataset snapshot must be persisted as the exact immutable bytes that were hashed. Parsed database projections are not digest preimages. The service must reject a mismatch between stored bytes, object metadata and the digest. Hashes must be computed over byte arrays, not language-native object serialization.
+
+##### Creation, approval and execution binding
+
+At creation, the database-backed service retrieves each exact immutable object version, hashes its exact preimage, validates scope and schema, and writes the three values and corresponding object IDs/versions into the closed rollback request envelope. At approval, the approver's digest binding covers the entire canonical request, including all evidence IDs, versions and digest fields. At execution, the service retrieves the same exact versions again, recomputes all three digests and compares them with the approved request. Object replacement, version drift, byte mutation, missing object, non-canonical provenance/assessment bytes, wrong scope or quarantine causes fail-closed rejection and approval invalidation under D-09.
+
+Two independently implemented serializers/verifiers must use the published byte fixtures and produce identical canonical provenance/assessment bytes and identical three SHA-256 values. Fixtures must include empty and non-ASCII values where schema permits, Unicode normalization edge cases, duplicate keys, reordered properties, altered whitespace, altered dataset bytes, changed lineage order, changed policy version, changed object version and wrong-scope substitution. Reordering JSON object properties must canonicalize identically; changing any semantic value or dataset byte must change the digest.
+
+### D-09.1 — Closed cross-scope mutation linkage and reconstruction
+
+##### Mutation identity
+
+The existing top-level audit `operation_id` continues to identify the governed request/operation and must not be overloaded as the cross-scope mutation identifier. Every authority-lifecycle mutation must additionally carry a distinct, globally unique lowercase canonical UUID `mutation_id`. The mutation ID is generated by the trusted database function, not supplied by the caller, and is stable across all audit events emitted by one atomic mutation.
+
+Every applicable D-09 payload schema is versioned additively to require these common fields:
+
+- `mutation_id`: canonical UUID, identical in every event emitted by the mutation;
+- `mutation_schema_version`: exact registered token `cephas.powerops.mutation.v1`;
+- `mutation_payload_sha256`: lowercase SHA-256 digest of the canonical mutation manifest bytes;
+- `affected_mapping_ids`: array of unique canonical mapping UUIDs, sorted by ascending UUID byte order;
+- `affected_scope_keys`: array of unique objects containing exactly `tenant_id` and `business_unit_id`, sorted by canonical tenant UUID bytes then business-unit UUID bytes;
+- `mutation_event_index`: integer starting at zero, unique and contiguous within the mutation; and
+- `mutation_event_count`: positive integer equal to the total expected number of scope-chain events for the mutation.
+
+These fields are mandatory, including for single-scope mutations. Empty arrays are permitted only for event types whose schema explicitly defines no affected mappings or scopes; identity mapping and grant mutations must identify their affected object and scope. Unknown properties, duplicate array entries, non-canonical identifiers and inconsistent counts are rejected.
+
+##### Canonical mutation manifest
+
+Before any mutation is committed, the database function constructs a closed canonical mutation manifest containing the mutation ID, operation ID, mutation type, authenticated actor, exact prior and resulting object versions/digests, complete sorted affected mapping IDs, complete sorted affected scope keys, reason code and expected event types/count. The manifest uses RFC 8785 UTF-8 canonical bytes and a versioned schema. Its SHA-256 digest is the `mutation_payload_sha256` repeated in every emitted scope event.
+
+The manifest is stored immutably with the mutation record in the same PostgreSQL transaction. Each scope-chain event contains the same mutation ID, manifest digest, affected mapping list, affected scope list and expected event count. Each event retains its own tenant/business-unit scope, sequence number, previous digest and event digest. An independent verifier must be able to group all events by mutation ID, verify the common manifest digest, verify the exact expected event set and reconstruct the complete before/after mutation without consulting mutable current-state rows.
+
+The top-level `operation_id` binds the originating governed operation/request. It may be shared by separately identified lifecycle mutations only where the operation explicitly contains multiple separately atomic mutations; each such mutation receives its own mutation ID and manifest. A retry of the same committed mutation must return/reconcile the existing mutation record and must not create a second mutation ID or duplicate event set. Reuse of a mutation ID with different manifest bytes is rejected.
+
+##### Actor and grant-state semantics
+
+For `approval_grant.created`, the event's `status` is mandatory and exactly `active` or `pending` as determined by the approved activation workflow. Creation and activation are separate transitions when activation is not immediate: creation emits the created event with status pending; activation emits a changed event with prior_status pending and new_status active. A grant cannot be used until active and all current eligibility checks pass.
+
+Every grant lifecycle event must include the immutable grant version, principal/issuer/subject binding, scope, role, effective timestamp, expiry timestamp (nullable only where the schema allows a non-expiring grant), reason code, actor principal, prior status and resulting status as applicable, and a canonical grant-record digest. Grant replacement identifies both the superseded grant and replacement grant IDs/versions in the mutation manifest.
+
+Every identity-mapping event must include the immutable mapping IDs/versions, exact prior and resulting login binding, issuer/subject, principal and scope values, status, actor and reason code. For alias consolidation or multi-mapping reassignment, the mutation manifest enumerates every affected mapping and its exact prior/resulting state. Per-scope events repeat the common complete affected-object lists and manifest digest; they are not interpreted as independent partial mutations.
+
+##### Atomicity and independent reconstruction
+
+The transaction must write the immutable mutation manifest, all affected scope-chain events, chain-head updates and all mapping/grant state changes atomically. `mutation_event_count` and contiguous `mutation_event_index` values allow an independent verifier to detect a missing scope event. If any scope event or chain-head append fails, every state change and event in the mutation rolls back. Cross-scope asynchronous audit repair is prohibited.
+
+The event registry must publish the exact revised closed schemas and mutation-to-event matrix. The matrix must enumerate every D-02.1 and D-07.3 mutation, actor class, prior/resulting state, affected mapping/scope set and expected event count. Two independent verifiers must reconstruct the same mutation manifests and history from audit bytes alone. Tests must reject missing, duplicate, reordered, wrong-scope, mismatched-manifest, inconsistent-count, unknown-event and actor-substitution cases.
+
+### D-10.1 — External provider idempotency and conditional-create contract
+
+An anchor provider is eligible only if the customer-approved contract supports one of these two modes:
+
+**Mode A — Provider-enforced idempotent create.** The provider must guarantee that a stable idempotency key is bound to the exact content digest and destination stream. Repeating the same key with the same digest returns the same immutable object identity/result. Repeating the same key with different bytes/digest or a different stream returns a hard conflict and must not create or overwrite an object. The provider must expose a verifiable immutable object/version identity and exact-byte readback or an independently verifiable content digest.
+
+**Mode B — Conditional create and reconciliation.** If native idempotency is unavailable, the provider must support atomic conditional creation under a deterministic object key with create-if-absent semantics. Before retrying after an ambiguous response, the worker performs an authenticated lookup/read of that exact key. If absent, it retries conditional create. If present, it verifies exact bytes/digest, stream, immutable object version and retention evidence and records the existing object as the result. If the key exists with different bytes, metadata, stream or retention state, the stream is quarantined and no overwrite is attempted. A provider that supports neither Mode A nor Mode B is not an acceptable anchor provider for this gate.
+
+The idempotency key is deterministically derived from the immutable anchor contract ID, stream ID, scope key, sequence number and event digest using a versioned domain-separated SHA-256 construction. The derivation contract and test vectors must be published. The key is never reused for a different event. The worker stores every attempt as an append-only attempt record with attempt ID, key, exact digest/byte length, request timestamp, response classification and worker identity.
+
+A success acknowledgement is valid only after the worker verifies the provider object identity, exact submitted bytes or independently verifiable digest, expected stream/scope/sequence, retention mode and immutable version. A response received after a lost earlier response is reconciled against the exact object; it is not accepted solely because the HTTP/API status indicates success. An acknowledgement for a previous event, different attempt payload or different destination is rejected. Any same-key/different-content response, duplicate object with conflicting identity or unprovable object state quarantines the stream.
+
+### D-10.2 — Closed anchor state-transition graph and deterministic outage gate
+
+##### Permitted state transitions
+
+Anchor state is derived from immutable attempt, acknowledgement, verification and quarantine records. The only permitted transitions are:
+
+| Current state | Permitted next state | Required evidence |
+| --- | --- | --- |
+| pending | submitted | Exact outbox bytes and digest selected; attempt record committed |
+| pending | failed | A classified permanent pre-submission failure record; no provider object may have been created |
+| submitted | acknowledged | Provider response reconciled to exact object, bytes/digest, stream, sequence and retention metadata |
+| submitted | failed | Bounded retry policy exhausted or a classified non-retryable provider failure; reconciliation proves no conflicting accepted object |
+| failed | submitted | New append-only retry attempt after reconciliation proves the original exact object is absent, or Mode A/Mode B proves safe same-event retry |
+| acknowledged | verified | Independent readback/verifier confirms exact bytes, object identity, stream, sequence and retention evidence |
+| any non-quarantined state | quarantined | Conflicting acknowledgement, same-key/different-content result, tampering, unverifiable object, retention downgrade or integrity failure |
+
+No transition out of `verified` or `quarantined` is permitted. Quarantine is terminal for that stream identity. Recovery from quarantine requires a separately approved new anchor contract and stream identity, a new version-transition event and an independently verified continuity/reconciliation package; it must not clear or rewrite the quarantined history. Repeated identical acknowledgements are recorded as duplicate observations linked to the original acknowledgement and do not create a second state transition. Out-of-order or stale acknowledgements are accepted only if independently reconciled to their exact event and do not regress state.
+
+##### Unanchored-window measurement
+
+The unanchored window is measured per anchor stream and scope from the PostgreSQL commit timestamp recorded for the earliest committed audit event in that stream/scope that has not reached `verified`. The authoritative clock is PostgreSQL server time captured in the transaction that commits the event/outbox row; application clocks and provider timestamps are not used to start or extend the interval. The comparison time is PostgreSQL server time obtained during the governed operation's final eligibility check.
+
+The customer-approved anchor contract must define a positive maximum duration and the applicable scope/stream. If no approved maximum exists, the default is zero tolerance: governed promotion, rollback and approval fail closed whenever any required event remains unverified. The measured age is the elapsed database-time interval between the earliest unverified event's committed timestamp and the current database time. Restores must preserve original commit timestamps and reconcile them with external objects; a restore must never reset or shorten the unanchored interval.
+
+When the configured maximum is reached or exceeded, all new governed approvals, promotions and rollbacks in the affected scope/stream fail closed. Read-only audit inspection, evidence export, outbox retry, reconciliation and incident response remain permitted. No administrator may waive the gate by editing timestamps, deleting outbox records, changing the stream identity or increasing the maximum window retroactively. Changing the customer-approved outage policy is a separately authorized, versioned contract transition and applies prospectively only.
+
+The gate is cleared only when every event in the affected unanchored interval is independently verified under the active anchor contract and the chain/outbox/provider reconciliation report passes. A manual override cannot mark an event verified. If provider evidence is irrecoverable or conflicting, quarantine and a new-stream continuity procedure are required.
+
+##### Required provider and state-machine fixtures
+
+Test both provider modes, same-key/same-bytes replay, same-key/different-bytes conflict, lost response after successful object creation, duplicate object version, object readback mismatch, stale acknowledgement, wrong stream/scope/sequence, retention downgrade, delayed provider, outage beyond threshold, database restore with pending outbox, retry after failed state, quarantine, attempted quarantine clearing, verified-state regression and prospective policy change. Two independent verifiers must validate the full state-transition history and event-to-object chain.
+
+### Updated disposition and governance
+
+These clauses close the four specification ambiguities identified by the independent reassessment only when independently accepted against the exact resulting commit. They do not close D-07 through D-10 at implementation level, F-03, F-05 or any other prior finding. All listed concurrency, serializer, audit, migration, provider and recovery tests remain required implementation evidence.
+
+This amendment is documentation-only. No database roles/functions, session registry, migration, evidence serializer, mutation registry, provider adapter, outbox worker, external anchor integration or tests are implemented or claimed. Implementation authorization remains NOT GRANTED. PR #20 must remain Draft, open and unmerged. Synthetic-data-first, customer-hosted/customer-controlled and advisory-only PoV boundaries remain unchanged. No live IBEDC telemetry, operational utility control, billing or financial posting, or automatic production model deployment is authorized.
