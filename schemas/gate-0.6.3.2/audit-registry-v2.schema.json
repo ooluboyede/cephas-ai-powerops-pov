@@ -828,11 +828,11 @@
         },
         "database_oid": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "role_oid": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "prior_status": {
           "type": "string",
@@ -885,15 +885,8 @@
           ]
         },
         "prior_login_epoch": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_login_epoch": {
           "type": "string",
@@ -917,8 +910,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -937,6 +929,24 @@
             },
             "mutation_type": {
               "const": "login_binding.disabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -1194,11 +1204,11 @@
         },
         "database_oid": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "role_oid": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "prior_status": {
           "type": "string",
@@ -1251,15 +1261,8 @@
           ]
         },
         "prior_login_epoch": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_login_epoch": {
           "type": "string",
@@ -1295,6 +1298,24 @@
             },
             "mutation_type": {
               "const": "login_binding.reenabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -1535,15 +1556,8 @@
           "format": "uuid"
         },
         "prior_mapping_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_mapping_version": {
           "type": "integer",
@@ -1614,6 +1628,24 @@
             },
             "resulting_mapping_version": {
               "const": 1
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -1873,15 +1905,8 @@
           "format": "uuid"
         },
         "prior_mapping_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_mapping_version": {
           "type": "integer",
@@ -1891,8 +1916,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -1941,8 +1965,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -2015,6 +2038,24 @@
             },
             "mutation_type": {
               "const": "identity_mapping.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -2268,15 +2309,8 @@
           "format": "uuid"
         },
         "prior_mapping_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_mapping_version": {
           "type": "integer",
@@ -2353,6 +2387,24 @@
             },
             "mutation_type": {
               "const": "identity_mapping.disabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -2628,6 +2680,24 @@
               "const": "identity_mapping.reassigned"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -2886,15 +2956,8 @@
           "format": "uuid"
         },
         "prior_grant_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_grant_version": {
           "type": "integer",
@@ -2980,8 +3043,9 @@
           "format": "uuid"
         },
         "policy_version": {
-          "type": "integer",
-          "minimum": 1
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         },
         "grant_record_sha256": {
           "type": "string",
@@ -3009,6 +3073,24 @@
             },
             "prior_grant_version": {
               "type": "null"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -3264,15 +3346,8 @@
           "format": "uuid"
         },
         "prior_grant_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_grant_version": {
           "type": "integer",
@@ -3357,6 +3432,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -3613,15 +3706,8 @@
           "format": "uuid"
         },
         "prior_grant_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_grant_version": {
           "type": "integer",
@@ -3681,8 +3767,14 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "enum": [
+                "model-risk",
+                "security",
+                "operations-owner",
+                "security-administrator",
+                "evidence-verifier",
+                "other-approved"
+              ]
             },
             {
               "type": "null"
@@ -3732,6 +3824,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -3986,15 +4096,8 @@
           "format": "uuid"
         },
         "prior_grant_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_grant_version": {
           "type": "integer",
@@ -4075,6 +4178,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.revoked"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -4328,15 +4449,8 @@
           "format": "uuid"
         },
         "prior_grant_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_grant_version": {
           "type": "integer",
@@ -4419,6 +4533,24 @@
             },
             "mutation_type": {
               "const": "approval_grant.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -4738,9 +4870,34 @@
         "invalidating_object_ref": {
           "anyOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "object_type",
+                "object_id",
+                "version_id"
+              ],
+              "properties": {
+                "object_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "object_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
             },
             {
               "type": "null"
@@ -4768,6 +4925,24 @@
             },
             "mutation_type": {
               "const": "governed_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -5020,8 +5195,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -5107,6 +5281,24 @@
             },
             "mutation_type": {
               "const": "security_incident.quarantined"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -5361,8 +5553,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -5474,6 +5665,24 @@
             "properties": {
               "resulting_stream_condition": {
                 "const": "quarantined"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
               }
             }
           }
@@ -5796,6 +6005,24 @@
               "const": "verifier_identity.created"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -6048,15 +6275,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -6116,8 +6336,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -6144,6 +6363,24 @@
             },
             "mutation_type": {
               "const": "verifier_identity.changed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -6397,15 +6634,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -6482,6 +6712,24 @@
             },
             "mutation_type": {
               "const": "verifier_identity.disabled"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -6822,6 +7070,24 @@
               "const": "verifier_key.activated"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -7147,6 +7413,24 @@
             },
             "mutation_type": {
               "const": "verifier_key.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -7475,6 +7759,24 @@
               "const": "verifier_key.revoked"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -7778,8 +8080,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -7813,6 +8114,24 @@
             },
             "mutation_type": {
               "const": "verifier_key.compromised"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -8148,6 +8467,24 @@
               "const": "publisher_key.activated"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -8473,6 +8810,24 @@
             },
             "mutation_type": {
               "const": "publisher_key.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -8801,6 +9156,24 @@
               "const": "publisher_key.revoked"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -9104,8 +9477,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -9139,6 +9511,24 @@
             },
             "mutation_type": {
               "const": "publisher_key.compromised"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -9394,15 +9784,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -9442,8 +9825,9 @@
           "format": "uuid"
         },
         "policy_version": {
-          "type": "integer",
-          "minimum": 1
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         },
         "expires_at": {
           "anyOf": [
@@ -9472,6 +9856,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.created"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -9725,15 +10127,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -9810,6 +10205,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.amended"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -10062,15 +10475,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -10149,6 +10555,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.expired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -10402,15 +10826,8 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
@@ -10487,6 +10904,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.revoked"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -10739,23 +11174,23 @@
           "format": "uuid"
         },
         "prior_version": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "integer",
+          "minimum": 1
         },
         "resulting_version": {
           "type": "integer",
           "minimum": 1
         },
         "superseded_by_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "superseded_by_version": {
           "type": "integer",
@@ -10778,6 +11213,24 @@
             },
             "mutation_type": {
               "const": "risk_acceptance.superseded"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -11147,6 +11600,24 @@
               "const": "accountable_role.appointed"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -11397,8 +11868,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -11406,8 +11876,15 @@
           ]
         },
         "replacement_role_assignment_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "role_code": {
           "enum": [
@@ -11423,8 +11900,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -11463,6 +11939,24 @@
             },
             "mutation_type": {
               "const": "accountable_role.replaced"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -11802,6 +12296,24 @@
               "const": "accountable_role.removed"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -12122,6 +12634,24 @@
               "const": "evidence.registered"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -12435,8 +12965,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -12459,6 +12988,24 @@
             },
             "mutation_type": {
               "const": "evidence.quarantined"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -12791,6 +13338,24 @@
               "const": "evidence.released"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -13096,8 +13661,15 @@
           ]
         },
         "superseding_object_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "superseding_version_id": {
           "type": "string",
@@ -13120,6 +13692,24 @@
             },
             "mutation_type": {
               "const": "evidence.superseded"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -13440,8 +14030,15 @@
           ]
         },
         "new_verifier_identity_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "new_verifier_key_id": {
           "type": "string",
@@ -13463,6 +14060,24 @@
             },
             "mutation_type": {
               "const": "evidence.reverified"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -13716,15 +14331,15 @@
           "format": "uuid"
         },
         "policy_version": {
-          "type": "integer",
-          "minimum": 1
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         },
         "prior_active_policy_id": {
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -13732,8 +14347,9 @@
           ]
         },
         "prior_active_policy_version": {
-          "type": "integer",
-          "minimum": 1
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         },
         "policy_sha256": {
           "type": "string",
@@ -13766,6 +14382,24 @@
             },
             "mutation_type": {
               "const": "promotion_policy.activated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -14018,8 +14652,9 @@
           "format": "uuid"
         },
         "policy_version": {
-          "type": "integer",
-          "minimum": 1
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         },
         "prior_status": {
           "type": "string",
@@ -14092,6 +14727,24 @@
             },
             "mutation_type": {
               "const": "promotion_policy.retired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -14440,6 +15093,24 @@
               "const": "approval.recorded"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -14752,9 +15423,34 @@
         "invalidating_object_ref": {
           "anyOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "object_type",
+                "object_id",
+                "version_id"
+              ],
+              "properties": {
+                "object_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "object_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
             },
             {
               "type": "null"
@@ -14762,8 +15458,15 @@
           ]
         },
         "invalidated_by_principal_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "allOf": [
@@ -14777,6 +15480,24 @@
             },
             "mutation_type": {
               "const": "approval.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -15126,6 +15847,24 @@
               "const": "promotion_request.created"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -15463,6 +16202,24 @@
               "const": "promotion_request.approved"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -15779,9 +16536,34 @@
         "invalidating_object_ref": {
           "anyOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "object_type",
+                "object_id",
+                "version_id"
+              ],
+              "properties": {
+                "object_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "object_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
             },
             {
               "type": "null"
@@ -15800,6 +16582,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -16074,8 +16874,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -16083,8 +16882,15 @@
           ]
         },
         "resulting_release_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "release_transition_sha256": {
           "type": "string",
@@ -16113,6 +16919,24 @@
             },
             "mutation_type": {
               "const": "promotion_request.executed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -16376,8 +17200,15 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "target_release_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "target_release_transition_sha256": {
           "type": "string",
@@ -16460,6 +17291,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.created"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -16799,6 +17648,24 @@
               "const": "rollback_request.approved"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -17115,9 +17982,34 @@
         "invalidating_object_ref": {
           "anyOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "object_type",
+                "object_id",
+                "version_id"
+              ],
+              "properties": {
+                "object_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "object_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
             },
             {
               "type": "null"
@@ -17136,6 +18028,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.invalidated"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -17401,8 +18311,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 2048
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -17410,12 +18319,26 @@
           ]
         },
         "target_release_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "resulting_release_id": {
-          "type": "string",
-          "format": "uuid"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "release_transition_sha256": {
           "type": "string",
@@ -17444,6 +18367,24 @@
             },
             "mutation_type": {
               "const": "rollback_request.executed"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
@@ -17790,6 +18731,24 @@
               "const": "anchor_contract.activated"
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
         }
       ]
     },
@@ -18121,6 +19080,24 @@
             },
             "mutation_type": {
               "const": "anchor_contract.retired"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mutation_type": {}
+            },
+            "required": [
+              "mutation_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "prior_state_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
