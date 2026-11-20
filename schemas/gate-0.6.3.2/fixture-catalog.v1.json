@@ -55,7 +55,7 @@
         "prior_login_epoch": null,
         "resulting_login_epoch": "synthetic",
         "affected_session_count": 0,
-        "session_termination_state": "not_required",
+        "session_termination_state": "no_active_sessions",
         "incident_id": null
       },
       "negative_fixtures": [
@@ -2561,7 +2561,7 @@
         "principal_id": "99999999-9999-4999-8999-999999999999",
         "issuer": "synthetic",
         "subject": "synthetic",
-        "prior_status": "active",
+        "prior_status": null,
         "resulting_status": "active",
         "effective_at": null,
         "expires_at": null,
@@ -3570,7 +3570,7 @@
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "candidate_id": "99999999-9999-4999-8999-999999999999",
         "candidate_version": 1,
-        "prior_status": "active",
+        "prior_status": null,
         "resulting_status": "active",
         "requestor_principal_id": "99999999-9999-4999-8999-999999999999",
         "created_at": null
@@ -3906,7 +3906,7 @@
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "target_release_id": "99999999-9999-4999-8999-999999999999",
         "target_release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "prior_status": "active",
+        "prior_status": null,
         "resulting_status": "active",
         "requestor_principal_id": "99999999-9999-4999-8999-999999999999",
         "created_at": null
