@@ -2866,7 +2866,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "grant_id": "99999999-9999-4999-8999-999999999999",
             "prior_grant_version": 1,
-            "resulting_grant_version": 1,
+            "resulting_grant_version": 2,
             "prior_status": "active",
             "resulting_status": "active",
             "prior_role_code": "model-risk",
@@ -8774,7 +8774,7 @@
             "prior_status": "active",
             "resulting_status": "disabled",
             "prior_login_epoch": 1,
-            "resulting_login_epoch": "synthetic",
+            "resulting_login_epoch": 2,
             "affected_session_count": 0,
             "session_termination_state": "no_active_sessions",
             "incident_id": null
@@ -9233,7 +9233,7 @@
             "prior_status": "disabled",
             "resulting_status": "active",
             "prior_login_epoch": 1,
-            "resulting_login_epoch": "synthetic",
+            "resulting_login_epoch": 2,
             "credential_generation": 1,
             "credential_rotation_evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "mapping_ids": []
@@ -16164,9 +16164,7 @@
             "quarantined_object_count": 0,
             "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "healthy",
-            "resulting_stream_condition": "quarantined",
-            "prior_status": "healthy",
-            "resulting_status": "quarantined"
+            "resulting_stream_condition": "quarantined"
           }
         }
       ]
@@ -16521,9 +16519,7 @@
             "reconciled_object_count": 0,
             "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "prior_stream_condition": "quarantined",
-            "resulting_stream_condition": "quarantined",
-            "prior_status": "quarantined",
-            "resulting_status": "quarantined"
+            "resulting_stream_condition": "quarantined"
           }
         },
         {
