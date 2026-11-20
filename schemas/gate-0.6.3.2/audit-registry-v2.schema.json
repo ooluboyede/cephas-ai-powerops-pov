@@ -18386,31 +18386,39 @@
           }
         },
         {
+          "$ref": "#/$defs/commonScopeConstraints"
+        },
+        {
           "oneOf": [
-            {
-              "properties": {
-                "prior_status": {
-                  "const": "pending"
-                },
-                "resulting_status": {
-                  "const": "revoked"
-                }
-              }
-            },
             {
               "properties": {
                 "prior_status": {
                   "const": "active"
                 },
                 "resulting_status": {
-                  "const": "revoked"
+                  "const": "suspended"
+                }
+              }
+            },
+            {
+              "properties": {
+                "prior_status": {
+                  "const": "pending"
+                },
+                "resulting_status": {
+                  "const": "suspended"
                 }
               }
             }
           ]
-        },
+        }
+      ],
+      "x-semanticAssertions": [
         {
-          "$ref": "#/$defs/commonScopeConstraints"
+          "id": "suspended-grant-version-strictly-increases",
+          "expression": "resulting_grant_version > prior_grant_version",
+          "enforcement": "authoritative mutation verifier and database transition function",
+          "failure": "reject"
         }
       ]
     },
