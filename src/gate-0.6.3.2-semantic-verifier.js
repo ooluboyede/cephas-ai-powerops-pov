@@ -147,5 +147,6 @@ module.exports = {
   validateSemanticAssertions,
   validateLifecycleTransition,
   eventMatchesManifest,
-  reconstructMutationEvents
+  reconstructMutationEvents,
+  canonicalManifestDigest
 };
