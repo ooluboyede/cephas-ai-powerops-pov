@@ -83,7 +83,7 @@ test("expected-event item enforces common global-versus-tenant scope constraints
 });
 test("all mutation-reconstruction negative descriptors are executable adversarial cases",()=>{
  assert.ok(catalog.mutation_reconstruction_negative_fixtures.length>0);
- const mf=catalog.manifest_golden_fixtures[0],m=JSON.parse(JSON.stringify(mf.source_object)),f=eventFixtures.get("approval_grant.created"),e=JSON.parse(JSON.stringify(f.positive_fixture));m.affected_object_refs=JSON.parse(JSON.stringify(e.affected_object_refs));m.changed_objects=m.changed_objects.map((o,i)=>({...o,object_type:e.affected_object_refs[i]?.object_type||o.object_type,object_id:e.affected_object_refs[i]?.object_id||o.object_id}));e.mutation_payload_sha256=digest(m);
+ const mf=catalog.manifest_golden_fixtures[0],m=JSON.parse(JSON.stringify(mf.source_object)),f=eventFixtures.get("approval_grant.created"),e=JSON.parse(JSON.stringify(f.positive_fixture));m.affected_object_refs=JSON.parse(JSON.stringify(e.affected_object_refs));m.changed_objects=m.changed_objects.map((o,i)=>({...o,object_type:e.affected_object_refs[i]?.object_type||o.object_type,object_id:e.affected_object_refs[i]?.object_id||o.object_id}));e.mutation_payload_sha256=semanticVerifier.canonicalManifestDigest(m,canonicalizeA);
  assert.equal(reconstructs(m,[e]),true,"baseline reconstruction");
  for(const x of catalog.mutation_reconstruction_negative_fixtures){let mm=JSON.parse(JSON.stringify(m)),es=[JSON.parse(JSON.stringify(e))];switch(x.case_id){
  case "missing-scope-event":es=[];break;case "duplicate-scope-event":es.push(JSON.parse(JSON.stringify(e)));break;case "wrong-scope-event":es[0].tenant_id="aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";break;
