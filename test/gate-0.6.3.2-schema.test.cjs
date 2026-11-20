@@ -102,7 +102,9 @@ test("two independent RFC 8785 canonicalizers reproduce every golden vector", ()
     assert.equal(a, vector.canonical_utf8, vector.id + " canonicalize implementation A");
     assert.equal(b, vector.canonical_utf8, vector.id + " canonicalize implementation B");
     assert.equal(Buffer.byteLength(a, "utf8"), vector.byte_length, vector.id + " UTF-8 byte length");
-    const digest = crypto.createHash("sha256").update(a, "utf8").digest("hex");
-    assert.match(digest, /^[a-f0-9]{64}$/);
+    const digestA = crypto.createHash("sha256").update(a, "utf8").digest("hex");
+    const digestB = crypto.createHash("sha256").update(b, "utf8").digest("hex");
+    assert.equal(digestA, vector.sha256, vector.id + " expected SHA-256");
+    assert.equal(digestB, vector.sha256, vector.id + " second implementation SHA-256");
   }
 });
