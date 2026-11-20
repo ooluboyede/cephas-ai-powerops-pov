@@ -282,6 +282,61 @@ Sequence:
 
 The patch MUST reject password, SCRAM, certificate-only or other fallback authentication for governed roles unless those methods are explicitly disabled by customer policy. A broker reconnect creates a new physical backend and repeats fresh authentication. Transaction pooling and backend reassignment are prohibited. No already-authenticated backend can request a replacement challenge or re-register itself.
 
+### 9.2.1 F-02 — Corrected registration linearization and complete SASL contract
+
+**This subsection supersedes §9.2 step 5 and every earlier statement requiring registration/replay consumption to commit in the same transaction as the first user command.** The same-transaction design is withdrawn because an explicit first `BEGIN` would leave registration uncommitted while the next command requires committed registration.
+
+#### A. Single registration linearization point
+
+The registration linearization point is the successful durable COMMIT of one server-owned registration transaction, executed by the patched PostgreSQL backend **before it begins, parses, plans or executes any user SQL command**. Registration is not part of the user's transaction and is never rolled back by user `ROLLBACK`.
+
+The protocol dispatcher MUST invoke this transaction before handing any user-originated message to a command handler that can parse, plan, execute, invoke a function, or cause a user-visible side effect. The minimum guarded message set is Simple Query `Q`, Parse `P`, Bind `B`, Execute `E`, and direct FunctionCall `F`. The gate runs before `exec_simple_query`, parse analysis/planning, portal binding/execution, or function OID lookup/invocation. ExecutorStart and ProcessUtility remain defence-in-depth. COPY data messages are accepted only after a gated COPY command. Unknown or future execution-bearing message types fail closed until explicitly added to the reviewed patch.
+
+The server MUST run registration while the backend is idle and no user transaction or portal execution transaction is active. The patch uses a narrowly scoped internal registration mode, starts a top-level transaction, writes the protected registration and replay rows, commits, clears the internal mode, and only then dispatches the original frontend message. Internal registration code MUST NOT call user SQL, user-defined functions, application hooks or untrusted triggers. The internal-mode flag is backend-local and cannot be set by SQL, GUC, startup parameters or the client.
+
+The protected registration transaction MUST lock login binding, identity mapping and session/epoch records in prescribed rank order; recheck active status, login epoch, mapping version, credential generation, IdP revocation cutoff and backend identity; insert assertion JTI and (IdP issuer, IdP JTI) into protected replay tables with unique constraints; insert exactly one active session-registration row bound to cluster/database/role/PID/backend-start/session nonce; and commit all rows atomically.
+
+The successful COMMIT is the sole registration linearization point. No user command is parsed, planned, executed or invoked before it. An explicit first `BEGIN` is dispatched only after registration commits. A first `ROLLBACK` cannot undo registration. A multi-statement `Q` is gated once before its first statement. A first `F` call is gated before function lookup/invocation. Extended-query `P/B` messages are gated before parse/plan work; `E` independently asserts committed registration before portal execution.
+
+#### B. Failure and abort semantics
+
+- If authentication, assertion verification, replay insertion, registration insertion, lock acquisition or registration COMMIT fails, the server MUST return a fatal authentication/authorization error and terminate the backend. It MUST NOT dispatch the pending user message.
+- If registration COMMIT outcome is uncertain, the backend MUST terminate without dispatch. A possibly committed registration is harmless because it is bound to the terminated backend; reconnect requires fresh IdP authentication and new assertion/JTIs.
+- If registration commits and the subsequent user command fails or its transaction is rolled back, registration and replay consumption remain committed. The same backend may issue a later command only while its live backend identity and captured epochs remain current.
+- If the registration transaction aborts, no active registration is left and the backend terminates. Retry requires a new physical backend and fresh upstream authentication.
+- The backend-local assertion is consumed exactly once by successful registration. An authenticated backend cannot request a replacement challenge, re-register, or refresh captured epochs.
+
+#### C. Exact PostgreSQL SASL wire exchange
+
+The patched server and customer broker MUST implement this exact exchange for governed roles; no password/SCRAM/certificate fallback is permitted unless a separately versioned policy explicitly excludes that role from this protocol.
+
+1. Server sends AuthenticationSASL (`R`, auth code 10) with the single C-string mechanism `CEPHAS-BROKER-V1\0`, followed by the terminating empty mechanism C-string.
+2. Broker sends SASLInitialResponse (`p`) with the mechanism C-string, signed 32-bit network-byte-order initial-response length zero, and no initial-response bytes.
+3. Server sends AuthenticationSASLContinue (`R`, auth code 11). SASL data is UTF-8 RFC 8785 canonical JSON with exactly `challenge_schema`, `cluster_id`, `database_oid`, `role_oid`, `backend_pid`, `backend_start`, `nonce_base64url`, `issued_at`, `expires_at`. Nonce is 32 cryptographically random bytes encoded base64url without padding. Challenge is TLS-connection-bound, backend-bound and valid for at most 30 seconds.
+4. Broker sends SASLResponse (`p`) whose data is UTF-8 RFC 8785 canonical JSON containing the closed assertion fields from §9.2 plus `idp_expires_at` and `signature_base64url`. The signed preimage is canonical UTF-8 of assertion fields excluding signature, prefixed by exact domain bytes `CEPHAS-POWEROPS-SESSION-REGISTRATION-V1\0`. Assertion binds exact challenge tuple, IdP issuer/subject/JTI/expiry, login-binding ID, mapping ID/version, login epoch, credential generation, authn generation, auth_time, issued_at, expires_at and broker key ID.
+5. After signature, key-status, challenge, expiry, issuer/audience, MFA/auth_time, revocation and backend-binding checks pass, server sends AuthenticationSASLFinal (`R`, auth code 12) with exact ASCII SASL data `CEPHAS-BROKER-V1-OK`.
+6. Server sends AuthenticationOk (`R`, auth code 0), followed by normal startup completion messages. AuthenticationOk confirms authentication only; it does not mean protected session registration has committed. First `Q/P/B/E/F` remains blocked until §9.2.1(A) commits registration.
+
+Malformed framing, unexpected message order, invalid UTF-8/JSON, duplicate JSON keys, unknown assertion fields, invalid canonicalization, bad signature, wrong TLS/backend tuple, challenge replay, expired challenge/assertion, unknown/revoked broker key, duplicate JTI, stale epoch/version, IdP replay or unsupported fallback MUST produce ErrorResponse with SQLSTATE `28000`, severity FATAL, followed by connection termination. Error details MUST NOT disclose which identity predicate failed.
+
+#### D. Replay retention, cleanup and disaster recovery
+
+The broker assertion MUST include original IdP token expiry as `idp_expires_at`. Assertion and challenge lifetimes are each at most 30 seconds. The verifier accepts no clock-skew grace beyond the explicit customer-configured maximum of 30 seconds; participants MUST use monitored time synchronization.
+
+- Assertion JTI rows are retained until at least `assertion.expires_at + 30 seconds`.
+- IdP replay rows keyed by `(idp_issuer,idp_jti)` are retained until at least `idp_expires_at + 30 seconds`.
+- Replay rows are durable, append-only during their retention horizon, protected from runtime/broker-role UPDATE/DELETE, and committed synchronously with registration.
+- Cleanup may delete a replay row only when database time is strictly later than `retain_until`, through a privileged maintenance function that records cleanup counts and the highest retained/expired horizon. Cleanup MUST NOT shorten a horizon due to token revocation, role disablement or cache eviction.
+- The in-memory challenge is single-use and destroyed on success, failure or backend termination. A challenge from one TLS connection/backend cannot be replayed on another.
+- Backup/restore MUST preserve every replay row through `retain_until`. After restore, governed authentication remains disabled until replay rows and cleanup high-watermark are restored and verified from a protected backup/WORM replay journal. If completeness cannot be proven, authentication remains fail-closed; operators MUST NOT truncate replay rows or re-enable the broker.
+- Failover/restore without provable replay continuity quarantines governed authentication and requires separately reviewed recovery/new-cluster identity procedure. A WAL archive without replay-table commit horizon is insufficient.
+
+#### E. Required PostgreSQL 16 runtime proof
+
+The source-pinned PostgreSQL 16 patch MUST prove with real protocol clients: first `Q`; first `P/B`; first `E`; first `F`; explicit first `BEGIN`; first `ROLLBACK`; multi-statement `Q`; prepared statements/portals; COPY; registration transaction abort; registration COMMIT failure/uncertain commit; user-command abort after registration commit; duplicate assertion JTI; duplicate IdP JTI; replayed challenge; expired challenge/assertion; stale login epoch after disable/re-enable; concurrent duplicate backend registration; stale backend/PID reuse; unsupported SASL fallback; replay cleanup boundary; and backup/restore replay continuity.
+
+**Evidence boundary:** this amendment resolves the specification's transaction-ordering contradiction and defines the wire/replay contract. It does not claim the PostgreSQL C patch or broker implementation exists. Runtime F-02 acceptance remains blocked until the source-pinned PG16 patch and real-protocol tests are present and independently reviewed.
+
 ### 9.3 H-03 — Exhaustive authority lifecycle events
 
 Registry v2 explicitly includes these previously omitted transitions:
@@ -297,11 +352,33 @@ Registry v2 explicitly includes these previously omitted transitions:
 
 These are separate closed payload schemas and positive fixtures. Suspension, supersession and revocation cannot be smuggled through generic change/retirement events. Registry, fixture and schema catalogues MUST contain exactly one matching entry for every event. New authority mutation types are denied unless registered in a separately reviewed registry version.
 
+### 9.3.1 F-03 — Accountable-role grant is a distinct canonical event
+
+D-02.1's accountable-role mutation vocabulary is closed and maps one-to-one:
+
+| D-02.1 operation | Canonical mutation type | Canonical registry-v2 event |
+|---|---|---|
+| Appointment | `accountable_role.appointed` | `authority.accountable-role-appointed` |
+| Direct grant | `accountable_role.granted` | `authority.accountable-role-granted` |
+| Replacement | `accountable_role.replaced` | `authority.accountable-role-replaced` |
+| Suspension | `accountable_role.suspended` | `authority.accountable-role-suspended` |
+| Removal | `accountable_role.removed` | `authority.accountable-role-removed` |
+
+A direct grant MUST emit `accountable_role.granted`; it MUST NOT be represented as appointment, replacement, generic change or suspension. Appointment MUST emit only `accountable_role.appointed`. The grant payload is a closed, separately registered schema and fixture. It binds the same immutable assignment/principal/role/scope identity fields as appointment, but mutation and event tokens are distinct. Both creation events use absent → active state; operation intent is distinguished by canonical mutation/event identity, not caller interpretation.
+
+The database mutation dispatcher MUST map each D-02.1 operation to exactly its corresponding canonical mutation type before protected state changes. It MUST reject unknown, ambiguous, multi-mapped or unregistered mutation types before writing role-assignment state. Registry, schema, fixture catalogue and mutation dispatcher must contain exactly one entry for each operation above.
+
 ### 9.4 F-04 — Enforced scope and state semantics
 
 Every event-specific schema composes the shared `commonScopeConstraints` definition. A global event requires both tenant and BU identifiers to be JSON null; a tenant/BU event requires both to be UUID strings. No event schema may redefine or bypass these constraints.
 
 Login epochs are integers. The semantic verifier and database transition function MUST enforce `resulting_login_epoch > prior_login_epoch`; JSON Schema alone cannot compare two instance values. Approval-grant change is limited to active → active or pending → pending. Suspension and revocation use their own event types. Grant/object versions MUST strictly increase, enforced by the semantic verifier and database transition function. Negative fixtures cover malformed scope, equal/decreasing epochs and suspension through grant-change.
+
+### 9.4.1 F-04 — Manifest expected-event scope is schema-enforced
+
+Every `mutationManifest.expected_events.items` object MUST compose the same `commonScopeConstraints` definition used by event payloads. A global expected event requires `tenant_id=null` and `business_unit_id=null`; a tenant/business-unit expected event requires both identifiers to be UUID strings. Either malformed combination is rejected by the Draft 2020-12 validator itself.
+
+Semantic reconstruction additionally requires each event's local scope to equal its expected-event entry and to be present in the manifest's affected-scope set. This is an enforced schema and reconstruction rule, not an undocumented convention.
 
 ### 9.5 F-05 — D-02.1 identity-bootstrap carve-out
 
@@ -316,6 +393,20 @@ PostgreSQL 16 does not provide built-in logical-slot synchronization to a standb
 ### 9.7 M-02 — Standards validation and JCS evidence
 
 CI acceptance requires JSON Schema Draft 2020-12 validation with format assertion enabled for every positive fixture and every negative payload fixture. It also requires two independently implemented RFC 8785 canonicalizers to produce identical canonical UTF-8 bytes and SHA-256 for golden vectors covering UTF-16 property ordering, control-character escaping, number serialization and nested arrays/objects. The new `jcs-golden-vectors.v1.json` is a test corpus, not a claim that independent verification has run. The existing ASCII manifest vector remains unchanged.
+
+### 9.7.1 M-02/M-04 — Mandatory fixture execution and semantic verifier
+
+CI MUST execute every fixture in the catalogue and fail if a fixture is unrecognized, skipped, duplicated by ID or lacks an asserted result.
+
+- Every positive event fixture is passed to its event-specific Draft 2020-12 schema.
+- Every schema-negative payload is passed to the same event schema and MUST be rejected.
+- Every `semantic-reconstruction` negative is schema-validated and passed to event-to-manifest reconstruction; it MUST be rejected for manifest/event mismatch.
+- Every `semantic:` negative is schema-validated and passed to the semantic assertion declared in `x-semanticAssertions`; it MUST be rejected by that assertion, not an unrelated schema failure.
+- Every state-transition negative is schema-validated and passed to the lifecycle verifier; quarantine is terminal for a stream identity and reconciliation cannot make it healthy.
+- Every manifest golden fixture is schema-validated and canonicalized by both independent JCS implementations; both must reproduce pinned UTF-8 bytes and SHA-256.
+- Every mutation-reconstruction negative descriptor is converted into an executable adversarial case: missing/duplicate event, wrong scope, wrong event type/token, actor substitution, manifest digest mismatch, non-contiguous ordering and v1/v2 substitution.
+
+The harness reports and asserts executed fixture totals. A threshold such as `checked >= 200` is insufficient. Every semantic assertion must have at least one valid positive and one schema-valid negative fixture. The four declared assertions cover disablement epoch, re-enablement epoch, grant-change version and grant-suspension version monotonicity.
 
 ### 9.8 Evidence boundary and gate disposition
 
