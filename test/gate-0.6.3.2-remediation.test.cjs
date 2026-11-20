@@ -1,6 +1,7 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),crypto=require("node:crypto");
-const Ajv2020=require("ajv/dist/2020"),addFormats=require("ajv-formats"),canonicalizeA=require("canonicalize"),jcs=require("json-canonicalize"),canonicalizeB=jcs.canonicalize||jcs.default||jcs;\nconst semanticVerifier=require("../src/gate-0.6.3.2-semantic-verifier");
+const Ajv2020=require("ajv/dist/2020"),addFormats=require("ajv-formats"),canonicalizeA=require("canonicalize"),jcs=require("json-canonicalize"),canonicalizeB=jcs.canonicalize||jcs.default||jcs;
+const semanticVerifier=require("../src/gate-0.6.3.2-semantic-verifier");
 const base=path.join(__dirname,"..","schemas","gate-0.6.3.2");
 const schema=JSON.parse(fs.readFileSync(path.join(base,"audit-registry-v2.schema.json"),"utf8"));
 const catalog=JSON.parse(fs.readFileSync(path.join(base,"fixture-catalog.v1.json"),"utf8"));
