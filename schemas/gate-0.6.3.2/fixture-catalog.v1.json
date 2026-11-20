@@ -199,14 +199,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.login-binding-disabled",
             "mutation_type": "login_binding.disabled",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -552,14 +552,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.login-binding-reenabled",
             "mutation_type": "login_binding.reenabled",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -899,14 +899,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.mapping-created",
             "mutation_type": "identity_mapping.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -1306,14 +1306,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.mapping-changed",
             "mutation_type": "identity_mapping.changed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -1659,14 +1659,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.mapping-disabled",
             "mutation_type": "identity_mapping.disabled",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -1985,14 +1985,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "identity.mapping-reassigned",
             "mutation_type": "identity_mapping.reassigned",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -2230,7 +2230,7 @@
             "mutation_type": "approval_grant.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -2288,7 +2288,7 @@
             "mutation_type": "approval_grant.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -2332,19 +2332,19 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.grant-created",
             "mutation_type": "approval_grant.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -2458,7 +2458,7 @@
             "mutation_type": "approval_grant.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -2515,7 +2515,7 @@
             "mutation_type": "approval_grant.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -2751,14 +2751,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.grant-activated",
             "mutation_type": "approval_grant.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -3101,14 +3101,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.grant-changed",
             "mutation_type": "approval_grant.changed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -3448,14 +3448,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.grant-revoked",
             "mutation_type": "approval_grant.revoked",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -3786,14 +3786,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.grant-expired",
             "mutation_type": "approval_grant.expired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -4124,14 +4124,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.invalidated",
             "mutation_type": "governed_request.invalidated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -4462,14 +4462,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "security.incident-quarantined",
             "mutation_type": "security_incident.quarantined",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -4803,14 +4803,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "security.incident-reconciled",
             "mutation_type": "security_incident.reconciled",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -5059,7 +5059,7 @@
         "subject": "synthetic",
         "principal_id": "99999999-9999-4999-8999-999999999999",
         "scope_mode": "single_scope",
-        "status": "active",
+        "status": "pending",
         "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
       "negative_fixtures": [
@@ -5142,7 +5142,7 @@
             "subject": "synthetic",
             "principal_id": "99999999-9999-4999-8999-999999999999",
             "scope_mode": "single_scope",
-            "status": "active",
+            "status": "pending",
             "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "unauthorized_authority": true
           }
@@ -5193,20 +5193,20 @@
             "subject": "synthetic",
             "principal_id": "99999999-9999-4999-8999-999999999999",
             "scope_mode": "single_scope",
-            "status": "active",
+            "status": "pending",
             "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-identity-created",
             "mutation_type": "verifier_identity.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -5244,7 +5244,7 @@
             "subject": "synthetic",
             "principal_id": "99999999-9999-4999-8999-999999999999",
             "scope_mode": "single_scope",
-            "status": "active",
+            "status": "pending",
             "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
@@ -5295,7 +5295,7 @@
             "subject": "synthetic",
             "principal_id": "99999999-9999-4999-8999-999999999999",
             "scope_mode": "single_scope",
-            "status": "active",
+            "status": "pending",
             "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
@@ -5346,7 +5346,7 @@
             "subject": "synthetic",
             "principal_id": "99999999-9999-4999-8999-999999999999",
             "scope_mode": "single_scope",
-            "status": "active",
+            "status": "pending",
             "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         }
@@ -5540,14 +5540,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-identity-changed",
             "mutation_type": "verifier_identity.changed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -5878,14 +5878,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-identity-disabled",
             "mutation_type": "verifier_identity.disabled",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -6213,14 +6213,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-key-activated",
             "mutation_type": "verifier_key.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -6542,14 +6542,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-key-expired",
             "mutation_type": "verifier_key.expired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -6868,14 +6868,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-key-revoked",
             "mutation_type": "verifier_key.revoked",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -7197,14 +7197,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.verifier-key-compromised",
             "mutation_type": "verifier_key.compromised",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -7526,14 +7526,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.publisher-key-activated",
             "mutation_type": "publisher_key.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -7852,14 +7852,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.publisher-key-expired",
             "mutation_type": "publisher_key.expired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -8178,14 +8178,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.publisher-key-revoked",
             "mutation_type": "publisher_key.revoked",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -8507,14 +8507,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "trust.publisher-key-compromised",
             "mutation_type": "publisher_key.compromised",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -8845,14 +8845,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "risk.risk-acceptance-created",
             "mutation_type": "risk_acceptance.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -9186,14 +9186,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "risk.risk-acceptance-amended",
             "mutation_type": "risk_acceptance.amended",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -9518,14 +9518,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "risk.risk-acceptance-expired",
             "mutation_type": "risk_acceptance.expired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -9850,14 +9850,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "risk.risk-acceptance-revoked",
             "mutation_type": "risk_acceptance.revoked",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -10047,7 +10047,9 @@
         "resulting_version": 1,
         "superseded_by_id": "99999999-9999-4999-8999-999999999999",
         "superseded_by_version": 1,
-        "supersession_reason_code": "synthetic"
+        "supersession_reason_code": "synthetic",
+        "prior_status": "active",
+        "resulting_status": "superseded"
       },
       "negative_fixtures": [
         {
@@ -10129,6 +10131,8 @@
             "superseded_by_id": "99999999-9999-4999-8999-999999999999",
             "superseded_by_version": 1,
             "supersession_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded",
             "unauthorized_authority": true
           }
         },
@@ -10177,19 +10181,21 @@
             "resulting_version": 1,
             "superseded_by_id": "99999999-9999-4999-8999-999999999999",
             "superseded_by_version": 1,
-            "supersession_reason_code": "synthetic"
+            "supersession_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "risk.risk-acceptance-superseded",
             "mutation_type": "risk_acceptance.superseded",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -10226,7 +10232,9 @@
             "resulting_version": 1,
             "superseded_by_id": "99999999-9999-4999-8999-999999999999",
             "superseded_by_version": 1,
-            "supersession_reason_code": "synthetic"
+            "supersession_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
@@ -10275,7 +10283,9 @@
             "resulting_version": 1,
             "superseded_by_id": "99999999-9999-4999-8999-999999999999",
             "superseded_by_version": 1,
-            "supersession_reason_code": "synthetic"
+            "supersession_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
@@ -10324,7 +10334,9 @@
             "resulting_version": 1,
             "superseded_by_id": "99999999-9999-4999-8999-999999999999",
             "superseded_by_version": 1,
-            "supersession_reason_code": "synthetic"
+            "supersession_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         }
       ]
@@ -10523,14 +10535,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "authority.accountable-role-appointed",
             "mutation_type": "accountable_role.appointed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -10730,7 +10742,9 @@
         "prior_principal_id": "99999999-9999-4999-8999-999999999999",
         "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
         "effective_at": "2026-11-20T00:00:00Z",
-        "replacement_reason_code": "synthetic"
+        "replacement_reason_code": "synthetic",
+        "prior_status": "active",
+        "resulting_status": "superseded"
       },
       "negative_fixtures": [
         {
@@ -10813,6 +10827,8 @@
             "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
             "replacement_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded",
             "unauthorized_authority": true
           }
         },
@@ -10862,19 +10878,21 @@
             "prior_principal_id": "99999999-9999-4999-8999-999999999999",
             "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "replacement_reason_code": "synthetic"
+            "replacement_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "authority.accountable-role-replaced",
             "mutation_type": "accountable_role.replaced",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -10912,7 +10930,9 @@
             "prior_principal_id": "99999999-9999-4999-8999-999999999999",
             "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "replacement_reason_code": "synthetic"
+            "replacement_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
@@ -10962,7 +10982,9 @@
             "prior_principal_id": "99999999-9999-4999-8999-999999999999",
             "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "replacement_reason_code": "synthetic"
+            "replacement_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         },
         {
@@ -11012,7 +11034,9 @@
             "prior_principal_id": "99999999-9999-4999-8999-999999999999",
             "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
-            "replacement_reason_code": "synthetic"
+            "replacement_reason_code": "synthetic",
+            "prior_status": "active",
+            "resulting_status": "superseded"
           }
         }
       ]
@@ -11202,14 +11226,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "authority.accountable-role-removed",
             "mutation_type": "accountable_role.removed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -11402,7 +11426,7 @@
         "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
         "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-        "resulting_status": "active"
+        "resulting_status": "unverified"
       },
       "negative_fixtures": [
         {
@@ -11486,7 +11510,7 @@
             "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-            "resulting_status": "active",
+            "resulting_status": "unverified",
             "unauthorized_authority": true
           }
         },
@@ -11538,19 +11562,19 @@
             "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-            "resulting_status": "active"
+            "resulting_status": "unverified"
           }
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "evidence.registered",
             "mutation_type": "evidence.registered",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -11590,7 +11614,7 @@
             "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-            "resulting_status": "active"
+            "resulting_status": "unverified"
           }
         },
         {
@@ -11642,7 +11666,7 @@
             "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-            "resulting_status": "active"
+            "resulting_status": "unverified"
           }
         },
         {
@@ -11694,7 +11718,7 @@
             "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "verifier_key_id": "99999999-9999-4999-8999-999999999999",
-            "resulting_status": "active"
+            "resulting_status": "unverified"
           }
         }
       ]
@@ -11884,14 +11908,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "evidence.quarantined",
             "mutation_type": "evidence.quarantined",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -12219,14 +12243,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "evidence.released",
             "mutation_type": "evidence.released",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -12554,14 +12578,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "evidence.superseded",
             "mutation_type": "evidence.superseded",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -12749,8 +12773,8 @@
         "evidence_object_id": "99999999-9999-4999-8999-999999999999",
         "prior_version_id": "99999999-9999-4999-8999-999999999999",
         "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-        "prior_status": "active",
-        "resulting_status": "active",
+        "prior_status": "unverified",
+        "resulting_status": "verified",
         "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
         "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
         "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -12832,8 +12856,8 @@
             "evidence_object_id": "99999999-9999-4999-8999-999999999999",
             "prior_version_id": "99999999-9999-4999-8999-999999999999",
             "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "unverified",
+            "resulting_status": "verified",
             "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -12883,8 +12907,8 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_version_id": "99999999-9999-4999-8999-999999999999",
             "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "unverified",
+            "resulting_status": "verified",
             "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -12892,14 +12916,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "evidence.reverified",
             "mutation_type": "evidence.reverified",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -12934,8 +12958,8 @@
             "evidence_object_id": "99999999-9999-4999-8999-999999999999",
             "prior_version_id": "99999999-9999-4999-8999-999999999999",
             "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "unverified",
+            "resulting_status": "verified",
             "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -12985,8 +13009,8 @@
             "evidence_object_id": "99999999-9999-4999-8999-999999999999",
             "prior_version_id": "99999999-9999-4999-8999-999999999999",
             "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "unverified",
+            "resulting_status": "verified",
             "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -13036,8 +13060,8 @@
             "evidence_object_id": "99999999-9999-4999-8999-999999999999",
             "prior_version_id": "99999999-9999-4999-8999-999999999999",
             "resulting_version_id": "99999999-9999-4999-8999-999999999999",
-            "prior_status": "active",
-            "resulting_status": "active",
+            "prior_status": "unverified",
+            "resulting_status": "verified",
             "new_verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "new_verifier_key_id": "99999999-9999-4999-8999-999999999999",
             "verification_receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -13093,7 +13117,9 @@
         "prior_active_policy_version": null,
         "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": "2026-11-20T00:00:00Z"
+        "effective_at": "2026-11-20T00:00:00Z",
+        "prior_status": "retired",
+        "resulting_status": "active"
       },
       "negative_fixtures": [
         {
@@ -13176,6 +13202,8 @@
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
             "effective_at": "2026-11-20T00:00:00Z",
+            "prior_status": "retired",
+            "resulting_status": "active",
             "unauthorized_authority": true
           }
         },
@@ -13225,19 +13253,21 @@
             "prior_active_policy_version": null,
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-            "effective_at": "2026-11-20T00:00:00Z"
+            "effective_at": "2026-11-20T00:00:00Z",
+            "prior_status": "retired",
+            "resulting_status": "active"
           }
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "policy.promotion-policy-activated",
             "mutation_type": "promotion_policy.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -13275,7 +13305,9 @@
             "prior_active_policy_version": null,
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-            "effective_at": "2026-11-20T00:00:00Z"
+            "effective_at": "2026-11-20T00:00:00Z",
+            "prior_status": "retired",
+            "resulting_status": "active"
           }
         },
         {
@@ -13325,7 +13357,9 @@
             "prior_active_policy_version": null,
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-            "effective_at": "2026-11-20T00:00:00Z"
+            "effective_at": "2026-11-20T00:00:00Z",
+            "prior_status": "retired",
+            "resulting_status": "active"
           }
         },
         {
@@ -13375,7 +13409,9 @@
             "prior_active_policy_version": null,
             "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-            "effective_at": "2026-11-20T00:00:00Z"
+            "effective_at": "2026-11-20T00:00:00Z",
+            "prior_status": "retired",
+            "resulting_status": "active"
           }
         }
       ]
@@ -13562,14 +13598,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "policy.promotion-policy-retired",
             "mutation_type": "promotion_policy.retired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -13918,14 +13954,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.decision-recorded",
             "mutation_type": "approval.recorded",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -14277,14 +14313,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "approval.decision-invalidated",
             "mutation_type": "approval.invalidated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -14618,14 +14654,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.promotion-created",
             "mutation_type": "promotion_request.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -14959,14 +14995,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.promotion-approved",
             "mutation_type": "promotion_request.approved",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -15294,14 +15330,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.promotion-invalidated",
             "mutation_type": "promotion_request.invalidated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -15635,14 +15671,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "release.promoted",
             "mutation_type": "promotion_request.executed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -15982,14 +16018,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.rollback-created",
             "mutation_type": "rollback_request.created",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -16323,14 +16359,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.rollback-approved",
             "mutation_type": "rollback_request.approved",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -16658,14 +16694,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "governed-request.rollback-invalidated",
             "mutation_type": "rollback_request.invalidated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -16996,14 +17032,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "release.rolled-back",
             "mutation_type": "rollback_request.executed",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -17337,14 +17373,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "anchor.contract-activated",
             "mutation_type": "anchor_contract.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -17672,14 +17708,14 @@
         },
         {
           "case_id": "unregistered-payload-token",
-          "expected_failure": "const-or-registry-selection",
+          "expected_failure": "const",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
             "event_envelope_schema_token": "cephas.powerops.audit-event-envelope.v2",
             "mutation_schema_version": "cephas.powerops.mutation.v1",
             "manifest_schema_token": "cephas.powerops.mutation-manifest.v1",
-            "event_payload_schema_token": "cephas.powerops.audit-payload.not-registered.v2",
+            "event_payload_schema_token": "cephas.powerops.audit-payload.unknown.v2",
             "event_type": "anchor.contract-retired",
             "mutation_type": "anchor_contract.retired",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
@@ -17864,7 +17900,7 @@
         "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
         "prior_version": 1,
         "resulting_version": 2,
-        "prior_status": "active",
+        "prior_status": "pending",
         "resulting_status": "active",
         "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
         "effective_at": "2026-11-20T00:00:00Z",
@@ -17915,7 +17951,7 @@
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "effective_at": "2026-11-20T00:00:00Z",
@@ -17924,7 +17960,7 @@
           }
         },
         {
-          "case_id": "missing-required",
+          "case_id": "missing-required-event-field",
           "expected_failure": "required",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -17966,7 +18002,7 @@
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "effective_at": "2026-11-20T00:00:00Z",
@@ -18017,7 +18053,7 @@
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "effective_at": "2026-11-20T00:00:00Z",
@@ -18025,7 +18061,7 @@
           }
         },
         {
-          "case_id": "malformed-digest",
+          "case_id": "malformed-mutation-digest",
           "expected_failure": "pattern",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -18038,7 +18074,7 @@
             "mutation_type": "verifier_identity.activated",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "NOT_A_SHA256",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -18068,16 +18104,16 @@
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "active",
+            "prior_status": "pending",
             "resulting_status": "active",
             "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "effective_at": "2026-11-20T00:00:00Z",
-            "trust_record_sha256": "bad"
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
         {
-          "case_id": "invalid-prior-state",
-          "expected_failure": "state-transition",
+          "case_id": "local-scope-not-in-manifest",
+          "expected_failure": "semantic-reconstruction",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
@@ -18114,12 +18150,12 @@
             "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "scope_kind": "tenant_business_unit",
-            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "revoked",
+            "prior_status": "pending",
             "resulting_status": "active",
             "activated_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "effective_at": "2026-11-20T00:00:00Z",
@@ -18235,7 +18271,7 @@
           }
         },
         {
-          "case_id": "missing-required",
+          "case_id": "missing-required-event-field",
           "expected_failure": "required",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -18338,7 +18374,7 @@
           }
         },
         {
-          "case_id": "malformed-digest",
+          "case_id": "malformed-mutation-digest",
           "expected_failure": "pattern",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -18351,7 +18387,7 @@
             "mutation_type": "verifier_identity.suspended",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "NOT_A_SHA256",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -18386,12 +18422,12 @@
             "suspension_reason_code": "SECURITY_REVIEW",
             "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
             "incident_id": null,
-            "trust_record_sha256": "bad"
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
         {
-          "case_id": "invalid-prior-state",
-          "expected_failure": "state-transition",
+          "case_id": "local-scope-not-in-manifest",
+          "expected_failure": "semantic-reconstruction",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
@@ -18428,12 +18464,12 @@
             "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "scope_kind": "tenant_business_unit",
-            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "revoked",
+            "prior_status": "active",
             "resulting_status": "suspended",
             "suspension_reason_code": "SECURITY_REVIEW",
             "suspended_by_principal_id": "77777777-7777-4777-8777-777777777777",
@@ -18550,7 +18586,7 @@
           }
         },
         {
-          "case_id": "missing-required",
+          "case_id": "missing-required-event-field",
           "expected_failure": "required",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -18653,7 +18689,7 @@
           }
         },
         {
-          "case_id": "malformed-digest",
+          "case_id": "malformed-mutation-digest",
           "expected_failure": "pattern",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
@@ -18666,7 +18702,7 @@
             "mutation_type": "verifier_identity.revoked",
             "mutation_id": "11111111-1111-4111-8111-111111111111",
             "operation_id": "22222222-2222-4222-8222-222222222222",
-            "mutation_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mutation_payload_sha256": "NOT_A_SHA256",
             "mutation_event_index": 0,
             "mutation_event_count": 1,
             "affected_mapping_ids": [],
@@ -18701,12 +18737,12 @@
             "affected_evidence_count": 0,
             "revocation_reason_code": "KEY_COMPROMISE",
             "revoked_by_principal_id": "77777777-7777-4777-8777-777777777777",
-            "trust_record_sha256": "bad"
+            "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
         },
         {
-          "case_id": "invalid-prior-state",
-          "expected_failure": "state-transition",
+          "case_id": "local-scope-not-in-manifest",
+          "expected_failure": "semantic-reconstruction",
           "payload": {
             "registry_token": "cephas.powerops.audit-payload-registry.v2",
             "registry_version": 2,
@@ -18743,12 +18779,12 @@
             "prior_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
             "resulting_state_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "scope_kind": "tenant_business_unit",
-            "tenant_id": "33333333-3333-4333-8333-333333333333",
+            "tenant_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
             "business_unit_id": "44444444-4444-4444-8444-444444444444",
             "verifier_identity_id": "99999999-9999-4999-8999-999999999999",
             "prior_version": 1,
             "resulting_version": 2,
-            "prior_status": "revoked",
+            "prior_status": "active",
             "resulting_status": "revoked",
             "affected_evidence_count": 0,
             "revocation_reason_code": "KEY_COMPROMISE",
