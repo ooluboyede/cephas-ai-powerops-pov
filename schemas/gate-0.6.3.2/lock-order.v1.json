@@ -13,83 +13,123 @@
   "ranks": [
     {
       "rank": 0,
-      "lock_class": "login_binding"
+      "lock_class": "login_binding",
+      "row_order": "login_binding_id UUID bytes ascending",
+      "lock_mode": "FOR UPDATE for lifecycle mutation; FOR SHARE for authorization"
     },
     {
       "rank": 1,
-      "lock_class": "identity_mapping"
+      "lock_class": "identity_mapping",
+      "row_order": "mapping_id UUID bytes ascending",
+      "lock_mode": "FOR UPDATE for mapping mutation; FOR SHARE otherwise"
     },
     {
       "rank": 2,
-      "lock_class": "session_registration_epoch"
+      "lock_class": "session_registration_epoch",
+      "row_order": "registration_id, then database_oid/role_oid/backend_pid/backend_start",
+      "lock_mode": "FOR UPDATE for retirement; FOR SHARE for authorization"
     },
     {
       "rank": 3,
-      "lock_class": "scope_mutex"
+      "lock_class": "scope_mutex",
+      "row_order": "tenant_id UUID bytes, then business_unit_id UUID bytes",
+      "lock_mode": "FOR UPDATE always"
     },
     {
       "rank": 4,
-      "lock_class": "risk_acceptance"
+      "lock_class": "risk_acceptance",
+      "row_order": "risk_acceptance_id UUID bytes, then version",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 5,
-      "lock_class": "accountable_role_assignment"
+      "lock_class": "accountable_role_assignment",
+      "row_order": "role_assignment_id UUID bytes",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 6,
-      "lock_class": "verifier_identity"
+      "lock_class": "verifier_identity",
+      "row_order": "verifier_identity_id UUID bytes",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 7,
-      "lock_class": "verifier_key"
+      "lock_class": "verifier_key",
+      "row_order": "verifier_key_id byte order",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 8,
-      "lock_class": "publisher_key"
+      "lock_class": "publisher_key",
+      "row_order": "publisher_key_id byte order",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 9,
-      "lock_class": "promotion_rollback_policy"
+      "lock_class": "promotion_rollback_policy",
+      "row_order": "policy_id UUID bytes, then version",
+      "lock_mode": "FOR UPDATE if changing; FOR SHARE otherwise"
     },
     {
       "rank": 10,
-      "lock_class": "evidence_registry_quarantine"
+      "lock_class": "evidence_registry_quarantine",
+      "row_order": "object_type, object_id UUID bytes, immutable version_id UUID bytes",
+      "lock_mode": "FOR UPDATE only for quarantine/supersession; FOR SHARE otherwise"
     },
     {
       "rank": 11,
-      "lock_class": "candidate"
+      "lock_class": "candidate",
+      "row_order": "candidate_id UUID bytes",
+      "lock_mode": "FOR UPDATE for promotion/rollback"
     },
     {
       "rank": 12,
-      "lock_class": "governed_request"
+      "lock_class": "governed_request",
+      "row_order": "request_id UUID bytes",
+      "lock_mode": "FOR UPDATE"
     },
     {
       "rank": 13,
-      "lock_class": "approval_grant"
+      "lock_class": "approval_grant",
+      "row_order": "grant_id UUID bytes",
+      "lock_mode": "FOR UPDATE for lifecycle mutation; FOR SHARE otherwise"
     },
     {
       "rank": 14,
-      "lock_class": "approval_decision"
+      "lock_class": "approval_decision",
+      "row_order": "approval_id UUID bytes",
+      "lock_mode": "FOR SHARE; immutable decisions are never updated"
     },
     {
       "rank": 15,
-      "lock_class": "release_active_pointer"
+      "lock_class": "release_active_pointer",
+      "row_order": "release_id UUID bytes; active pointer last",
+      "lock_mode": "FOR UPDATE"
     },
     {
       "rank": 16,
-      "lock_class": "anchor_contract_stream"
+      "lock_class": "anchor_contract_stream",
+      "row_order": "anchor_contract_id UUID bytes, stream_id UUID bytes",
+      "lock_mode": "FOR UPDATE for administration; FOR SHARE for eligibility"
     },
     {
       "rank": 17,
-      "lock_class": "audit_chain_head"
+      "lock_class": "audit_chain_head",
+      "row_order": "tenant_id UUID bytes, business_unit_id UUID bytes; global chain last",
+      "lock_mode": "FOR UPDATE"
     },
     {
       "rank": 18,
-      "lock_class": "mutation_manifest_idempotency"
+      "lock_class": "mutation_manifest_idempotency",
+      "row_order": "mutation_id UUID bytes",
+      "lock_mode": "FOR UPDATE or unique insert"
     },
     {
       "rank": 19,
-      "lock_class": "transactional_outbox"
+      "lock_class": "transactional_outbox",
+      "row_order": "stream_id UUID bytes, sequence, event_id UUID bytes",
+      "lock_mode": "INSERT after all authority locks; worker never holds source locks"
     }
   ],
   "prohibited": [
@@ -99,5 +139,12 @@
     "RLS side-effecting lock acquisition",
     "transaction pooling on governed sessions",
     "authority DML outside reviewed functions"
-  ]
+  ],
+  "implicit_lock_contract": {
+    "foreign_keys": "Pre-lock every referenced parent row at its assigned rank before DML; implicit KEY SHARE locks count in that rank.",
+    "triggers": "No trigger may initiate a lock acquisition outside the declared hierarchy.",
+    "rls": "RLS predicates are side-effect-free and acquire no row or advisory locks.",
+    "deferred_constraints": "All rows reachable by deferred FK/constraint checks are included in the pre-lock plan.",
+    "ddl": "DDL runs only in maintenance mode with governed writes disabled."
+  }
 }
