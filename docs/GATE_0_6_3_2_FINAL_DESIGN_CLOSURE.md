@@ -1,9 +1,9 @@
 # Gate 0.6.3.2 — Final design-closure contract
 
-**Authority:** This is the single authoritative closure layer for the independent reassessment of 0470b3e0cf2a7b06739b2ccdf0d5f6b0135e7026.
-**Status:** Design-only. Implementation is NOT AUTHORIZED.
+**Authority:** This is the single authoritative closure layer, amended by §9 for the latest independent reassessment. §9 controls over earlier inconsistent wording.
+**Status:** Normative design amendment only. Runtime prototype and implementation acceptance remain outstanding.
 **Scope:** H-01–H-04 and M-01–M-04.
-**Precedence:** This document supersedes conflicting D-02, D-07, D-09 and D-10 wording for lock ordering, session registration, mutation registry, commit-time capture, incident reconciliation and descriptor verification. Unaffected D-02/D-05/D-06 requirements remain in force.
+**Precedence:** This document and §9 supersede conflicting D-02.1/D-02.2, D-07, D-09 and D-10 wording for the subjects expressly covered. Unaffected D-05/D-06 requirements remain in force.
 **Artifacts:** schemas/gate-0.6.3.2/lock-order.v1.json, lock-concurrency-fixtures.v1.json, audit-registry-v2.schema.json and fixture-catalog.v1.json.
 
 ## 0. Binding decisions
@@ -251,3 +251,72 @@ No finding is accepted by author declaration. These documents and static fixture
 Documentation-only design closure. No PostgreSQL extension, broker, schema, migration, role/privilege change, serializer, audit writer, WAL decoder, ledger, outbox worker, external anchor provider or production deployment is implemented or authorized.
 
 PR #20 MUST remain Draft, open and unmerged. Synthetic-data-first, customer-hosted/customer-controlled, advisory-only PoV boundaries remain unchanged. No live IBEDC telemetry, SCADA/ADMS/DMS control, switching, dispatch, meter commands, billing adjustments/refunds, journal postings or automatic production model deployment is authorized. F-03/F-05 and production certification remain open pending separate implementation and independent acceptance gates.
+
+
+## 9. Reassessment remediation — binding amendments
+
+This section is a normative amendment responding to the independent rejection of commit `eefae3b4903633ba618e412e99a310aae1045796`. It controls over earlier inconsistent statements in this file and D-02.1/D-02.2 only for the subjects expressly amended below. It does not claim runtime proof.
+
+### 9.1 F-01 — Protocol-complete execution gate (PostgreSQL 16)
+
+The earlier extension-only proposal is withdrawn as insufficient. ExecutorStart and ProcessUtility hooks are defence-in-depth, not the sole enforcement boundary. The supported target is a customer-maintained, source-pinned PostgreSQL 16 server build carrying a reviewed CEPHAS protocol/authentication patch. An unpatched stock PostgreSQL 16 server is not a supported governed deployment for this control.
+
+The patch MUST gate every execution-bearing frontend protocol path before user code runs:
+- Simple Query (`Q`): registration gate inside the command transaction before parsing/executing the first statement.
+- Extended Query Execute (`E`): registration gate after the portal execution transaction has begun and before portal execution.
+- Function Call (`F`): registration gate in the direct FunctionCall handler before function OID lookup/invocation; a first-message FunctionCall MUST be rejected unless registration can be committed atomically with that call.
+- Utility statements, including DDL and COPY command setup, remain covered by the Q/E execution gate and ProcessUtility defence-in-depth. COPY data messages cannot initiate a command without the already-gated Q/E command.
+
+The protocol dispatcher MUST fail closed for any execution-bearing message type not explicitly enumerated in the reviewed patch. ExecutorStart and ProcessUtility hooks independently assert that the backend has a committed registration before proceeding. Prepared statements, portals, simple-query multi-statements, extended-query pipelining, COPY and direct FunctionCall receive dedicated tests. This patch-level gate—not a claim that extension hooks see every protocol path—is the authority boundary.
+
+### 9.2 F-02 — Exact broker authentication exchange
+
+The prior generic authentication-extension wording is replaced with a named custom SASL mechanism, `CEPHAS-BROKER-V1`, implemented in the same pinned PostgreSQL 16 source patch. It is not claimed to be registerable by a loadable extension alone.
+
+Sequence:
+1. The customer-controlled broker is the PostgreSQL protocol client and opens a new dedicated physical backend connection over verified TLS. It has already performed fresh IdP authentication and resolves the one active protected identity mapping.
+2. During PostgreSQL startup authentication, the patched server selects only `CEPHAS-BROKER-V1` for governed roles and emits a server-generated 256-bit nonce plus cluster ID, database OID, role OID, backend PID and backend start timestamp in the SASL challenge. The challenge is bound to the TLS connection and expires after 30 seconds.
+3. The broker returns a broker-key-signed Ed25519 assertion containing the exact challenge tuple, IdP issuer/subject/JTI, login-binding ID, mapping ID/version, login epoch, credential generation, authn generation, auth_time, issued_at, expires_at and broker key ID. Signature preimage is RFC 8785 canonical UTF-8 with the existing domain prefix `CEPHAS-POWEROPS-SESSION-REGISTRATION-V1\0`.
+4. The patched server verifies the signature, key status, challenge, expiry and exact server-observed backend tuple before AuthenticationOk. It stores the verified assertion only in backend-local memory. No GUC, startup parameter, temporary table or SQL-callable registration function is accepted as authority input.
+5. The protocol execution gate described in §9.1 materializes registration and replay consumption in the same transaction as the first Q/E/F command. If that transaction aborts, both inserts roll back; the assertion remains bound to that backend and may retry only after rechecking current epochs. A failed registration terminates the backend.
+
+The patch MUST reject password, SCRAM, certificate-only or other fallback authentication for governed roles unless those methods are explicitly disabled by customer policy. A broker reconnect creates a new physical backend and repeats fresh authentication. Transaction pooling and backend reassignment are prohibited. No already-authenticated backend can request a replacement challenge or re-register itself.
+
+### 9.3 H-03 — Exhaustive authority lifecycle events
+
+Registry v2 explicitly includes these previously omitted transitions:
+
+| Mutation | Event | State transition |
+|---|---|---|
+| `verifier_key.superseded` | `trust.verifier-key-superseded` | active → superseded; names successor key and reason |
+| `accountable_role.suspended` | `authority.accountable-role-suspended` | active → suspended |
+| `approval_grant.suspended` | `approval.grant-suspended` | active/pending → suspended |
+| `promotion_policy.revoked` | `policy.promotion-policy-revoked` | active → revoked |
+| `session_registration.created` | `identity.session-registration-created` | absent → active |
+| `session_registration.retired` | `identity.session-registration-retired` | active → retired |
+
+These are separate closed payload schemas and positive fixtures. Suspension, supersession and revocation cannot be smuggled through generic change/retirement events. Registry, fixture and schema catalogues MUST contain exactly one matching entry for every event. New authority mutation types are denied unless registered in a separately reviewed registry version.
+
+### 9.4 F-04 — Enforced scope and state semantics
+
+Every event-specific schema composes the shared `commonScopeConstraints` definition. A global event requires both tenant and BU identifiers to be JSON null; a tenant/BU event requires both to be UUID strings. No event schema may redefine or bypass these constraints.
+
+Login epochs are integers. The semantic verifier and database transition function MUST enforce `resulting_login_epoch > prior_login_epoch`; JSON Schema alone cannot compare two instance values. Approval-grant change is limited to active → active or pending → pending. Suspension and revocation use their own event types. Grant/object versions MUST strictly increase, enforced by the semantic verifier and database transition function. Negative fixtures cover malformed scope, equal/decreasing epochs and suspension through grant-change.
+
+### 9.5 F-05 — D-02.1 identity-bootstrap carve-out
+
+Ranks 0–2 are the exclusive identity-bootstrap exception to D-02.1: they may read and lock only protected login-binding, identity-mapping and session-registration/epoch rows required to derive the authenticated principal and complete affected scope set. They MUST NOT read, evaluate, lock or mutate any D-02 eligibility object, candidate, evidence, policy, grant, approval, release, anchor or audit-chain state. After the identity/scope set is resolved, all rank-3 scope mutexes are acquired in canonical tenant/BU UUID byte order. Only after all scope mutexes are held may the transaction read or mutate D-02 eligibility objects at rank 4 or later. This wording is the sole interpretation of D-02.1 and is consistent with the 20-rank machine-readable hierarchy.
+
+### 9.6 F-06 — PostgreSQL 16 WAL consumer and failover boundary
+
+The logical-decoding output plugin is read-only and MUST NOT write the ledger. It only emits committed source transaction identity, commit timestamp, commit LSN and immutable event/outbox rows. A separately running customer-controlled logical-decoding consumer writes the durable ledger to a distinct protected store, reads back and verifies the committed row, and only then acknowledges the source slot. The consumer is idempotent on source system identifier, timeline, commit LSN and event UUID.
+
+PostgreSQL 16 does not provide built-in logical-slot synchronization to a standby. Therefore, if a primary failover cannot prove continuity of the exact logical slot restart LSN, confirmed flush LSN, catalog_xmin horizon, source system identifier and timeline, the old stream is immediately marked unavailable/quarantined and cannot be continued on the promoted standby. A WAL archive alone is not sufficient evidence that logical decoding can be resumed if required catalog history or slot state is missing. The system MUST NOT synthesize old commit timestamps from pg_waldump, worker time or restore time. The old stream remains immutable; recovery starts a new stream identity/anchor contract after independent reconciliation. Seamless PostgreSQL 16 failover is unsupported unless a separate, tested continuity mechanism proves every required slot/catalog/WAL invariant.
+
+### 9.7 M-02 — Standards validation and JCS evidence
+
+CI acceptance requires JSON Schema Draft 2020-12 validation with format assertion enabled for every positive fixture and every negative payload fixture. It also requires two independently implemented RFC 8785 canonicalizers to produce identical canonical UTF-8 bytes and SHA-256 for golden vectors covering UTF-16 property ordering, control-character escaping, number serialization and nested arrays/objects. The new `jcs-golden-vectors.v1.json` is a test corpus, not a claim that independent verification has run. The existing ASCII manifest vector remains unchanged.
+
+### 9.8 Evidence boundary and gate disposition
+
+The above closes the identified normative omissions and schema defects at design/artifact level. It does NOT establish that the PostgreSQL 16 source patch, SASL exchange, protocol dispatch guard, transactional registration, lock concurrency, logical-decoding consumer or failover behavior has been implemented or tested. Gate 0.6.3.2 remains **NOT READY for implementation acceptance** until a separate executable PostgreSQL 16 prototype and independent test evidence satisfy §§9.1–9.7. No production deployment, merge or utility-control capability is authorized by this amendment.

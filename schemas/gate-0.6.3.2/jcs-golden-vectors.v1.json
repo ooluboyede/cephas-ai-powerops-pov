@@ -1,0 +1,61 @@
+{
+  "schema_version": "cephas.powerops.jcs-golden-vectors.v1",
+  "standard": "RFC8785",
+  "encoding": "UTF-8",
+  "trailing_newline": false,
+  "synthetic_only": true,
+  "verification_requirement": "Two independent RFC 8785 implementations must reproduce canonical_utf8 and byte_length; SHA-256 is computed by the independent test runner. This file does not assert independent verification has run.",
+  "vectors": [
+    {
+      "id": "unicode-utf16-property-order",
+      "source_object": {
+        "": "private",
+        "😀": "emoji",
+        "a": "A"
+      },
+      "canonical_utf8": "{\"a\":\"A\",\"😀\":\"emoji\",\"\":\"private\"}",
+      "byte_length": 40
+    },
+    {
+      "id": "control-character-escaping",
+      "source_object": {
+        "value": "\b\t\n\f\r\"\\\u0000"
+      },
+      "canonical_utf8": "{\"value\":\"\\b\\t\\n\\f\\r\\\"\\\\\\u0000\"}",
+      "byte_length": 32
+    },
+    {
+      "id": "ecmascript-number-serialization",
+      "source_object": {
+        "values": [
+          333333333.3333333,
+          1e+30,
+          4.5,
+          0.002,
+          1e-27
+        ]
+      },
+      "canonical_utf8": "{\"values\":[333333333.3333333,1e+30,4.5,0.002,1e-27]}",
+      "byte_length": 52
+    },
+    {
+      "id": "nested-array-object-and-booleans",
+      "source_object": {
+        "items": [
+          {
+            "z": true,
+            "a": null
+          },
+          [
+            1,
+            "x",
+            false
+          ]
+        ],
+        "ok": true
+      },
+      "canonical_utf8": "{\"items\":[{\"a\":null,\"z\":true},[1,\"x\",false]],\"ok\":true}",
+      "byte_length": 55
+    }
+  ]
+}
