@@ -182,7 +182,7 @@ The manifest schema token is cephas.powerops.mutation-manifest.v1; the common mu
 
 Manifest bytes are RFC 8785 canonical UTF-8 without BOM or trailing newline. Its digest is SHA-256 of those bytes. The event envelope carries registry token/version explicitly; the manifest token is not a registry token. One transaction writes changed rows, immutable manifest, all scope-chain events, chain-head updates and transactional outbox rows. Any failure rolls back the complete mutation. The outbox worker cannot asynchronously repair a missing authority event.
 
-The companion registry JSON Schema contains the common envelope, manifest and every event-specific v2 payload schema. The fixture catalog contains positive and negative validation cases for every event token. A row is not implementation-closed until schema validation, canonical-byte fixtures and independent reconstruction tests pass.
+The companion registry JSON Schema contains the common envelope, manifest and all 52 event-specific v2 payload schemas. The fixture catalog contains 52 positive event payloads, 263 exact negative payload variants, mutation-reconstruction negative scenarios, and a 1,404-byte canonical mutation-manifest golden fixture with SHA-256 6eaa3b02ca572028fc70a71defeeb5014ccd64271bc0d2fa6b25f5b7e2e63ea5. An author-side JSON parse and fixture-structure preflight found zero structural errors; this is not a substitute for a standards-compliant JSON Schema validator, two independent canonicalizers/verifiers or PostgreSQL concurrency/recovery tests. A row is not implementation-closed until those independent tests pass.
 
 ## 4. H-04 — Durable PostgreSQL commit-time ledger from WAL
 
