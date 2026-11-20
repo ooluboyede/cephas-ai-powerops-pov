@@ -4547,54 +4547,13 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
             "draft",
             "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "approved"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "invalidated"
         },
         "invalidation_reason_code": {
           "type": "string",
@@ -4924,15 +4883,53 @@
         "prior_stream_condition": {
           "type": "string",
           "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
             "healthy",
-            "quarantined"
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_stream_condition": {
           "type": "string",
           "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
             "healthy",
-            "quarantined"
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
           ]
         }
       },
@@ -5222,15 +5219,53 @@
         "prior_stream_condition": {
           "type": "string",
           "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
             "healthy",
-            "quarantined"
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
           ]
         },
         "resulting_stream_condition": {
           "type": "string",
           "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
             "healthy",
-            "quarantined"
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
           ]
         }
       },
@@ -5535,30 +5570,7 @@
           ]
         },
         "status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "pending"
         },
         "trust_record_sha256": {
           "type": "string",
@@ -9372,56 +9384,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "amendment_reason_code": {
           "type": "string",
@@ -9697,56 +9663,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "expired"
         },
         "expiry_at": {
           "type": "string",
@@ -10018,56 +9938,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "revoked"
         },
         "revocation_reason_code": {
           "type": "string",
@@ -10129,7 +10003,9 @@
         "resulting_version",
         "superseded_by_id",
         "superseded_by_version",
-        "supersession_reason_code"
+        "supersession_reason_code",
+        "prior_status",
+        "resulting_status"
       ],
       "properties": {
         "registry_token": {
@@ -10354,6 +10230,35 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 2048
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "const": "superseded"
         }
       },
       "allOf": [
@@ -10767,7 +10672,9 @@
         "prior_principal_id",
         "resulting_principal_id",
         "effective_at",
-        "replacement_reason_code"
+        "replacement_reason_code",
+        "prior_status",
+        "resulting_status"
       ],
       "properties": {
         "registry_token": {
@@ -11002,6 +10909,35 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 2048
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "const": "superseded"
         }
       },
       "allOf": [
@@ -11275,56 +11211,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "revoked"
         },
         "removal_reason_code": {
           "type": "string",
@@ -11623,30 +11513,7 @@
           "format": "uuid"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "unverified"
         }
       },
       "allOf": [
@@ -11912,54 +11779,13 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
             "verified",
             "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "released"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "quarantined"
         },
         "quarantine_reason_code": {
           "type": "string",
@@ -12236,56 +12062,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "quarantined"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "released"
         },
         "release_assessment_sha256": {
           "type": "string",
@@ -12563,54 +12343,12 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
             "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "released"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "superseded"
         },
         "superseding_object_id": {
           "type": "string",
@@ -12892,56 +12630,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "unverified"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "verified"
         },
         "new_verifier_identity_id": {
           "type": "string",
@@ -13007,7 +12699,9 @@
         "prior_active_policy_version",
         "policy_sha256",
         "activated_by_principal_id",
-        "effective_at"
+        "effective_at",
+        "prior_status",
+        "resulting_status"
       ],
       "properties": {
         "registry_token": {
@@ -13251,6 +12945,35 @@
         "effective_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "prior_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending",
+            "disabled",
+            "revoked",
+            "expired",
+            "quarantined",
+            "released",
+            "superseded",
+            "verified",
+            "unverified",
+            "draft",
+            "submitted",
+            "approved",
+            "executed",
+            "invalidated",
+            "healthy",
+            "compromised",
+            "retired",
+            "rejected",
+            "accepted",
+            "suspended"
+          ]
+        },
+        "resulting_status": {
+          "const": "active"
         }
       },
       "allOf": [
@@ -13514,56 +13237,10 @@
           "maxLength": 128
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "retired"
         },
         "retirement_reason_code": {
           "type": "string",
@@ -14170,54 +13847,12 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
             "accepted",
-            "suspended"
+            "rejected"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "invalidated"
         },
         "invalidation_reason_code": {
           "type": "string",
@@ -14540,62 +14175,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "active",
-                "pending",
-                "disabled",
-                "revoked",
-                "expired",
-                "quarantined",
-                "released",
-                "superseded",
-                "verified",
-                "unverified",
-                "draft",
-                "submitted",
-                "approved",
-                "executed",
-                "invalidated",
-                "healthy",
-                "compromised",
-                "retired",
-                "rejected",
-                "accepted"
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "draft"
         },
         "requestor_principal_id": {
           "type": "string",
@@ -14871,56 +14454,10 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "submitted"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "approved"
         },
         "approval_set_sha256": {
           "type": "string",
@@ -15198,54 +14735,13 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
             "draft",
             "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "approved"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "invalidated"
         },
         "invalidation_reason_code": {
           "type": "string",
@@ -15343,7 +14839,9 @@
         "prior_active_release_id",
         "resulting_release_id",
         "release_transition_sha256",
-        "executed_at"
+        "executed_at",
+        "prior_request_status",
+        "resulting_request_status"
       ],
       "properties": {
         "registry_token": {
@@ -15586,6 +15084,12 @@
         "executed_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "prior_request_status": {
+          "const": "approved"
+        },
+        "resulting_request_status": {
+          "const": "executed"
         }
       },
       "allOf": [
@@ -15862,62 +15366,10 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "prior_status": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "active",
-                "pending",
-                "disabled",
-                "revoked",
-                "expired",
-                "quarantined",
-                "released",
-                "superseded",
-                "verified",
-                "unverified",
-                "draft",
-                "submitted",
-                "approved",
-                "executed",
-                "invalidated",
-                "healthy",
-                "compromised",
-                "retired",
-                "rejected",
-                "accepted"
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "draft"
         },
         "requestor_principal_id": {
           "type": "string",
@@ -16193,56 +15645,10 @@
           "pattern": "^[a-f0-9]{64}$"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "submitted"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "approved"
         },
         "approval_set_sha256": {
           "type": "string",
@@ -16520,54 +15926,13 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
             "draft",
             "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "approved"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "invalidated"
         },
         "invalidation_reason_code": {
           "type": "string",
@@ -16664,7 +16029,9 @@
         "target_release_id",
         "resulting_release_id",
         "release_transition_sha256",
-        "executed_at"
+        "executed_at",
+        "prior_request_status",
+        "resulting_request_status"
       ],
       "properties": {
         "registry_token": {
@@ -16896,6 +16263,12 @@
         "executed_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "prior_request_status": {
+          "const": "approved"
+        },
+        "resulting_request_status": {
+          "const": "executed"
         }
       },
       "allOf": [
@@ -17158,54 +16531,12 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
             "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "retired"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "provider_mode": {
           "enum": [
@@ -17486,56 +16817,10 @@
           "format": "uuid"
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "retired"
         },
         "retirement_reason_code": {
           "type": "string",
@@ -17826,54 +17111,12 @@
         "prior_status": {
           "type": "string",
           "enum": [
-            "active",
             "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
             "suspended"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "activated_by_principal_id": {
           "type": "string",
@@ -18162,56 +17405,10 @@
           "minimum": 1
         },
         "prior_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "active"
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "suspended"
         },
         "suspension_reason_code": {
           "type": "string",
@@ -18515,53 +17712,12 @@
           "type": "string",
           "enum": [
             "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
+            "suspended",
+            "disabled"
           ]
         },
         "resulting_status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "pending",
-            "disabled",
-            "revoked",
-            "expired",
-            "quarantined",
-            "released",
-            "superseded",
-            "verified",
-            "unverified",
-            "draft",
-            "submitted",
-            "approved",
-            "executed",
-            "invalidated",
-            "healthy",
-            "compromised",
-            "retired",
-            "rejected",
-            "accepted",
-            "suspended"
-          ]
+          "const": "revoked"
         },
         "revocation_reason_code": {
           "type": "string",
