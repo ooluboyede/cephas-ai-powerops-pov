@@ -306,13 +306,13 @@
         "mapping_id": "99999999-9999-4999-8999-999999999999",
         "prior_mapping_version": null,
         "resulting_mapping_version": 1,
-        "prior_login_binding_id": null,
+        "prior_login_binding_id": "99999999-9999-4999-8999-999999999999",
         "resulting_login_binding_id": "99999999-9999-4999-8999-999999999999",
         "prior_issuer": null,
         "resulting_issuer": "synthetic",
         "prior_subject": null,
         "resulting_subject": "synthetic",
-        "prior_principal_id": null,
+        "prior_principal_id": "99999999-9999-4999-8999-999999999999",
         "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active"
@@ -564,7 +564,7 @@
         "issuer": "synthetic",
         "subject": "synthetic",
         "granted_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": null,
+        "effective_at": "2026-11-20T00:00:00Z",
         "expires_at": null,
         "policy_id": "99999999-9999-4999-8999-999999999999",
         "policy_version": 1,
@@ -905,7 +905,7 @@
         "resulting_grant_version": 1,
         "prior_status": "active",
         "resulting_status": "active",
-        "expiry_at": null,
+        "expiry_at": "2026-11-20T00:00:00Z",
         "affected_request_count": 0
       },
       "negative_fixtures": [
@@ -1067,7 +1067,7 @@
         "scope_kind": "tenant_business_unit",
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
-        "incident_id": null,
+        "incident_id": "99999999-9999-4999-8999-999999999999",
         "quarantine_reason_code": "synthetic",
         "quarantine_actor_principal_id": "99999999-9999-4999-8999-999999999999",
         "quarantined_object_count": 0,
@@ -1150,7 +1150,7 @@
         "scope_kind": "tenant_business_unit",
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
-        "incident_id": null,
+        "incident_id": "99999999-9999-4999-8999-999999999999",
         "disposition_code": "synthetic",
         "disposition_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "incident_commander_principal_id": "99999999-9999-4999-8999-999999999999",
@@ -1324,7 +1324,7 @@
         "resulting_version": 1,
         "prior_status": "active",
         "resulting_status": "active",
-        "prior_principal_id": null,
+        "prior_principal_id": "99999999-9999-4999-8999-999999999999",
         "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
         "trust_record_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
@@ -1492,7 +1492,7 @@
         "resulting_status": "active",
         "algorithm": "Ed25519",
         "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "effective_at": null
+        "effective_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -1572,7 +1572,7 @@
         "verifier_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active",
-        "expiry_at": null,
+        "expiry_at": "2026-11-20T00:00:00Z",
         "affected_evidence_count": 0
       },
       "negative_fixtures": [
@@ -1735,8 +1735,8 @@
         "verifier_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active",
-        "incident_id": null,
-        "compromise_detected_at": null,
+        "incident_id": "99999999-9999-4999-8999-999999999999",
+        "compromise_detected_at": "2026-11-20T00:00:00Z",
         "affected_evidence_count": 0
       },
       "negative_fixtures": [
@@ -1819,7 +1819,7 @@
         "resulting_status": "active",
         "algorithm": "Ed25519",
         "key_fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "effective_at": null
+        "effective_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -1899,7 +1899,7 @@
         "publisher_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active",
-        "expiry_at": null,
+        "expiry_at": "2026-11-20T00:00:00Z",
         "affected_candidate_count": 0
       },
       "negative_fixtures": [
@@ -2062,8 +2062,8 @@
         "publisher_key_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active",
-        "incident_id": null,
-        "compromise_detected_at": null,
+        "incident_id": "99999999-9999-4999-8999-999999999999",
+        "compromise_detected_at": "2026-11-20T00:00:00Z",
         "affected_candidate_count": 0
       },
       "negative_fixtures": [
@@ -2314,7 +2314,7 @@
         "resulting_version": 1,
         "prior_status": "active",
         "resulting_status": "active",
-        "expiry_at": null
+        "expiry_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -2563,7 +2563,7 @@
         "subject": "synthetic",
         "prior_status": null,
         "resulting_status": "active",
-        "effective_at": null,
+        "effective_at": "2026-11-20T00:00:00Z",
         "expires_at": null,
         "assignment_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
@@ -2642,12 +2642,12 @@
         "scope_kind": "tenant_business_unit",
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
-        "prior_role_assignment_id": null,
+        "prior_role_assignment_id": "99999999-9999-4999-8999-999999999999",
         "replacement_role_assignment_id": "99999999-9999-4999-8999-999999999999",
         "role_code": "model-risk",
-        "prior_principal_id": null,
+        "prior_principal_id": "99999999-9999-4999-8999-999999999999",
         "resulting_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": null,
+        "effective_at": "2026-11-20T00:00:00Z",
         "replacement_reason_code": "synthetic"
       },
       "negative_fixtures": [
@@ -2898,7 +2898,7 @@
         "prior_status": "active",
         "resulting_status": "active",
         "quarantine_reason_code": "synthetic",
-        "incident_id": null,
+        "incident_id": "99999999-9999-4999-8999-999999999999",
         "quarantined_by_principal_id": "99999999-9999-4999-8999-999999999999"
       },
       "negative_fixtures": [
@@ -3143,7 +3143,7 @@
         "tenant_id": "33333333-3333-4333-8333-333333333333",
         "business_unit_id": "44444444-4444-4444-8444-444444444444",
         "evidence_object_id": "99999999-9999-4999-8999-999999999999",
-        "prior_version_id": null,
+        "prior_version_id": "99999999-9999-4999-8999-999999999999",
         "resulting_version_id": "99999999-9999-4999-8999-999999999999",
         "prior_status": "active",
         "resulting_status": "active",
@@ -3232,7 +3232,7 @@
         "prior_active_policy_version": 1,
         "policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": null
+        "effective_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3403,7 +3403,7 @@
         "principal_id": "99999999-9999-4999-8999-999999999999",
         "issuer": "synthetic",
         "subject": "synthetic",
-        "decided_at": null,
+        "decided_at": "2026-11-20T00:00:00Z",
         "decision_reason_code": "synthetic",
         "approval_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
@@ -3573,7 +3573,7 @@
         "prior_status": null,
         "resulting_status": "active",
         "requestor_principal_id": "99999999-9999-4999-8999-999999999999",
-        "created_at": null
+        "created_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3656,7 +3656,7 @@
         "prior_status": "active",
         "resulting_status": "active",
         "approval_set_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "approved_at": null
+        "approved_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3824,7 +3824,7 @@
         "prior_active_release_id": null,
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": null
+        "executed_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3909,7 +3909,7 @@
         "prior_status": null,
         "resulting_status": "active",
         "requestor_principal_id": "99999999-9999-4999-8999-999999999999",
-        "created_at": null
+        "created_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -3992,7 +3992,7 @@
         "prior_status": "active",
         "resulting_status": "active",
         "approval_set_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "approved_at": null
+        "approved_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -4155,11 +4155,11 @@
         "request_id": "99999999-9999-4999-8999-999999999999",
         "request_version": 1,
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "prior_active_release_id": null,
+        "prior_active_release_id": "99999999-9999-4999-8999-999999999999",
         "target_release_id": "99999999-9999-4999-8999-999999999999",
         "resulting_release_id": "99999999-9999-4999-8999-999999999999",
         "release_transition_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "executed_at": null
+        "executed_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -4243,7 +4243,7 @@
         "maximum_unanchored_seconds": 0,
         "retention_policy_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "activated_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "effective_at": null
+        "effective_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
@@ -4325,7 +4325,7 @@
         "resulting_status": "active",
         "retirement_reason_code": "synthetic",
         "retired_by_principal_id": "99999999-9999-4999-8999-999999999999",
-        "retired_at": null
+        "retired_at": "2026-11-20T00:00:00Z"
       },
       "negative_fixtures": [
         {
