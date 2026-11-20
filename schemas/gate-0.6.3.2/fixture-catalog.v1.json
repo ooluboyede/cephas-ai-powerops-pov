@@ -3981,8 +3981,8 @@
         "request_id": "99999999-9999-4999-8999-999999999999",
         "request_version": 1,
         "request_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "prior_status": "active",
-        "resulting_status": "active",
+        "prior_status": "submitted",
+        "resulting_status": "invalidated",
         "invalidation_reason_code": "synthetic",
         "invalidating_object_ref": null,
         "affected_approval_ids": []
@@ -4325,9 +4325,7 @@
         "quarantined_object_count": 0,
         "quarantined_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "prior_stream_condition": "healthy",
-        "resulting_stream_condition": "quarantined",
-        "prior_status": "healthy",
-        "resulting_status": "quarantined"
+        "resulting_stream_condition": "quarantined"
       },
       "negative_fixtures": [
         {
@@ -4674,9 +4672,7 @@
         "reconciled_object_count": 0,
         "reconciled_object_refs_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "prior_stream_condition": "quarantined",
-        "resulting_stream_condition": "quarantined",
-        "prior_status": "quarantined",
-        "resulting_status": "quarantined"
+        "resulting_stream_condition": "quarantined"
       },
       "negative_fixtures": [
         {
