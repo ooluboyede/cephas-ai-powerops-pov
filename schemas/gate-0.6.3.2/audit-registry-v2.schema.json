@@ -9973,36 +9973,7 @@
           "maxLength": 2048
         },
         "prior_status": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "active",
-                "pending",
-                "disabled",
-                "revoked",
-                "expired",
-                "quarantined",
-                "released",
-                "superseded",
-                "verified",
-                "unverified",
-                "draft",
-                "submitted",
-                "approved",
-                "executed",
-                "invalidated",
-                "healthy",
-                "compromised",
-                "retired",
-                "rejected",
-                "accepted"
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         },
         "resulting_status": {
           "const": "active"
